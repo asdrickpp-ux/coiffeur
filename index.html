@@ -1,0 +1,4076 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0,
+      maximum-scale=1.0, user-scalable=no">
+
+<meta name="theme-color" content="#16131b">
+
+<title>COIFF'BOOST PRO</title>
+
+<style>
+:root{
+    --bg:#f7f4f8;
+    --card:#ffffff;
+    --text:#211d25;
+    --muted:#817784;
+    --line:#e9e2eb;
+    --primary:#9b5de5;
+    --primary2:#e84a9b;
+    --dark:#17131d;
+    --success:#21a366;
+    --warning:#e49b19;
+    --danger:#df4d61;
+    --shadow:0 12px 35px rgba(35,20,45,.08);
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "Segoe UI",
+    Arial,
+    sans-serif;
+}
+
+button,
+input,
+select,
+textarea{
+    font:inherit;
+}
+
+button{
+    border:0;
+    cursor:pointer;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:13px 14px;
+    border:1px solid var(--line);
+    background:white;
+    color:var(--text);
+    border-radius:14px;
+    outline:none;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(155,93,229,.12);
+}
+
+textarea{
+    min-height:110px;
+    resize:vertical;
+}
+
+.app-header{
+    position:sticky;
+    top:0;
+    z-index:100;
+    height:72px;
+    background:rgba(23,19,29,.96);
+    backdrop-filter:blur(20px);
+    color:white;
+    display:flex;
+    align-items:center;
+    padding:0 15px;
+    gap:12px;
+}
+
+.menu-button{
+    width:44px;
+    height:44px;
+    border-radius:14px;
+    background:#2b2530;
+    color:white;
+    font-size:22px;
+}
+
+.brand{
+    font-weight:900;
+    font-size:20px;
+    letter-spacing:-.5px;
+}
+
+.brand span{
+    color:#e87ce9;
+}
+
+.header-sub{
+    color:#aaa1ad;
+    font-size:11px;
+    margin-top:2px;
+}
+
+.header-actions{
+    margin-left:auto;
+    display:flex;
+    gap:8px;
+}
+
+.icon-button{
+    width:42px;
+    height:42px;
+    border-radius:13px;
+    background:#2b2530;
+    color:white;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+.main{
+    max-width:1100px;
+    margin:auto;
+    padding:18px 14px 110px;
+}
+
+.hero{
+    background:
+    radial-gradient(circle at top right,#d56de2 0,#7c39bf 35%,transparent 60%),
+    linear-gradient(135deg,#21182a,#6c3294);
+    color:white;
+    border-radius:26px;
+    padding:24px;
+    margin-bottom:15px;
+    box-shadow:var(--shadow);
+}
+
+.hero small{
+    color:#dacbe4;
+}
+
+.hero h1{
+    margin:7px 0;
+    font-size:29px;
+    letter-spacing:-1px;
+}
+
+.hero p{
+    margin:0;
+    color:#ddd0e4;
+}
+
+.hero-actions{
+    display:flex;
+    gap:8px;
+    margin-top:18px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    padding:12px 15px;
+    border-radius:13px;
+    font-weight:800;
+}
+
+.btn-primary{
+    background:linear-gradient(135deg,var(--primary),var(--primary2));
+    color:white;
+}
+
+.btn-light{
+    background:#ffffff1c;
+    color:white;
+    border:1px solid #ffffff30;
+}
+
+.btn-soft{
+    background:#f3eaf7;
+    color:#53395e;
+}
+
+.btn-success{
+    background:#e3f6ec;
+    color:#14733e;
+}
+
+.btn-danger{
+    background:#fde8eb;
+    color:#a7273c;
+}
+
+.section-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:22px 2px 10px;
+}
+
+.section-title h2{
+    margin:0;
+    font-size:19px;
+}
+
+.section-title span{
+    color:var(--muted);
+    font-size:12px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.grid-3{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+}
+
+.card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:16px;
+    box-shadow:var(--shadow);
+    margin-bottom:12px;
+}
+
+.stat-card{
+    min-height:130px;
+}
+
+.stat-icon{
+    font-size:25px;
+}
+
+.stat-value{
+    display:block;
+    font-size:25px;
+    font-weight:900;
+    margin-top:9px;
+}
+
+.stat-label{
+    color:var(--muted);
+    font-size:12px;
+}
+
+.trend{
+    font-size:11px;
+    color:var(--success);
+    font-weight:800;
+}
+
+.quick{
+    text-align:left;
+    min-height:130px;
+    background:white;
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:16px;
+    box-shadow:var(--shadow);
+}
+
+.quick-icon{
+    font-size:27px;
+}
+
+.quick strong{
+    display:block;
+    margin-top:8px;
+}
+
+.quick small{
+    color:var(--muted);
+}
+
+.list{
+    margin-top:8px;
+}
+
+.list-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    padding:13px 0;
+    border-bottom:1px solid var(--line);
+}
+
+.list-item:last-child{
+    border-bottom:0;
+}
+
+.item-title{
+    font-weight:800;
+}
+
+.item-sub{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:3px;
+}
+
+.avatar{
+    width:42px;
+    height:42px;
+    display:grid;
+    place-items:center;
+    border-radius:14px;
+    background:linear-gradient(135deg,#f1dfff,#ffdceb);
+    flex:none;
+}
+
+.item-left{
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
+.badge{
+    display:inline-flex;
+    align-items:center;
+    padding:5px 8px;
+    border-radius:999px;
+    background:#f3e8ff;
+    color:#7a32b4;
+    font-size:10px;
+    font-weight:900;
+}
+
+.badge-green{
+    background:#e4f7ec;
+    color:#167341;
+}
+
+.badge-yellow{
+    background:#fff5d8;
+    color:#95630a;
+}
+
+.badge-red{
+    background:#fde8eb;
+    color:#a4263c;
+}
+
+.form-group{
+    margin-bottom:13px;
+}
+
+.form-group label{
+    display:block;
+    font-size:12px;
+    font-weight:900;
+    margin-bottom:6px;
+}
+
+.search{
+    margin-bottom:12px;
+}
+
+.chips{
+    display:flex;
+    gap:7px;
+    overflow:auto;
+    padding-bottom:4px;
+}
+
+.chip{
+    white-space:nowrap;
+    background:white;
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:9px 12px;
+    color:#5d5260;
+    font-size:12px;
+}
+
+.chip.active{
+    background:#8e49c6;
+    color:white;
+    border-color:#8e49c6;
+}
+
+.guide-card{
+    background:linear-gradient(145deg,#fff,#f9f3fb);
+    border:1px solid var(--line);
+    border-radius:19px;
+    padding:16px;
+}
+
+.guide-card h3{
+    margin:7px 0;
+}
+
+.guide-card p{
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.5;
+}
+
+.guide-icon{
+    font-size:28px;
+}
+
+.tool-card{
+    background:white;
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:15px;
+}
+
+.tool-card h3{
+    margin-top:0;
+}
+
+.price-big{
+    font-size:35px;
+    font-weight:900;
+    margin:10px 0;
+    background:linear-gradient(135deg,#9b5de5,#e84a9b);
+    -webkit-background-clip:text;
+    color:transparent;
+}
+
+.result{
+    background:#faf7fb;
+    border:1px dashed #d8c9dc;
+    border-radius:14px;
+    padding:14px;
+    white-space:pre-wrap;
+    line-height:1.6;
+    margin-top:12px;
+}
+
+.progress{
+    height:10px;
+    background:#eee8f0;
+    border-radius:99px;
+    overflow:hidden;
+}
+
+.progress span{
+    display:block;
+    height:100%;
+    width:64%;
+    background:linear-gradient(90deg,#9b5de5,#e84a9b);
+    border-radius:99px;
+}
+
+.drawer{
+    position:fixed;
+    inset:0;
+    z-index:200;
+    pointer-events:none;
+}
+
+.drawer.open{
+    pointer-events:auto;
+}
+
+.drawer-back{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    opacity:0;
+    transition:.2s;
+}
+
+.drawer.open .drawer-back{
+    opacity:1;
+}
+
+.drawer-panel{
+    position:absolute;
+    left:0;
+    top:0;
+    bottom:0;
+    width:min(320px,86vw);
+    background:#fff;
+    padding:18px 13px;
+    transform:translateX(-105%);
+    transition:.25s;
+    overflow:auto;
+}
+
+.drawer.open .drawer-panel{
+    transform:translateX(0);
+}
+
+.drawer-brand{
+    padding:8px 10px 20px;
+}
+
+.drawer-brand strong{
+    font-size:21px;
+}
+
+.drawer-brand span{
+    color:#9b5de5;
+}
+
+.nav-btn{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:transparent;
+    padding:12px;
+    border-radius:13px;
+    color:#4f4652;
+    text-align:left;
+    margin:2px 0;
+}
+
+.nav-btn.active{
+    background:#f3e8fa;
+    color:#853bc1;
+    font-weight:900;
+}
+
+.nav-icon{
+    width:26px;
+    text-align:center;
+}
+
+.bottom-nav{
+    position:fixed;
+    z-index:120;
+    bottom:0;
+    left:0;
+    right:0;
+    background:rgba(255,255,255,.96);
+    backdrop-filter:blur(20px);
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-around;
+    padding:7px 4px calc(7px + env(safe-area-inset-bottom));
+}
+
+.bottom-nav button{
+    background:none;
+    color:#766b78;
+    font-size:10px;
+}
+
+.bottom-nav b{
+    display:block;
+    font-size:19px;
+    margin-bottom:2px;
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    z-index:300;
+    background:#0008;
+    display:none;
+    align-items:flex-end;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.sheet{
+    width:100%;
+    max-height:90vh;
+    overflow:auto;
+    background:white;
+    border-radius:25px 25px 0 0;
+    padding:20px;
+}
+
+.close{
+    float:right;
+    width:36px;
+    height:36px;
+    border-radius:11px;
+    background:#f0ebf1;
+}
+
+.toast{
+    position:fixed;
+    z-index:500;
+    bottom:95px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#211c25;
+    color:white;
+    padding:12px 16px;
+    border-radius:13px;
+    display:none;
+    font-size:13px;
+    box-shadow:var(--shadow);
+}
+
+.empty{
+    text-align:center;
+    color:var(--muted);
+    padding:25px;
+}
+
+.dark{
+    --bg:#100e13;
+    --card:#1b1720;
+    --text:#f5eff7;
+    --muted:#a99fac;
+    --line:#312b35;
+}
+
+.dark input,
+.dark select,
+.dark textarea{
+    background:#24202a;
+    color:white;
+    border-color:#3a3340;
+}
+
+.dark .bottom-nav{
+    background:#17131d;
+}
+
+.dark .drawer-panel{
+    background:#18141b;
+}
+
+.dark .nav-btn{
+    color:#cfc6d2;
+}
+
+.dark .nav-btn.active{
+    background:#2d2035;
+}
+
+@media(min-width:700px){
+
+    .main{
+        padding-left:25px;
+        padding-right:25px;
+    }
+
+    .grid{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    .bottom-nav{
+        display:none;
+    }
+
+}
+
+@media(max-width:380px){
+
+    .grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .hero h1{
+        font-size:25px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<header class="app-header">
+
+<button class="menu-button" onclick="toggleDrawer()">☰</button>
+
+<div>
+<div class="brand">
+COIFF'<span>BOOST</span>
+</div>
+
+<div class="header-sub">
+PRO • Gestion intelligente du salon
+</div>
+</div>
+
+<div class="header-actions">
+
+<button class="icon-button"
+onclick="showNotifications()">
+🔔
+</button>
+
+<button class="icon-button"
+onclick="toggleDark()">
+◐
+</button>
+
+</div>
+
+</header>
+
+
+<!-- MENU -->
+
+<div id="drawer" class="drawer">
+
+<div class="drawer-back"
+onclick="toggleDrawer()"></div>
+
+<aside class="drawer-panel">
+
+<div class="drawer-brand">
+
+<strong>
+COIFF'<span>BOOST</span>
+</strong>
+
+<div class="item-sub">
+Le cockpit de votre salon
+</div>
+
+</div>
+
+<div id="navigation"></div>
+
+</aside>
+
+</div>
+
+
+<main class="main">
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard"
+class="page active">
+
+<div class="hero">
+
+<small id="salonWelcome">
+COIFF'BOOST PRO
+</small>
+
+<h1>
+Bonjour <span id="ownerName">
+Julie
+</span> 👋
+</h1>
+
+<p>
+Votre salon mérite mieux qu'un carnet et trois feuilles Excel.
+</p>
+
+<div class="hero-actions">
+
+<button class="btn btn-primary"
+onclick="openClientModal()">
+＋ Nouvelle cliente
+</button>
+
+<button class="btn btn-light"
+onclick="navigate('agenda')">
+📅 Voir l'agenda
+</button>
+
+</div>
+
+</div>
+
+
+<div class="grid">
+
+<div class="card stat-card">
+
+<div class="stat-icon">💰</div>
+
+<span class="stat-label">
+CA du mois
+</span>
+
+<strong
+class="stat-value">
+3 842 €
+</strong>
+
+<span class="trend">
+▲ 12,4 %
+</span>
+
+</div>
+
+
+<div class="card stat-card">
+
+<div class="stat-icon">📅</div>
+
+<span class="stat-label">
+Rendez-vous
+</span>
+
+<strong class="stat-value">
+27
+</strong>
+
+<span class="stat-label">
+ce mois
+</span>
+
+</div>
+
+
+<div class="card stat-card">
+
+<div class="stat-icon">👩‍🦰</div>
+
+<span class="stat-label">
+Clientes actives
+</span>
+
+<strong class="stat-value">
+18
+</strong>
+
+<span class="trend">
+▲ 3
+</span>
+
+</div>
+
+
+<div class="card stat-card">
+
+<div class="stat-icon">📈</div>
+
+<span class="stat-label">
+Marge estimée
+</span>
+
+<strong class="stat-value">
+64 %
+</strong>
+
+<span class="trend">
+Bonne santé
+</span>
+
+</div>
+
+</div>
+
+
+<div class="section-title">
+
+<h2>
+⚡ Actions rapides
+</h2>
+
+</div>
+
+
+<div class="grid">
+
+<button
+class="quick"
+onclick="navigate('clients')">
+
+<div class="quick-icon">
+👩‍🦰
+</div>
+
+<strong>
+Clientes
+</strong>
+
+<small>
+Fiches & historique
+</small>
+
+</button>
+
+
+<button
+class="quick"
+onclick="navigate('finance')">
+
+<div class="quick-icon">
+💰
+</div>
+
+<strong>
+Calculateur
+</strong>
+
+<small>
+Prix & rentabilité
+</small>
+
+</button>
+
+
+<button
+class="quick"
+onclick="navigate('studio')">
+
+<div class="quick-icon">
+📱
+</div>
+
+<strong>
+Studio contenu
+</strong>
+
+<small>
+Instagram & TikTok
+</small>
+
+</button>
+
+
+<button
+class="quick"
+onclick="navigate('academy')">
+
+<div class="quick-icon">
+📚
+</div>
+
+<strong>
+Académie
+</strong>
+
+<small>
+Guides & astuces
+</small>
+
+</button>
+
+</div>
+
+
+<div class="section-title">
+
+<h2>
+📅 Aujourd'hui
+</h2>
+
+<span>
+4 rendez-vous
+</span>
+
+</div>
+
+
+<div class="card">
+
+<div id="todayAppointments"></div>
+
+</div>
+
+
+<div class="section-title">
+
+<h2>
+🚨 À surveiller
+</h2>
+
+</div>
+
+
+<div class="card">
+
+<div class="list">
+
+<div class="list-item">
+
+<div class="item-left">
+
+<div class="avatar">
+📦
+</div>
+
+<div>
+
+<div class="item-title">
+Produits bientôt en rupture
+</div>
+
+<div class="item-sub">
+3 produits sous le seuil
+</div>
+
+</div>
+
+</div>
+
+<span class="badge badge-yellow">
+STOCK
+</span>
+
+</div>
+
+
+<div class="list-item">
+
+<div class="item-left">
+
+<div class="avatar">
+⭐
+</div>
+
+<div>
+
+<div class="item-title">
+Avis à traiter
+</div>
+
+<div class="item-sub">
+2 nouveaux avis
+</div>
+
+</div>
+
+</div>
+
+<span class="badge">
+AVIS
+</span>
+
+</div>
+
+
+<div class="list-item">
+
+<div class="item-left">
+
+<div class="avatar">
+📱
+</div>
+
+<div>
+
+<div class="item-title">
+Contenu du jour
+</div>
+
+<div class="item-sub">
+Publiez pour rester visible
+</div>
+
+</div>
+
+</div>
+
+<span class="badge badge-green">
+MARKETING
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- CLIENTS -->
+
+<section
+id="clients"
+class="page">
+
+<div class="section-title">
+
+<h2>
+👩‍🦰 Mes clientes
+</h2>
+
+<button
+class="btn btn-primary"
+onclick="openClientModal()">
+＋ Ajouter
+</button>
+
+</div>
+
+
+<div class="card">
+
+<input
+id="clientSearch"
+class="search"
+placeholder="🔎 Rechercher une cliente..."
+oninput="renderClients()">
+
+<div id="clientList"></div>
+
+</div>
+
+</section>
+
+
+<!-- AGENDA -->
+
+<section
+id="agenda"
+class="page">
+
+<div class="section-title">
+
+<h2>
+📅 Agenda
+</h2>
+
+<button
+class="btn btn-primary"
+onclick="openAppointmentModal()">
+＋ Rendez-vous
+</button>
+
+</div>
+
+
+<div class="card">
+
+<div class="chips">
+
+<button
+class="chip active">
+Aujourd'hui
+</button>
+
+<button
+class="chip">
+Demain
+</button>
+
+<button
+class="chip">
+Cette semaine
+</button>
+
+</div>
+
+<div id="agendaList"></div>
+
+</div>
+
+</section>
+
+
+<!-- PRESTATIONS -->
+
+<section
+id="services"
+class="page">
+
+<div class="section-title">
+
+<h2>
+💇‍♀️ Prestations
+</h2>
+
+<button
+class="btn btn-primary"
+onclick="openServiceModal()">
+＋ Ajouter
+</button>
+
+</div>
+
+
+<div id="serviceList"></div>
+
+</section>
+
+
+<!-- FINANCE -->
+
+<section
+id="finance"
+class="page">
+
+<div class="section-title">
+
+<h2>
+💰 Prix & rentabilité
+</h2>
+
+</div>
+
+
+<div class="card">
+
+<p class="item-sub">
+
+Ne fixez plus vos prix au hasard.
+Calculez votre temps, vos produits et votre marge.
+
+</p>
+
+
+<div class="form-group">
+
+<label>
+Durée de la prestation
+</label>
+
+<input
+id="calcHours"
+type="number"
+value="2"
+step=".25">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Taux horaire souhaité (€)
+</label>
+
+<input
+id="calcRate"
+type="number"
+value="35">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Produits consommés (€)
+</label>
+
+<input
+id="calcProducts"
+type="number"
+value="15">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Charges / sécurité (%)
+</label>
+
+<input
+id="calcCharges"
+type="number"
+value="25">
+
+</div>
+
+
+<button
+class="btn btn-primary"
+onclick="calculatePrice()">
+
+🧮 Calculer mon prix
+
+</button>
+
+
+<div
+id="priceResult"
+class="result">
+
+Entrez vos données puis lancez le calcul.
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+🎯 Objectif mensuel
+</h3>
+
+<div class="price-big">
+5 000 €
+</div>
+
+<div class="progress">
+<span></span>
+</div>
+
+<p class="item-sub">
+3 842 € réalisés • 1 158 € restants
+</p>
+
+</div>
+
+
+<div class="grid">
+
+<div class="tool-card">
+
+<h3>
+💡 Conseil
+</h3>
+
+<p class="item-sub">
+
+Ajoutez une prestation complémentaire pertinente plutôt que de simplement augmenter vos prix.
+
+</p>
+
+</div>
+
+
+<div class="tool-card">
+
+<h3>
+📊 Panier moyen
+</h3>
+
+<strong class="price-big">
+58 €
+</strong>
+
+<p class="item-sub">
+Objectif conseillé : 65 €
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- STOCK -->
+
+<section
+id="stock"
+class="page">
+
+<div class="section-title">
+
+<h2>
+📦 Stock professionnel
+</h2>
+
+<button
+class="btn btn-primary"
+onclick="openStockModal()">
+＋ Produit
+</button>
+
+</div>
+
+
+<div class="card">
+
+<div id="stockList"></div>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+🛒 Organisation des achats
+</h3>
+
+<p class="item-sub">
+
+Classez vos achats par fréquence : quotidien, hebdomadaire, mensuel.
+
+Cela permet d'éviter les ruptures tout en limitant le stock dormant.
+
+</p>
+
+</div>
+
+</section>
+
+
+<!-- STUDIO -->
+
+<section
+id="studio"
+class="page">
+
+<div class="section-title">
+
+<h2>
+📱 Studio contenu
+</h2>
+
+</div>
+
+
+<div class="card">
+
+<div class="form-group">
+
+<label>
+Type de contenu
+</label>
+
+<select id="contentType">
+
+<option>Post Instagram</option>
+<option>Story</option>
+<option>Reel</option>
+<option>TikTok</option>
+<option>Avant / Après</option>
+<option>Promotion</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Sujet
+</label>
+
+<select id="contentTheme">
+
+<option>Balayage</option>
+<option>Coloration</option>
+<option>Coupe</option>
+<option>Brushing</option>
+<option>Conseil cheveux</option>
+<option>Coulisses</option>
+<option>Fidélisation</option>
+<option>Accessoires</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Informations supplémentaires
+</label>
+
+<textarea
+id="contentInfo"
+placeholder="Ex : balayage blond froid, cheveux longs, résultat naturel..."></textarea>
+
+</div>
+
+
+<button
+class="btn btn-primary"
+onclick="generateContent()">
+
+✨ Créer le contenu
+
+</button>
+
+
+<div
+id="contentResult"
+class="result">
+
+Votre publication apparaîtra ici.
+
+</div>
+
+</div>
+
+
+<div class="section-title">
+
+<h2>
+📅 30 idées de contenu
+</h2>
+
+</div>
+
+
+<div id="contentIdeas"></div>
+
+</section>
+
+
+<!-- AVIS -->
+
+<section
+id="reviews"
+class="page">
+
+<div class="section-title">
+
+<h2>
+⭐ Réponses aux avis
+</h2>
+
+</div>
+
+
+<div class="card">
+
+<div class="form-group">
+
+<label>
+Type d'avis
+</label>
+
+<select id="reviewType">
+
+<option>Très positif</option>
+<option>Positif</option>
+<option>Mitigé</option>
+<option>Négatif</option>
+
+</select>
+
+</div>
+
+
+<textarea
+id="reviewText"
+placeholder="Collez ici l'avis de la cliente..."></textarea>
+
+
+<button
+class="btn btn-primary"
+onclick="generateReview()">
+
+✨ Préparer la réponse
+
+</button>
+
+
+<div
+id="reviewResult"
+class="result">
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- FIDELITE -->
+
+<section
+id="loyalty"
+class="page">
+
+<div class="section-title">
+
+<h2>
+🎁 Fidélisation
+</h2>
+
+</div>
+
+
+<div class="card">
+
+<div class="form-group">
+
+<label>
+Campagne
+</label>
+
+<select id="loyaltyType">
+
+<option>Après rendez-vous</option>
+<option>Rappel couleur</option>
+<option>Cliente inactive</option>
+<option>Anniversaire</option>
+<option>Parrainage</option>
+<option>Offre fidélité</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Prénom de la cliente
+</label>
+
+<input
+id="loyaltyName"
+placeholder="Sophie">
+
+</div>
+
+
+<button
+class="btn btn-primary"
+onclick="generateLoyalty()">
+
+💌 Créer le message
+
+</button>
+
+
+<div
+id="loyaltyResult"
+class="result">
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ACADEMIE -->
+
+<section
+id="academy"
+class="page">
+
+<div class="section-title">
+
+<h2>
+📚 Académie COIFF'BOOST
+</h2>
+
+<span>
+Guides pratiques
+</span>
+
+</div>
+
+
+<div class="chips">
+
+<button
+class="chip active"
+onclick="filterAcademy('all',this)">
+Tout
+</button>
+
+<button
+class="chip"
+onclick="filterAcademy('technique',this)">
+Technique
+</button>
+
+<button
+class="chip"
+onclick="filterAcademy('accessoire',this)">
+Accessoires
+</button>
+
+<button
+class="chip"
+onclick="filterAcademy('business',this)">
+Business
+</button>
+
+</div>
+
+
+<div
+id="academyGrid"
+class="grid">
+
+</div>
+
+
+</section>
+
+
+<!-- ACCESSOIRES -->
+
+<section
+id="accessories"
+class="page">
+
+<div class="section-title">
+
+<h2>
+🧰 Accessoires PRO
+</h2>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+🔎 Que rechercher ?
+</h3>
+
+<p class="item-sub">
+
+Pour les accessoires professionnels, privilégiez les distributeurs
+coiffure reconnus et vérifiez les références, tailles, matériaux,
+compatibilité avec votre matériel et conditions de retour.
+
+</p>
+
+</div>
+
+
+<div id="accessoryList"></div>
+
+</section>
+
+
+<!-- FOURNISSEURS -->
+
+<section
+id="suppliers"
+class="page">
+
+<div class="section-title">
+
+<h2>
+🛒 Où acheter du matériel ?
+</h2>
+
+</div>
+
+
+<div class="card">
+
+<div class="list">
+
+<div class="list-item">
+
+<div>
+
+<div class="item-title">
+Distributeurs professionnels
+</div>
+
+<div class="item-sub">
+Pour matériel, consommables et équipement de salon.
+</div>
+
+</div>
+
+<span class="badge">
+PRO
+</span>
+
+</div>
+
+
+<div class="list-item">
+
+<div>
+
+<div class="item-title">
+Fabricants professionnels
+</div>
+
+<div class="item-sub">
+Idéal pour comparer les gammes et références.
+</div>
+
+</div>
+
+<span class="badge">
+MARQUES
+</span>
+
+</div>
+
+
+<div class="list-item">
+
+<div>
+
+<div class="item-title">
+Marketplaces
+</div>
+
+<div class="item-sub">
+Utile pour comparer, mais vérifiez vendeur et authenticité.
+</div>
+
+</div>
+
+<span class="badge badge-yellow">
+VÉRIFIER
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+💡 Astuce achat
+</h3>
+
+<p class="item-sub">
+
+Ne choisissez pas uniquement au prix.
+Le coût réel comprend la durée de vie, les consommables,
+la garantie et le temps gagné.
+
+</p>
+
+</div>
+
+</section>
+
+
+<!-- PAIEMENTS -->
+
+<section
+id="payments"
+class="page">
+
+<div class="section-title">
+
+<h2>
+💳 Paiements
+</h2>
+
+</div>
+
+
+<div class="card">
+
+<div class="badge badge-green">
+SÉCURISÉ
+</div>
+
+<h3>
+Stripe
+</h3>
+
+<p class="item-sub">
+
+Collez ici votre Payment Link Stripe.
+La cliente sera envoyée vers Stripe pour payer.
+
+</p>
+
+
+<input
+id="stripeLink"
+placeholder="https://buy.stripe.com/...">
+
+
+</div>
+
+
+<div class="card">
+
+<div class="badge">
+PAYPAL
+</div>
+
+<h3>
+PayPal
+</h3>
+
+<p class="item-sub">
+
+Ajoutez votre lien PayPal.
+
+</p>
+
+
+<input
+id="paypalLink"
+placeholder="https://paypal.me/...">
+
+</div>
+
+
+<div class="card">
+
+<button
+class="btn btn-primary"
+onclick="savePayments()">
+
+💾 Enregistrer
+
+</button>
+
+</div>
+
+</section>
+
+
+<!-- STATISTIQUES -->
+
+<section
+id="stats"
+class="page">
+
+<div class="section-title">
+
+<h2>
+📊 Statistiques
+</h2>
+
+</div>
+
+
+<div class="grid">
+
+<div class="card">
+
+<span class="stat-label">
+Panier moyen
+</span>
+
+<strong class="stat-value">
+58 €
+</strong>
+
+</div>
+
+
+<div class="card">
+
+<span class="stat-label">
+Fidélisation
+</span>
+
+<strong class="stat-value">
+72 %
+</strong>
+
+</div>
+
+
+<div class="card">
+
+<span class="stat-label">
+Remplissage
+</span>
+
+<strong class="stat-value">
+81 %
+</strong>
+
+</div>
+
+
+<div class="card">
+
+<span class="stat-label">
+Produits / CA
+</span>
+
+<strong class="stat-value">
+16 %
+</strong>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+🎯 Conseil du mois
+</h3>
+
+<p class="item-sub">
+
+Travaillez le panier moyen avec des services complémentaires
+adaptés aux besoins réels de chaque cliente.
+
+</p>
+
+</div>
+
+</section>
+
+
+<!-- PARAMETRES -->
+
+<section
+id="settings"
+class="page">
+
+<div class="section-title">
+
+<h2>
+⚙️ Paramètres
+</h2>
+
+</div>
+
+
+<div class="card">
+
+<div class="form-group">
+
+<label>
+Nom du salon
+</label>
+
+<input
+id="salonName"
+placeholder="Studio Julie">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Prénom
+</label>
+
+<input
+id="ownerInput"
+placeholder="Julie">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Ville
+</label>
+
+<input
+id="salonCity"
+placeholder="Votre ville">
+
+</div>
+
+
+<button
+class="btn btn-primary"
+onclick="saveSettings()">
+
+💾 Enregistrer
+
+</button>
+
+<button
+class="btn btn-soft"
+onclick="resetDemo()">
+
+Réinitialiser la démo
+
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+📱 COIFF'BOOST
+</h3>
+
+<p class="item-sub">
+Version prototype PRO • données locales
+</p>
+
+</div>
+
+</section>
+
+
+</main>
+
+
+<!-- BOTTOM NAV -->
+
+<nav class="bottom-nav">
+
+<button onclick="navigate('dashboard')">
+<b>⌂</b>
+Accueil
+</button>
+
+<button onclick="navigate('agenda')">
+<b>📅</b>
+Agenda
+</button>
+
+<button onclick="navigate('clients')">
+<b>👩</b>
+Clientes
+</button>
+
+<button onclick="navigate('studio')">
+<b>✦</b>
+Studio
+</button>
+
+<button onclick="toggleDrawer()">
+<b>☰</b>
+Menu
+</button>
+
+</nav>
+
+
+<!-- MODAL -->
+
+<div
+id="modal"
+class="modal">
+
+<div class="sheet">
+
+<button
+class="close"
+onclick="closeModal()">
+✕
+</button>
+
+<div id="modalContent"></div>
+
+</div>
+
+</div>
+
+
+<div
+id="toast"
+class="toast">
+</div>
+
+
+<script>
+
+/* =========================================================
+   COIFF'BOOST PRO
+   APPLICATION LOCALE
+========================================================= */
+
+
+const NAV = [
+
+["dashboard","🏠","Tableau de bord"],
+
+["clients","👩‍🦰","Clientes"],
+
+["agenda","📅","Agenda"],
+
+["services","💇‍♀️","Prestations"],
+
+["finance","💰","Prix & rentabilité"],
+
+["stock","📦","Stock"],
+
+["studio","📱","Studio contenu"],
+
+["reviews","⭐","Avis"],
+
+["loyalty","🎁","Fidélité"],
+
+["academy","📚","Académie"],
+
+["accessories","🧰","Accessoires PRO"],
+
+["suppliers","🛒","Fournisseurs"],
+
+["payments","💳","Paiements"],
+
+["stats","📊","Statistiques"],
+
+["settings","⚙️","Paramètres"]
+
+];
+
+
+let clients = [
+
+{
+name:"Sophie Martin",
+phone:"06 12 34 56 78",
+note:"Balayage blond • cheveux longs",
+visits:8
+},
+
+{
+name:"Camille Durand",
+phone:"06 23 45 67 89",
+note:"Coupe courte • produits doux",
+visits:5
+},
+
+{
+name:"Emma Bernard",
+phone:"06 34 56 78 90",
+note:"Coloration châtain",
+visits:11
+},
+
+{
+name:"Laura Petit",
+phone:"06 45 67 89 01",
+note:"Cheveux bouclés",
+visits:7
+}
+
+];
+
+
+let appointments = [
+
+["09:00","Sophie Martin","Balayage signature","145 €"],
+
+["11:30","Camille Durand","Coupe + brushing","48 €"],
+
+["14:00","Emma Bernard","Coloration + coupe","92 €"],
+
+["16:30","Laura Petit","Brushing","28 €"]
+
+];
+
+
+let services = [
+
+["Balayage Signature",145,3,22],
+
+["Coupe + Brushing",48,1,6],
+
+["Coloration + Coupe",92,2,15],
+
+["Brushing",28,.5,3],
+
+["Soin profond",35,.5,5]
+
+];
+
+
+let stock = [
+
+["Poudre décolorante","Technique",1,3],
+
+["Oxydant 20 volumes","Technique",3,4],
+
+["Shampoing couleur","Soin",2,5],
+
+["Masque réparateur","Soin",8,4],
+
+["Gants nitrile","Consommable",12,10],
+
+["Papier mèches","Technique",4,5]
+
+];
+
+
+const ideas = [
+
+"Avant / après spectaculaire",
+
+"Conseil pour garder une couleur brillante",
+
+"Transformation balayage",
+
+"Les coulisses du salon",
+
+"Question à votre communauté",
+
+"Votre produit préféré",
+
+"Erreur cheveux fréquente",
+
+"Avant / après coupe",
+
+"Tendance coiffure du moment",
+
+"Avis d'une cliente",
+
+"Routine cheveux",
+
+"FAQ du salon",
+
+"Présentation de la coiffeuse",
+
+"Brushing en accéléré",
+
+"Entretien après coloration",
+
+"Transformation cheveux longs",
+
+"Transformation cheveux courts",
+
+"Sondage couleur",
+
+"Mythe ou réalité",
+
+"Une journée au salon",
+
+"Produit professionnel expliqué",
+
+"Conseil post-coloration",
+
+"Avant / après balayage",
+
+"Réponse à une question cliente",
+
+"Disponibilités de la semaine",
+
+"Offre fidélité",
+
+"Histoire du salon",
+
+"Témoignage cliente",
+
+"3 coiffures rapides",
+
+"Pourquoi réserver son diagnostic"
+
+];
+
+
+const academy = [
+
+{
+cat:"technique",
+icon:"🎨",
+title:"Balayage",
+text:"Diagnostic, historique, séparation, placement, contrôle visuel et entretien."
+},
+
+{
+cat:"technique",
+icon:"🎨",
+title:"Coloration",
+text:"Toujours tenir compte de l'historique, de la base et des indications du fabricant."
+},
+
+{
+cat:"technique",
+icon:"✂️",
+title:"Coupe",
+text:"Analyser texture, densité, implantation, forme du visage et entretien souhaité."
+},
+
+{
+cat:"technique",
+icon:"💨",
+title:"Brushing",
+text:"Choisir la brosse selon le résultat recherché et protéger le cheveu de la chaleur."
+},
+
+{
+cat:"technique",
+icon:"🔍",
+title:"Diagnostic",
+text:"Questionner historique, habitudes, objectifs, fréquence d'entretien et attentes."
+},
+
+{
+cat:"accessoire",
+icon:"🧰",
+title:"Peignes",
+text:"Choisir le peigne selon démêlage, séparation, coupe ou précision."
+},
+
+{
+cat:"accessoire",
+icon:"🪮",
+title:"Brosses",
+text:"Pneumatique, ronde, squelette ou démêlante selon le type de cheveu et le résultat."
+},
+
+{
+cat:"accessoire",
+icon:"📌",
+title:"Pinces",
+text:"Utiliser des pinces adaptées pour séparer proprement les sections."
+},
+
+{
+cat:"accessoire",
+icon:"🎀",
+title:"Élastiques",
+text:"Privilégier les modèles qui limitent la traction et la casse."
+},
+
+{
+cat:"business",
+icon:"💰",
+title:"Prix",
+text:"Calculer temps + produits + charges + marge plutôt que copier le tarif voisin."
+},
+
+{
+cat:"business",
+icon:"⭐",
+title:"Avis",
+text:"Répondre rapidement, rester professionnel et ne jamais exposer d'informations privées."
+},
+
+{
+cat:"business",
+icon:"📱",
+title:"Réseaux sociaux",
+text:"Montrer le résultat, expliquer la valeur et faciliter la prise de rendez-vous."
+},
+
+{
+cat:"business",
+icon:"🎁",
+title:"Fidélisation",
+text:"Programmer des rappels d'entretien pertinents plutôt que spammer les clientes."
+},
+
+{
+cat:"business",
+icon:"📦",
+title:"Stock",
+text:"Définir un seuil minimum et surveiller les produits réellement consommés."
+}
+
+];
+
+
+const accessories = [
+
+[
+"🪮",
+"Peignes carbone",
+"Résistants à la chaleur et pratiques pour séparation/coupe.",
+"Distributeurs coiffure professionnels"
+],
+
+[
+"🪮",
+"Brosse ronde",
+"Choisir le diamètre selon longueur et résultat du brushing.",
+"Distributeurs coiffure / fabricants"
+],
+
+[
+"🪮",
+"Brosse démêlante",
+"Utile pour limiter les efforts mécaniques sur cheveux fragiles.",
+"Distributeurs professionnels"
+],
+
+[
+"📌",
+"Pinces de séparation",
+"Indispensables pour organiser les sections.",
+"Distributeurs coiffure"
+],
+
+[
+"🎀",
+"Élastiques professionnels",
+"Choisir des modèles adaptés au type de coiffure et à la traction.",
+"Fournisseurs professionnels"
+],
+
+[
+"🧤",
+"Gants nitrile",
+"Consommable essentiel pour certaines prestations chimiques.",
+"Distributeurs professionnels"
+],
+
+[
+"🧻",
+"Papier mèches",
+"Pour techniques de mèches et organisation du travail.",
+"Distributeurs coiffure"
+],
+
+[
+"💨",
+"Diffuseur",
+"Particulièrement intéressant pour cheveux bouclés.",
+"Fabricants et distributeurs"
+],
+
+[
+"🔥",
+"Protecteur thermique",
+"À intégrer dans les routines utilisant des outils chauffants.",
+"Marques professionnelles"
+],
+
+[
+"🧴",
+"Flacons applicateurs",
+"Pratiques pour certaines applications précises.",
+"Distributeurs coiffure"
+]
+
+];
+
+
+function buildNavigation(){
+
+const nav =
+document.getElementById("navigation");
+
+nav.innerHTML = NAV.map(item=>`
+
+<button
+class="nav-btn"
+onclick="navigate('${item[0]}')">
+
+<span class="nav-icon">
+${item[1]}
+</span>
+
+<span>
+${item[2]}
+</span>
+
+</button>
+
+`).join("");
+
+}
+
+
+function navigate(id){
+
+document
+.querySelectorAll(".page")
+.forEach(page=>{
+page.classList.remove("active");
+});
+
+
+const target =
+document.getElementById(id);
+
+if(target){
+target.classList.add("active");
+}
+
+
+document
+.querySelectorAll(".nav-btn")
+.forEach(btn=>{
+btn.classList.remove("active");
+});
+
+
+const index =
+NAV.findIndex(x=>x[0]===id);
+
+if(index>=0){
+
+document
+.querySelectorAll(".nav-btn")[index]
+.classList.add("active");
+
+}
+
+
+document
+.getElementById("drawer")
+.classList.remove("open");
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+
+function toggleDrawer(){
+
+document
+.getElementById("drawer")
+.classList.toggle("open");
+
+}
+
+
+function toast(message){
+
+const t =
+document.getElementById("toast");
+
+t.textContent=message;
+
+t.style.display="block";
+
+setTimeout(()=>{
+t.style.display="none";
+},2200);
+
+}
+
+
+function renderDashboard(){
+
+document
+.getElementById("todayAppointments")
+.innerHTML = appointments.map(a=>`
+
+<div class="list-item">
+
+<div class="item-left">
+
+<div class="avatar">
+${a[0]}
+</div>
+
+<div>
+
+<div class="item-title">
+${a[1]}
+</div>
+
+<div class="item-sub">
+${a[2]}
+</div>
+
+</div>
+
+</div>
+
+<span class="badge">
+${a[3]}
+</span>
+
+</div>
+
+`).join("");
+
+}
+
+
+function renderClients(){
+
+const search =
+(document.getElementById("clientSearch")?.value||"")
+.toLowerCase();
+
+const list =
+document.getElementById("clientList");
+
+const filtered =
+clients.filter(c=>
+c.name.toLowerCase().includes(search)
+);
+
+
+if(!filtered.length){
+
+list.innerHTML=`
+<div class="empty">
+Aucune cliente trouvée.
+</div>
+`;
+
+return;
+
+}
+
+
+list.innerHTML =
+filtered.map((c,index)=>`
+
+<div class="list-item">
+
+<div class="item-left">
+
+<div class="avatar">
+👩
+</div>
+
+<div>
+
+<div class="item-title">
+${c.name}
+</div>
+
+<div class="item-sub">
+${c.phone}
+</div>
+
+<div class="item-sub">
+${c.note}
+</div>
+
+</div>
+
+</div>
+
+<div>
+
+<span class="badge">
+${c.visits} visites
+</span>
+
+<button
+class="btn btn-soft"
+onclick="viewClient(${index})">
+Voir
+</button>
+
+</div>
+
+</div>
+
+`).join("");
+
+}
+
+
+function renderAgenda(){
+
+document
+.getElementById("agendaList")
+.innerHTML =
+appointments.map((a,index)=>`
+
+<div class="list-item">
+
+<div class="item-left">
+
+<div class="avatar">
+${a[0]}
+</div>
+
+<div>
+
+<div class="item-title">
+${a[1]}
+</div>
+
+<div class="item-sub">
+${a[2]}
+</div>
+
+</div>
+
+</div>
+
+<div>
+
+<span class="badge">
+${a[3]}
+</span>
+
+</div>
+
+</div>
+
+`).join("");
+
+}
+
+
+function renderServices(){
+
+document
+.getElementById("serviceList")
+.innerHTML =
+services.map(s=>`
+
+<div class="card">
+
+<div class="list-item">
+
+<div>
+
+<div class="item-title">
+${s[0]}
+</div>
+
+<div class="item-sub">
+${s[2]} h • produits ${s[3]} €
+</div>
+
+</div>
+
+<div>
+
+<strong>
+${s[1]} €
+</strong>
+
+</div>
+
+</div>
+
+</div>
+
+`).join("");
+
+}
+
+
+function renderStock(){
+
+document
+.getElementById("stockList")
+.innerHTML =
+stock.map(s=>{
+
+const low=s[2]<=s[3];
+
+return `
+
+<div class="list-item">
+
+<div class="item-left">
+
+<div class="avatar">
+📦
+</div>
+
+<div>
+
+<div class="item-title">
+${s[0]}
+</div>
+
+<div class="item-sub">
+${s[1]} • ${s[2]} unités
+</div>
+
+</div>
+
+</div>
+
+<span class="badge ${low?"badge-yellow":"badge-green"}">
+${low?"À COMMANDER":"OK"}
+</span>
+
+</div>
+
+`;
+
+}).join("");
+
+}
+
+
+function renderIdeas(){
+
+document
+.getElementById("contentIdeas")
+.innerHTML =
+ideas.map((idea,index)=>`
+
+<div class="card">
+
+<div class="list-item">
+
+<div>
+
+<span class="badge">
+JOUR ${index+1}
+</span>
+
+<div class="item-title">
+${idea}
+</div>
+
+</div>
+
+<button
+class="btn btn-soft"
+onclick="copyText('${escapeQuotes(idea)}')">
+Copier
+</button>
+
+</div>
+
+</div>
+
+`).join("");
+
+}
+
+
+function renderAcademy(){
+
+document
+.getElementById("academyGrid")
+.innerHTML =
+academy.map(a=>`
+
+<div
+class="guide-card"
+data-category="${a.cat}">
+
+<div class="guide-icon">
+${a.icon}
+</div>
+
+<h3>
+${a.title}
+</h3>
+
+<p>
+${a.text}
+</p>
+
+<button
+class="btn btn-soft"
+onclick="showGuide('${escapeQuotes(a.title)}','${escapeQuotes(a.text)}')">
+
+Lire le guide
+
+</button>
+
+</div>
+
+`).join("");
+
+}
+
+
+function renderAccessories(){
+
+document
+.getElementById("accessoryList")
+.innerHTML =
+accessories.map(a=>`
+
+<div class="card">
+
+<div class="list-item">
+
+<div class="item-left">
+
+<div class="avatar">
+${a[0]}
+</div>
+
+<div>
+
+<div class="item-title">
+${a[1]}
+</div>
+
+<div class="item-sub">
+${a[2]}
+</div>
+
+<div class="item-sub">
+📍 ${a[3]}
+</div>
+
+</div>
+
+</div>
+
+<span class="badge">
+PRO
+</span>
+
+</div>
+
+</div>
+
+`).join("");
+
+}
+
+
+function calculatePrice(){
+
+const hours =
+Number(document.getElementById("calcHours").value)||0;
+
+const rate =
+Number(document.getElementById("calcRate").value)||0;
+
+const products =
+Number(document.getElementById("calcProducts").value)||0;
+
+const charges =
+Number(document.getElementById("calcCharges").value)||0;
+
+const labor=hours*rate;
+
+const base=labor+products;
+
+const price=base*(1+charges/100);
+
+const profit=price-products-(price*(charges/100));
+
+document
+.getElementById("priceResult")
+.textContent=
+`Temps de travail : ${labor.toFixed(2)} €
+
+Produits : ${products.toFixed(2)} €
+
+Base minimale : ${base.toFixed(2)} €
+
+Prix conseillé : ${price.toFixed(2)} €
+
+Marge estimée après produits et charges :
+${profit.toFixed(2)} €
+
+⚠️ Ce calcul est une estimation commerciale. Les charges réelles dépendent du statut, du salon et de la situation de l'entreprise.`;
+
+}
+
+
+function generateContent(){
+
+const type =
+document.getElementById("contentType").value;
+
+const theme =
+document.getElementById("contentTheme").value;
+
+const info =
+document.getElementById("contentInfo").value;
+
+const text =
+`✨ ${theme}
+
+${info || "Une nouvelle réalisation pensée sur mesure pour mettre les cheveux en valeur."}
+
+💇‍♀️ Chaque prestation commence par un diagnostic et un échange sur vos envies.
+
+📩 Pour prendre rendez-vous :
+Envoyez-nous un message.
+
+#coiffure #hair #hairstyle #beauty #coiffeur #salon`;
+
+document
+.getElementById("contentResult")
+.textContent=
+`FORMAT : ${type}
+
+${text}`;
+
+}
+
+
+function generateReview(){
+
+const type =
+document.getElementById("reviewType").value;
+
+const original =
+document.getElementById("reviewText").value;
+
+let answer="";
+
+if(type==="Très positif"){
+
+answer=
+`Merci infiniment pour ce magnifique retour ! 💕
+Nous sommes ravis que votre expérience vous ait plu et que le résultat corresponde à vos attentes.
+
+Au plaisir de vous revoir très bientôt au salon ! ✨`;
+
+}
+
+else if(type==="Positif"){
+
+answer=
+`Merci beaucoup pour votre retour ! 😊
+Nous sommes ravis que vous ayez apprécié votre passage au salon.
+
+Au plaisir de vous revoir prochainement ! 💕`;
+
+}
+
+else if(type==="Mitigé"){
+
+answer=
+`Merci d'avoir pris le temps de partager votre expérience.
+
+Votre retour est important pour nous et nous permet de continuer à améliorer notre accueil et nos prestations.
+
+Nous espérons avoir l'occasion de vous satisfaire pleinement lors d'une prochaine visite.`;
+
+}
+
+else{
+
+answer=
+`Merci d'avoir pris le temps de partager votre expérience.
+
+Nous sommes désolés que votre passage n'ait pas répondu à vos attentes.
+
+Nous vous invitons à nous contacter directement afin d'échanger sur votre expérience et de rechercher une solution adaptée.`;
+
+}
+
+document
+.getElementById("reviewResult")
+.textContent=answer;
+
+}
+
+
+function generateLoyalty(){
+
+const type =
+document.getElementById("loyaltyType").value;
+
+const name =
+document.getElementById("loyaltyName").value || "Bonjour";
+
+const messages={
+
+"Après rendez-vous":
+`Bonjour ${name} 😊
+
+Merci pour votre visite au salon !
+
+Nous espérons que vous êtes ravie de votre nouvelle coiffure.
+
+À très bientôt 💕`,
+
+"Rappel couleur":
+`Bonjour ${name} 😊
+
+Votre couleur arrive peut-être au moment d'un petit entretien.
+
+N'hésitez pas à nous contacter pour regarder les prochaines disponibilités ✨`,
+
+"Cliente inactive":
+`Bonjour ${name} 😊
+
+Cela fait un petit moment que nous ne vous avons pas vue !
+
+Nous serions ravis de vous retrouver au salon 💕`,
+
+"Anniversaire":
+`Joyeux anniversaire ${name} 🎂✨
+
+Toute l'équipe vous souhaite une magnifique journée !
+
+À très bientôt au salon 💕`,
+
+"Parrainage":
+`Bonjour ${name} 😊
+
+Une amie souhaite découvrir le salon ?
+
+Pensez à notre programme de parrainage 💕`,
+
+"Offre fidélité":
+`Bonjour ${name} ✨
+
+Merci pour votre fidélité !
+
+Contactez-nous pour découvrir l'offre du moment 💕`
+
+};
+
+document
+.getElementById("loyaltyResult")
+.textContent=messages[type];
+
+}
+
+
+function openModal(html){
+
+document
+.getElementById("modalContent")
+.innerHTML=html;
+
+document
+.getElementById("modal")
+.classList.add("show");
+
+}
+
+
+function closeModal(){
+
+document
+.getElementById("modal")
+.classList.remove("show");
+
+}
+
+
+function openClientModal(){
+
+openModal(`
+
+<h2>👩‍🦰 Nouvelle cliente</h2>
+
+<div class="form-group">
+
+<label>
+Nom
+</label>
+
+<input id="newClientName">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Téléphone
+</label>
+
+<input id="newClientPhone">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Notes
+</label>
+
+<textarea
+id="newClientNote"
+placeholder="Type de cheveux, préférences, historique..."></textarea>
+
+</div>
+
+<button
+class="btn btn-primary"
+onclick="saveClient()">
+
+Enregistrer la cliente
+
+</button>
+
+`);
+
+}
+
+
+function saveClient(){
+
+const name =
+document.getElementById("newClientName").value.trim();
+
+if(!name){
+
+toast("Ajoutez un nom.");
+
+return;
+
+}
+
+clients.push({
+
+name:name,
+
+phone:
+document.getElementById("newClientPhone").value,
+
+note:
+document.getElementById("newClientNote").value,
+
+visits:0
+
+});
+
+saveLocal();
+
+renderClients();
+
+closeModal();
+
+toast("Cliente ajoutée ✅");
+
+}
+
+
+function viewClient(index){
+
+const c=clients[index];
+
+openModal(`
+
+<h2>
+👩‍🦰 ${c.name}
+</h2>
+
+<div class="card">
+
+<div class="item-sub">
+Téléphone
+</div>
+
+<strong>
+${c.phone}
+</strong>
+
+<br><br>
+
+<div class="item-sub">
+Notes
+</div>
+
+<p>
+${c.note || "Aucune note"}
+</p>
+
+<div class="badge">
+${c.visits} visites
+</div>
+
+</div>
+
+<button
+class="btn btn-primary"
+onclick="closeModal()">
+
+Fermer
+
+</button>
+
+`);
+
+}
+
+
+function openAppointmentModal(){
+
+openModal(`
+
+<h2>
+📅 Nouveau rendez-vous
+</h2>
+
+<div class="form-group">
+
+<label>
+Cliente
+</label>
+
+<input
+id="appointmentClient"
+placeholder="Nom de la cliente">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Heure
+</label>
+
+<input
+id="appointmentTime"
+type="time">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Prestation
+</label>
+
+<select id="appointmentService">
+
+${services.map(s=>
+`<option>
+${s[0]} • ${s[1]} €
+</option>`
+).join("")}
+
+</select>
+
+</div>
+
+<button
+class="btn btn-primary"
+onclick="saveAppointment()">
+
+Ajouter
+
+</button>
+
+`);
+
+}
+
+
+function saveAppointment(){
+
+const client =
+document
+.getElementById("appointmentClient")
+.value
+.trim();
+
+const time =
+document
+.getElementById("appointmentTime")
+.value || "--:--";
+
+const service =
+document
+.getElementById("appointmentService")
+.value;
+
+if(!client){
+
+toast("Indiquez une cliente.");
+
+return;
+
+}
+
+appointments.push([
+time,
+client,
+service,
+"—"
+]);
+
+saveLocal();
+
+renderAgenda();
+
+renderDashboard();
+
+closeModal();
+
+toast("Rendez-vous ajouté 📅");
+
+}
+
+
+function openServiceModal(){
+
+openModal(`
+
+<h2>
+💇‍♀️ Nouvelle prestation
+</h2>
+
+<div class="form-group">
+
+<label>
+Nom
+</label>
+
+<input id="serviceName">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Prix
+</label>
+
+<input id="servicePrice" type="number">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Durée en heures
+</label>
+
+<input
+id="serviceHours"
+type="number"
+step=".25">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Coût produits
+</label>
+
+<input
+id="serviceProducts"
+type="number">
+
+</div>
+
+<button
+class="btn btn-primary"
+onclick="saveService()">
+
+Ajouter
+
+</button>
+
+`);
+
+}
+
+
+function saveService(){
+
+const name =
+document.getElementById("serviceName").value;
+
+const price =
+Number(document.getElementById("servicePrice").value)||0;
+
+const hours =
+Number(document.getElementById("serviceHours").value)||0;
+
+const products =
+Number(document.getElementById("serviceProducts").value)||0;
+
+if(!name){
+
+toast("Ajoutez un nom.");
+
+return;
+
+}
+
+services.push([
+name,
+price,
+hours,
+products
+]);
+
+saveLocal();
+
+renderServices();
+
+closeModal();
+
+toast("Prestation ajoutée 💇‍♀️");
+
+}
+
+
+function openStockModal(){
+
+openModal(`
+
+<h2>
+📦 Ajouter un produit
+</h2>
+
+<div class="form-group">
+
+<label>
+Nom du produit
+</label>
+
+<input id="stockName">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Catégorie
+</label>
+
+<input id="stockCategory">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Quantité
+</label>
+
+<input id="stockQuantity" type="number">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Seuil minimum
+</label>
+
+<input id="stockThreshold" type="number">
+
+</div>
+
+<button
+class="btn btn-primary"
+onclick="saveStock()">
+
+Ajouter
+
+</button>
+
+`);
+
+}
+
+
+function saveStock(){
+
+const name =
+document.getElementById("stockName").value;
+
+const cat =
+document.getElementById("stockCategory").value;
+
+const qty =
+Number(document.getElementById("stockQuantity").value)||0;
+
+const threshold =
+Number(document.getElementById("stockThreshold").value)||0;
+
+if(!name){
+
+toast("Ajoutez un produit.");
+
+return;
+
+}
+
+stock.push([
+name,
+cat,
+qty,
+threshold
+]);
+
+saveLocal();
+
+renderStock();
+
+closeModal();
+
+toast("Produit ajouté 📦");
+
+}
+
+
+function filterAcademy(category,button){
+
+document
+.querySelectorAll(".chip")
+.forEach(c=>c.classList.remove("active"));
+
+button.classList.add("active");
+
+document
+.querySelectorAll(".guide-card")
+.forEach(card=>{
+
+if(category==="all"){
+
+card.style.display="block";
+
+}else{
+
+card.style.display =
+card.dataset.category===category
+? "block"
+: "none";
+
+}
+
+});
+
+}
+
+
+function showGuide(title,text){
+
+openModal(`
+
+<h2>
+📚 ${title}
+</h2>
+
+<div class="result">
+${text}
+
+---
+
+💡 CONSEIL COIFF'BOOST
+
+Toujours adapter la technique au diagnostic,
+aux caractéristiques du cheveu et aux indications
+du fabricant.
+
+Pour les prestations techniques, les indications
+professionnelles et la sécurité doivent primer
+sur toute astuce trouvée sur Internet.
+
+</div>
+
+`);
+
+}
+
+
+function savePayments(){
+
+const stripe =
+document.getElementById("stripeLink").value;
+
+const paypal =
+document.getElementById("paypalLink").value;
+
+localStorage.setItem(
+"coiffboost_stripe",
+stripe
+);
+
+localStorage.setItem(
+"coiffboost_paypal",
+paypal
+);
+
+toast("Paiements enregistrés 💳");
+
+}
+
+
+function saveSettings(){
+
+const salon =
+document.getElementById("salonName").value;
+
+const owner =
+document.getElementById("ownerInput").value;
+
+const city =
+document.getElementById("salonCity").value;
+
+localStorage.setItem(
+"coiffboost_salon",
+salon
+);
+
+localStorage.setItem(
+"coiffboost_owner",
+owner
+);
+
+localStorage.setItem(
+"coiffboost_city",
+city
+);
+
+document
+.getElementById("ownerName")
+.textContent =
+owner || "Julie";
+
+document
+.getElementById("salonWelcome")
+.textContent =
+salon || "COIFF'BOOST PRO";
+
+toast("Paramètres enregistrés ⚙️");
+
+}
+
+
+function saveLocal(){
+
+localStorage.setItem(
+"coiffboost_clients",
+JSON.stringify(clients)
+);
+
+localStorage.setItem(
+"coiffboost_appointments",
+JSON.stringify(appointments)
+);
+
+localStorage.setItem(
+"coiffboost_services",
+JSON.stringify(services)
+);
+
+localStorage.setItem(
+"coiffboost_stock",
+JSON.stringify(stock)
+);
+
+}
+
+
+function loadLocal(){
+
+try{
+
+const c =
+localStorage.getItem(
+"coiffboost_clients"
+);
+
+if(c){
+clients=JSON.parse(c);
+}
+
+const a =
+localStorage.getItem(
+"coiffboost_appointments"
+);
+
+if(a){
+appointments=JSON.parse(a);
+}
+
+const s =
+localStorage.getItem(
+"coiffboost_services"
+);
+
+if(s){
+services=JSON.parse(s);
+}
+
+const st =
+localStorage.getItem(
+"coiffboost_stock"
+);
+
+if(st){
+stock=JSON.parse(st);
+}
+
+}catch(e){
+
+console.log(e);
+
+}
+
+}
+
+
+function loadSettings(){
+
+const salon =
+localStorage.getItem(
+"coiffboost_salon"
+);
+
+const owner =
+localStorage.getItem(
+"coiffboost_owner"
+);
+
+const city =
+localStorage.getItem(
+"coiffboost_city"
+);
+
+if(salon){
+
+document
+.getElementById("salonName")
+.value=salon;
+
+document
+.getElementById("salonWelcome")
+.textContent=salon;
+
+}
+
+if(owner){
+
+document
+.getElementById("ownerInput")
+.value=owner;
+
+document
+.getElementById("ownerName")
+.textContent=owner;
+
+}
+
+if(city){
+
+document
+.getElementById("salonCity")
+.value=city;
+
+}
+
+document
+.getElementById("stripeLink")
+.value =
+localStorage.getItem(
+"coiffboost_stripe"
+)||"";
+
+document
+.getElementById("paypalLink")
+.value =
+localStorage.getItem(
+"coiffboost_paypal"
+)||"";
+
+}
+
+
+function resetDemo(){
+
+if(
+confirm(
+"Réinitialiser les données COIFF'BOOST ?"
+)
+){
+
+localStorage.clear();
+
+location.reload();
+
+}
+
+}
+
+
+function toggleDark(){
+
+document
+.body
+.classList
+.toggle("dark");
+
+localStorage.setItem(
+"coiffboost_dark",
+document.body.classList.contains("dark")
+);
+
+}
+
+
+function loadDark(){
+
+if(
+localStorage.getItem(
+"coiffboost_dark"
+)==="true"
+){
+
+document
+.body
+.classList
+.add("dark");
+
+}
+
+}
+
+
+function showNotifications(){
+
+openModal(`
+
+<h2>
+🔔 Notifications
+</h2>
+
+<div class="list">
+
+<div class="list-item">
+<span>📦 3 produits à commander</span>
+<span class="badge badge-yellow">Stock</span>
+</div>
+
+<div class="list-item">
+<span>⭐ 2 avis à traiter</span>
+<span class="badge">Avis</span>
+</div>
+
+<div class="list-item">
+<span>📅 4 rendez-vous aujourd'hui</span>
+<span class="badge badge-green">Agenda</span>
+</div>
+
+<div class="list-item">
+<span>📱 Publication recommandée aujourd'hui</span>
+<span class="badge">Studio</span>
+</div>
+
+</div>
+
+`);
+
+}
+
+
+function copyText(text){
+
+navigator
+.clipboard
+?.writeText(text);
+
+toast("Copié 📋");
+
+}
+
+
+function escapeQuotes(text){
+
+return text
+.replace(/\\/g,"\\\\")
+.replace(/'/g,"\\'");
+
+}
+
+
+/* =========================================================
+   INITIALISATION
+========================================================= */
+
+loadLocal();
+
+loadDark();
+
+buildNavigation();
+
+renderDashboard();
+
+renderClients();
+
+renderAgenda();
+
+renderServices();
+
+renderStock();
+
+renderIdeas();
+
+renderAcademy();
+
+renderAccessories();
+
+loadSettings();
+
+</script>
+
+</body>
+</html>
