@@ -3,775 +3,1029 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#17151b">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#111014">
 
     <title>COIFF'BOOST</title>
 
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div id="app">
+<div class="app">
 
     <!-- HEADER -->
     <header class="topbar">
-        <div>
-            <div class="brand">COIFF'<span>BOOST</span></div>
-            <div id="salonHeader" class="salon-name">Gestion professionnelle</div>
+
+        <div class="brand">
+            <div class="brand-icon">✂</div>
+
+            <div>
+                <strong>COIFF'BOOST</strong>
+                <span id="salonHeader">Gestion professionnelle</span>
+            </div>
         </div>
 
-        <button class="icon-btn" onclick="navigate('settings')" aria-label="Paramètres">
+        <button class="header-button" onclick="navigate('settings')">
             ⚙️
         </button>
+
     </header>
 
 
-    <!-- ================= DASHBOARD ================= -->
+    <!-- CONTENU -->
+    <main class="content">
 
-    <main id="page-dashboard" class="page active">
 
-        <section class="hero-card">
-            <div>
-                <span class="eyebrow">VOTRE ACTIVITÉ</span>
-                <h1>Bonjour 👋</h1>
-                <p>Gérez votre salon simplement.</p>
-            </div>
+        <!-- ================= DASHBOARD ================= -->
 
-            <div class="hero-icon">✂️</div>
-        </section>
+        <section class="page active" id="page-dashboard">
 
-        <div class="stats-grid">
+            <div class="hero">
 
-            <div class="stat-card">
-                <span>CA</span>
-                <strong id="dashboardRevenue">0 €</strong>
-            </div>
-
-            <div class="stat-card">
-                <span>Aujourd'hui</span>
-                <strong id="dashboardToday">0</strong>
-            </div>
-
-            <div class="stat-card">
-                <span>Clientes</span>
-                <strong id="dashboardClients">0</strong>
-            </div>
-
-            <div class="stat-card">
-                <span>Factures</span>
-                <strong id="dashboardInvoices">0</strong>
-            </div>
-
-        </div>
-
-        <section class="section-card">
-            <div class="section-title">
                 <div>
-                    <span class="eyebrow">AGENDA</span>
-                    <h2>Prochains rendez-vous</h2>
+                    <span class="label">TABLEAU DE BORD</span>
+                    <h1>Bonjour 👋</h1>
+                    <p>Gérez votre salon simplement.</p>
                 </div>
 
-                <button class="text-btn" onclick="navigate('planning')">
-                    Voir tout
-                </button>
             </div>
 
-            <div id="dashboardAppointments"></div>
-        </section>
 
-        <div class="quick-grid">
+            <div class="stats-grid">
 
-            <button class="quick-card" onclick="openClientModal()">
-                <span>👩</span>
-                <strong>Nouvelle cliente</strong>
-            </button>
+                <article class="stat-card">
+                    <span>CA</span>
+                    <strong id="dashboardRevenue">0 €</strong>
+                    <small>Total facturé</small>
+                </article>
 
-            <button class="quick-card" onclick="openAppointmentModal()">
-                <span>📅</span>
-                <strong>Nouveau RDV</strong>
-            </button>
+                <article class="stat-card">
+                    <span>RDV</span>
+                    <strong id="dashboardToday">0</strong>
+                    <small>Aujourd'hui</small>
+                </article>
 
-            <button class="quick-card" onclick="navigate('calculator')">
-                <span>💰</span>
-                <strong>Calculer un prix</strong>
-            </button>
+                <article class="stat-card">
+                    <span>CLIENTES</span>
+                    <strong id="dashboardClients">0</strong>
+                    <small>Enregistrées</small>
+                </article>
 
-            <button class="quick-card" onclick="navigate('invoice')">
-                <span>🧾</span>
-                <strong>Facture</strong>
-            </button>
-
-        </div>
-
-    </main>
-
-
-    <!-- ================= PLANNING ================= -->
-
-    <main id="page-planning" class="page">
-
-        <div class="page-heading">
-            <div>
-                <span class="eyebrow">ORGANISATION</span>
-                <h1>Planning</h1>
-            </div>
-
-            <button class="primary-btn" onclick="openAppointmentModal()">
-                + RDV
-            </button>
-        </div>
-
-        <section class="section-card">
-
-            <div class="calendar-header">
-
-                <button class="icon-btn" onclick="changeCalendar(-1)">‹</button>
-
-                <strong id="calendarTitle">Mois</strong>
-
-                <button class="icon-btn" onclick="changeCalendar(1)">›</button>
+                <article class="stat-card">
+                    <span>FACTURES</span>
+                    <strong id="dashboardInvoices">0</strong>
+                    <small>Créées</small>
+                </article>
 
             </div>
 
-            <div id="calendar" class="calendar"></div>
 
-        </section>
+            <div class="card">
 
-        <section class="section-card">
-            <div class="section-title">
-                <h2>Rendez-vous</h2>
-            </div>
+                <div class="card-title">
+                    <div>
+                        <span class="label">AGENDA</span>
+                        <h2>Prochains rendez-vous</h2>
+                    </div>
 
-            <div id="appointmentsList"></div>
-        </section>
-
-    </main>
-
-
-    <!-- ================= CLIENTS ================= -->
-
-    <main id="page-clients" class="page">
-
-        <div class="page-heading">
-            <div>
-                <span class="eyebrow">CLIENTÈLE</span>
-                <h1>Clientes</h1>
-            </div>
-
-            <button class="primary-btn" onclick="openClientModal()">
-                + Cliente
-            </button>
-        </div>
-
-        <input
-            id="clientSearch"
-            class="input"
-            type="search"
-            placeholder="Rechercher une cliente..."
-            oninput="renderClients()"
-        >
-
-        <section class="section-card">
-            <div id="clientsList"></div>
-        </section>
-
-    </main>
-
-
-    <!-- ================= SERVICES ================= -->
-
-    <main id="page-services" class="page">
-
-        <div class="page-heading">
-            <div>
-                <span class="eyebrow">CATALOGUE</span>
-                <h1>Prestations</h1>
-            </div>
-
-            <button class="primary-btn" onclick="openServiceModal()">
-                + Prestation
-            </button>
-        </div>
-
-        <section class="section-card">
-            <div id="servicesList"></div>
-        </section>
-
-    </main>
-
-
-    <!-- ================= CALCULATOR ================= -->
-
-    <main id="page-calculator" class="page">
-
-        <div class="page-heading">
-            <div>
-                <span class="eyebrow">TARIFICATION</span>
-                <h1>Calculateur</h1>
-            </div>
-        </div>
-
-        <section class="section-card">
-
-            <label>Nom de la prestation</label>
-            <input id="calculatorName" class="input" placeholder="Ex : Balayage">
-
-            <label>Durée</label>
-            <input id="calculatorMinutes" class="input" type="number" placeholder="120">
-
-            <label>Taux horaire</label>
-            <input id="calculatorHourly" class="input" type="number" step="0.01" placeholder="35">
-
-            <label>Produits</label>
-            <input id="calculatorProducts" class="input" type="number" step="0.01" placeholder="10">
-
-            <label>Charges</label>
-            <input id="calculatorCharges" class="input" type="number" step="0.01" placeholder="5">
-
-            <label>Marge (%)</label>
-            <input id="calculatorMargin" class="input" type="number" placeholder="30">
-
-            <button class="primary-btn full" onclick="calculatePrice()">
-                Calculer le tarif
-            </button>
-
-        </section>
-
-        <section id="calculatorResult" class="calculator-result">
-            <small>Tarif conseillé</small>
-            <strong>0 €</strong>
-            <p>Remplissez les informations.</p>
-        </section>
-
-    </main>
-
-
-    <!-- ================= INVOICES ================= -->
-
-    <main id="page-invoice" class="page">
-
-        <div class="page-heading">
-            <div>
-                <span class="eyebrow">ADMINISTRATION</span>
-                <h1>Factures</h1>
-            </div>
-        </div>
-
-        <section class="section-card">
-
-            <label>Cliente</label>
-            <input id="invoiceClient" class="input" placeholder="Nom de la cliente">
-
-            <label>Prestation</label>
-            <input id="invoiceService" class="input" placeholder="Ex : Coupe + brushing">
-
-            <label>Quantité</label>
-            <input id="invoiceQuantity" class="input" type="number" value="1">
-
-            <label>Prix unitaire</label>
-            <input id="invoicePrice" class="input" type="number" step="0.01" placeholder="35">
-
-            <label>Remise</label>
-            <input id="invoiceDiscount" class="input" type="number" step="0.01" value="0">
-
-            <div class="button-row">
-                <button class="secondary-btn" onclick="generateInvoice()">
-                    Aperçu
-                </button>
-
-                <button class="primary-btn" onclick="saveInvoice()">
-                    Enregistrer
-                </button>
-            </div>
-
-        </section>
-
-        <section class="invoice-preview">
-
-            <div class="invoice-head">
-                <div>
-                    <strong id="invoiceSalon">COIFF'BOOST</strong>
-                    <span id="invoiceOwner">Gestion professionnelle</span>
+                    <button class="text-button"
+                            onclick="navigate('planning')">
+                        Tout voir
+                    </button>
                 </div>
 
-                <strong id="invoiceNumber">CB-0000</strong>
+                <div id="dashboardAppointments" class="list"></div>
+
             </div>
 
-            <div class="invoice-line">
-                <span>Date</span>
-                <strong id="invoiceDate">—</strong>
-            </div>
 
-            <div class="invoice-line">
-                <span>Cliente</span>
-                <strong id="invoiceClientDisplay">—</strong>
-            </div>
+            <div class="quick-grid">
 
-            <div class="invoice-line">
-                <span>Prestation</span>
-                <strong id="invoiceServiceDisplay">—</strong>
-            </div>
+                <button onclick="openClientModal()">
+                    <span>👩</span>
+                    Cliente
+                </button>
 
-            <div class="invoice-line">
-                <span>Quantité</span>
-                <strong id="invoiceQuantityDisplay">—</strong>
-            </div>
+                <button onclick="openAppointmentModal()">
+                    <span>📅</span>
+                    Rendez-vous
+                </button>
 
-            <div class="invoice-total">
-                <span>Total</span>
-                <strong id="invoiceFinalTotal">0 €</strong>
-            </div>
+                <button onclick="navigate('calculator')">
+                    <span>🧮</span>
+                    Calculateur
+                </button>
 
-            <button class="secondary-btn full" onclick="printInvoice()">
-                🖨️ Imprimer / PDF
-            </button>
+                <button onclick="navigate('invoice')">
+                    <span>🧾</span>
+                    Facture
+                </button>
+
+            </div>
 
         </section>
 
-        <section class="section-card">
-            <div class="section-title">
-                <h2>Historique</h2>
+
+        <!-- ================= PLANNING ================= -->
+
+        <section class="page" id="page-planning">
+
+            <div class="page-header">
+
+                <div>
+                    <span class="label">ORGANISATION</span>
+                    <h1>Planning</h1>
+                    <p>Vos rendez-vous au même endroit.</p>
+                </div>
+
+                <button class="primary-button"
+                        onclick="openAppointmentModal()">
+                    + RDV
+                </button>
+
             </div>
 
-            <div id="invoiceHistory"></div>
+
+            <div class="card">
+
+                <div class="calendar-top">
+
+                    <button class="round-button"
+                            onclick="changeCalendar(-1)">
+                        ‹
+                    </button>
+
+                    <strong id="calendarTitle">Mois</strong>
+
+                    <button class="round-button"
+                            onclick="changeCalendar(1)">
+                        ›
+                    </button>
+
+                </div>
+
+                <div id="calendar" class="calendar"></div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-title">
+                    <h2>Rendez-vous</h2>
+                </div>
+
+                <div id="appointmentsList" class="list"></div>
+
+            </div>
+
         </section>
 
-    </main>
 
+        <!-- ================= CLIENTES ================= -->
 
-    <!-- ================= PRODUCTS ================= -->
+        <section class="page" id="page-clients">
 
-    <main id="page-products" class="page">
+            <div class="page-header">
 
-        <div class="page-heading">
-            <div>
-                <span class="eyebrow">STOCK</span>
-                <h1>Produits <span class="pro-star">★ PRO</span></h1>
+                <div>
+                    <span class="label">CLIENTÈLE</span>
+                    <h1>Clientes</h1>
+                    <p>Votre fichier cliente local.</p>
+                </div>
+
+                <button class="primary-button"
+                        onclick="openClientModal()">
+                    + Ajouter
+                </button>
+
             </div>
 
-            <button class="primary-btn" onclick="openProductModal()">
-                + Produit
-            </button>
-        </div>
 
-        <section class="section-card">
+            <input
+                id="clientSearch"
+                class="search"
+                type="search"
+                placeholder="Rechercher une cliente..."
+                oninput="renderClients()"
+            >
+
+
+            <div class="card">
+                <div id="clientsList" class="list"></div>
+            </div>
+
+        </section>
+
+
+        <!-- ================= PRESTATIONS ================= -->
+
+        <section class="page" id="page-services">
+
+            <div class="page-header">
+
+                <div>
+                    <span class="label">TARIFS</span>
+                    <h1>Prestations</h1>
+                    <p>Prix, durée et marge.</p>
+                </div>
+
+                <button class="primary-button"
+                        onclick="openServiceModal()">
+                    + Ajouter
+                </button>
+
+            </div>
+
+
+            <div class="card">
+                <div id="servicesList" class="list"></div>
+            </div>
+
+        </section>
+
+
+        <!-- ================= CALCULATEUR ================= -->
+
+        <section class="page" id="page-calculator">
+
+            <div class="page-header">
+
+                <div>
+                    <span class="label">OUTIL</span>
+                    <h1>Calculateur</h1>
+                    <p>Calculez un prix rentable.</p>
+                </div>
+
+            </div>
+
+
+            <div class="card form-card">
+
+                <label>
+                    Nom de la prestation
+                    <input id="calculatorName"
+                           type="text"
+                           placeholder="Ex : Balayage">
+                </label>
+
+                <label>
+                    Durée en minutes
+                    <input id="calculatorMinutes"
+                           type="number"
+                           min="1"
+                           placeholder="120">
+                </label>
+
+                <label>
+                    Taux horaire
+                    <input id="calculatorHourly"
+                           type="number"
+                           min="0"
+                           step="0.50"
+                           placeholder="35">
+                </label>
+
+                <label>
+                    Produits
+                    <input id="calculatorProducts"
+                           type="number"
+                           min="0"
+                           step="0.50"
+                           placeholder="10">
+                </label>
+
+                <label>
+                    Charges
+                    <input id="calculatorCharges"
+                           type="number"
+                           min="0"
+                           step="0.50"
+                           placeholder="5">
+                </label>
+
+                <label>
+                    Marge supplémentaire %
+                    <input id="calculatorMargin"
+                           type="number"
+                           min="0"
+                           value="30">
+                </label>
+
+                <button class="primary-button full"
+                        onclick="calculatePrice()">
+                    Calculer
+                </button>
+
+            </div>
+
+
+            <div id="calculatorResult"
+                 class="result-card">
+
+                <span>Tarif conseillé</span>
+                <strong>0 €</strong>
+                <p>Remplissez les informations.</p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= FACTURATION ================= -->
+
+        <section class="page" id="page-invoice">
+
+            <div class="page-header">
+
+                <div>
+                    <span class="label">ADMINISTRATION</span>
+                    <h1>Facturation</h1>
+                    <p>Créez vos factures.</p>
+                </div>
+
+            </div>
+
+
+            <div class="card form-card">
+
+                <label>
+                    Cliente
+                    <input id="invoiceClient"
+                           type="text"
+                           placeholder="Nom de la cliente">
+                </label>
+
+                <label>
+                    Prestation
+                    <input id="invoiceService"
+                           type="text"
+                           placeholder="Prestation">
+                </label>
+
+                <label>
+                    Quantité
+                    <input id="invoiceQuantity"
+                           type="number"
+                           min="1"
+                           value="1">
+                </label>
+
+                <label>
+                    Prix unitaire
+                    <input id="invoicePrice"
+                           type="number"
+                           min="0"
+                           step="0.01"
+                           placeholder="35">
+                </label>
+
+                <label>
+                    Remise
+                    <input id="invoiceDiscount"
+                           type="number"
+                           min="0"
+                           step="0.01"
+                           value="0">
+                </label>
+
+                <div class="button-row">
+
+                    <button class="primary-button"
+                            onclick="generateInvoice()">
+                        Aperçu
+                    </button>
+
+                    <button class="secondary-button"
+                            onclick="saveInvoice()">
+                        Enregistrer
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="invoice-preview" id="invoicePreview">
+
+                <div class="invoice-head">
+
+                    <div>
+                        <strong id="invoiceSalon">
+                            COIFF'BOOST
+                        </strong>
+
+                        <span id="invoiceOwner">
+                            Gestion professionnelle
+                        </span>
+                    </div>
+
+                    <strong id="invoiceNumber">
+                        —
+                    </strong>
+
+                </div>
+
+                <p>
+                    Date :
+                    <span id="invoiceDate">—</span>
+                </p>
+
+                <hr>
+
+                <p>
+                    Cliente :
+                    <strong id="invoiceClientDisplay">—</strong>
+                </p>
+
+                <p>
+                    Prestation :
+                    <strong id="invoiceServiceDisplay">—</strong>
+                </p>
+
+                <p>
+                    Quantité :
+                    <strong id="invoiceQuantityDisplay">—</strong>
+                </p>
+
+                <div class="invoice-total">
+                    <span>Total</span>
+                    <strong id="invoiceFinalTotal">0 €</strong>
+                </div>
+
+                <button class="primary-button full"
+                        onclick="printInvoice()">
+                    🖨 Imprimer / PDF
+                </button>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-title">
+                    <h2>Historique</h2>
+                </div>
+
+                <div id="invoiceHistory" class="list"></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= PRODUITS ================= -->
+
+        <section class="page" id="page-products">
+
+            <div class="page-header">
+
+                <div>
+                    <span class="label">STOCK</span>
+                    <h1>Produits <sup>PRO</sup></h1>
+                    <p>Gestion de votre stock.</p>
+                </div>
+
+                <button class="primary-button pro-feature"
+                        onclick="openProductModal()">
+                    + Produit
+                </button>
+
+            </div>
 
             <div id="productsList"></div>
 
         </section>
 
-    </main>
 
+        <!-- ================= STATISTIQUES ================= -->
 
-    <!-- ================= STATISTICS ================= -->
+        <section class="page" id="page-statistics">
 
-    <main id="page-statistics" class="page">
+            <div class="page-header">
 
-        <div class="page-heading">
-            <div>
-                <span class="eyebrow">ANALYSE</span>
-                <h1>Statistiques <span class="pro-star">★ PRO</span></h1>
-            </div>
-        </div>
-
-        <div id="statisticsLocked" class="locked-card">
-
-            <span class="lock-icon">🔒</span>
-
-            <h2>Statistiques PRO</h2>
-
-            <p>
-                Analysez votre chiffre d'affaires,
-                vos clientes et vos prestations.
-            </p>
-
-            <button class="primary-btn" onclick="navigate('subscription')">
-                Voir les offres
-            </button>
-
-        </div>
-
-        <div id="statisticsContent" class="hidden">
-
-            <div class="stats-grid">
-
-                <div class="stat-card">
-                    <span>CA</span>
-                    <strong id="statsRevenue">0 €</strong>
-                </div>
-
-                <div class="stat-card">
-                    <span>Panier moyen</span>
-                    <strong id="statsAverage">0 €</strong>
-                </div>
-
-                <div class="stat-card">
-                    <span>Clientes</span>
-                    <strong id="statsClients">0</strong>
-                </div>
-
-                <div class="stat-card">
-                    <span>Prestations</span>
-                    <strong id="statsServices">0</strong>
+                <div>
+                    <span class="label">ANALYSE</span>
+                    <h1>Statistiques <sup>PRO</sup></h1>
+                    <p>Analysez l'activité du salon.</p>
                 </div>
 
             </div>
 
-            <section class="section-card">
-                <div id="statsAnalysis"></div>
-            </section>
 
-        </div>
+            <div id="statisticsLocked"
+                 class="locked-card">
 
-    </main>
+                <div class="lock-icon">🔒</div>
 
+                <h2>Fonction PRO</h2>
 
-    <!-- ================= SUBSCRIPTION ================= -->
+                <p>
+                    Les statistiques avancées sont disponibles
+                    dans la formule PRO.
+                </p>
 
-    <main id="page-subscription" class="page">
-
-        <div class="page-heading">
-            <div>
-                <span class="eyebrow">COIFF'BOOST</span>
-                <h1>Abonnement</h1>
-            </div>
-        </div>
-
-        <div class="current-plan">
-            <span>Formule actuelle</span>
-            <strong id="currentPlan">GRATUIT</strong>
-        </div>
-
-        <div class="plans">
-
-            <article class="plan-card">
-
-                <span class="plan-label">POUR COMMENCER</span>
-
-                <h2>Gratuit</h2>
-
-                <div class="price">0 €</div>
-
-                <ul>
-                    <li>✓ Clientes</li>
-                    <li>✓ Planning</li>
-                    <li>✓ Prestations</li>
-                    <li>✓ Calculateur</li>
-                    <li>✓ Factures</li>
-                    <li>✓ Export des données</li>
-                    <li class="disabled">✕ Statistiques PRO</li>
-                    <li class="disabled">✕ Gestion produits</li>
-                </ul>
-
-                <button class="secondary-btn full" onclick="selectPlan('FREE')">
-                    Utiliser Gratuit
+                <button class="primary-button"
+                        onclick="navigate('subscription')">
+                    Voir les formules
                 </button>
 
-            </article>
-
-
-            <article class="plan-card featured">
-
-                <span class="plan-label">LE PLUS POPULAIRE</span>
-
-                <h2>PRO</h2>
-
-                <div class="price">9,99 € <small>/mois</small></div>
-
-                <ul>
-                    <li>✓ Tout Gratuit</li>
-                    <li>★ Statistiques</li>
-                    <li>★ Gestion produits</li>
-                    <li>★ Analyse activité</li>
-                </ul>
-
-                <button class="primary-btn full" onclick="selectPlan('PRO')">
-                    Activer PRO
-                </button>
-
-                <small class="prototype-note">
-                    Prototype local : aucun paiement réel.
-                </small>
-
-            </article>
-
-
-            <article class="plan-card">
-
-                <span class="plan-label">COMPLET</span>
-
-                <h2>PREMIUM</h2>
-
-                <div class="price">19,99 € <small>/mois</small></div>
-
-                <ul>
-                    <li>✓ Tout PRO</li>
-                    <li>★ Toutes les fonctionnalités avancées</li>
-                    <li>★ Gestion complète</li>
-                </ul>
-
-                <button class="secondary-btn full" onclick="selectPlan('PREMIUM')">
-                    Activer PREMIUM
-                </button>
-
-                <small class="prototype-note">
-                    Prototype local : aucun paiement réel.
-                </small>
-
-            </article>
-
-        </div>
-
-    </main>
-
-
-    <!-- ================= SETTINGS ================= -->
-
-    <main id="page-settings" class="page">
-
-        <div class="page-heading">
-            <div>
-                <span class="eyebrow">APPLICATION</span>
-                <h1>Paramètres</h1>
             </div>
-        </div>
 
-        <section class="section-card">
 
-            <h2>Informations du salon</h2>
+            <div id="statisticsContent"
+                 class="hidden">
 
-            <label>Nom du salon</label>
-            <input id="settingSalon" class="input">
+                <div class="stats-grid">
 
-            <label>Nom de la coiffeuse</label>
-            <input id="settingOwner" class="input">
+                    <div class="stat-card">
+                        <span>CA</span>
+                        <strong id="statsRevenue">0 €</strong>
+                    </div>
 
-            <label>Téléphone</label>
-            <input id="settingPhone" class="input">
+                    <div class="stat-card">
+                        <span>PANIER MOYEN</span>
+                        <strong id="statsAverage">0 €</strong>
+                    </div>
 
-            <label>Adresse</label>
-            <textarea id="settingAddress" class="input"></textarea>
+                    <div class="stat-card">
+                        <span>CLIENTES</span>
+                        <strong id="statsClients">0</strong>
+                    </div>
 
-            <button class="primary-btn full" onclick="saveSettings()">
-                Enregistrer
-            </button>
+                    <div class="stat-card">
+                        <span>PRESTATIONS</span>
+                        <strong id="statsServices">0</strong>
+                    </div>
+
+                </div>
+
+                <div class="card">
+                    <div id="statsAnalysis"></div>
+                </div>
+
+            </div>
 
         </section>
 
 
-        <section class="section-card">
+        <!-- ================= ABONNEMENT ================= -->
 
-            <h2>Données</h2>
+        <section class="page" id="page-subscription">
 
-            <button class="secondary-btn full" onclick="exportData()">
-                💾 Exporter mes données
-            </button>
+            <div class="page-header">
 
-            <button class="danger-btn full" onclick="resetData()">
-                🗑️ Effacer toutes les données
-            </button>
+                <div>
+                    <span class="label">COIFF'BOOST</span>
+                    <h1>Abonnement</h1>
+                    <p>
+                        Votre formule actuelle :
+                        <strong id="currentPlan">
+                            GRATUIT
+                        </strong>
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="plans">
+
+                <article class="plan">
+
+                    <span class="plan-tag">ESSENTIEL</span>
+
+                    <h2>Gratuit</h2>
+
+                    <strong class="plan-price">0 €</strong>
+
+                    <p>Pour découvrir COIFF'BOOST.</p>
+
+                    <ul>
+                        <li>✓ Clientes</li>
+                        <li>✓ Rendez-vous</li>
+                        <li>✓ Prestations</li>
+                        <li>✓ Calculateur</li>
+                        <li>✓ Facturation</li>
+                        <li>✓ Impression PDF</li>
+                        <li>✕ Statistiques avancées</li>
+                        <li>✕ Gestion produits</li>
+                    </ul>
+
+                    <button class="secondary-button full"
+                            onclick="selectPlan('FREE')">
+                        Gratuit
+                    </button>
+
+                </article>
+
+
+                <article class="plan featured">
+
+                    <span class="plan-tag">POPULAIRE</span>
+
+                    <h2>PRO ⭐</h2>
+
+                    <strong class="plan-price">
+                        9,99 € <small>/ mois</small>
+                    </strong>
+
+                    <p>Pour une activité professionnelle.</p>
+
+                    <ul>
+                        <li>✓ Tout le Gratuit</li>
+                        <li>✓ Statistiques</li>
+                        <li>✓ Gestion produits</li>
+                        <li>✓ Analyse activité</li>
+                    </ul>
+
+                    <button class="primary-button full"
+                            onclick="selectPlan('PRO')">
+                        Activer PRO
+                    </button>
+
+                </article>
+
+
+                <article class="plan">
+
+                    <span class="plan-tag">COMPLET</span>
+
+                    <h2>PREMIUM ⭐</h2>
+
+                    <strong class="plan-price">
+                        19,99 € <small>/ mois</small>
+                    </strong>
+
+                    <p>Pour les salons qui veulent tout.</p>
+
+                    <ul>
+                        <li>✓ Tout le PRO</li>
+                        <li>✓ Accès complet</li>
+                        <li>✓ Fonctionnalités avancées</li>
+                    </ul>
+
+                    <button class="primary-button full"
+                            onclick="selectPlan('PREMIUM')">
+                        Activer PREMIUM
+                    </button>
+
+                </article>
+
+            </div>
 
         </section>
 
 
-        <section class="section-card owner-section">
+        <!-- ================= PARAMÈTRES ================= -->
 
-            <span class="eyebrow">ACCÈS PROPRIÉTAIRE</span>
+        <section class="page" id="page-settings">
 
-            <h2>Déverrouillage complet</h2>
+            <div class="page-header">
 
-            <p>
-                Accès administrateur local.
-            </p>
+                <div>
+                    <span class="label">CONFIGURATION</span>
+                    <h1>Paramètres</h1>
+                    <p>Personnalisez COIFF'BOOST.</p>
+                </div>
 
-            <input
-                id="masterCode"
-                class="input"
-                type="password"
-                placeholder="Code propriétaire"
-            >
+            </div>
 
-            <button class="primary-btn full" onclick="unlockOwner()">
-                Déverrouiller
-            </button>
 
-            <p id="unlockMessage" class="unlock-message"></p>
+            <div class="card form-card">
+
+                <h2>Informations du salon</h2>
+
+                <label>
+                    Nom du salon
+                    <input id="settingSalon"
+                           type="text">
+                </label>
+
+                <label>
+                    Nom de la coiffeuse
+                    <input id="settingOwner"
+                           type="text">
+                </label>
+
+                <label>
+                    Téléphone
+                    <input id="settingPhone"
+                           type="tel">
+                </label>
+
+                <label>
+                    Adresse
+                    <textarea id="settingAddress"></textarea>
+                </label>
+
+                <button class="primary-button full"
+                        onclick="saveSettings()">
+                    Enregistrer
+                </button>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-title">
+                    <h2>Données</h2>
+                </div>
+
+                <div class="settings-buttons">
+
+                    <button class="secondary-button full"
+                            onclick="exportData()">
+                        📦 Exporter mes données
+                    </button>
+
+                    <button class="danger-button full"
+                            onclick="resetData()">
+                        🗑 Effacer toutes les données
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACCÈS PROPRIÉTAIRE -->
+
+            <div class="card owner-card">
+
+                <span class="label">ACCÈS PROPRIÉTAIRE</span>
+
+                <h2>Déverrouillage complet</h2>
+
+                <p>
+                    Réservé au propriétaire de l'application.
+                </p>
+
+                <input
+                    id="masterCode"
+                    type="password"
+                    placeholder="Code d'accès">
+
+                <button class="primary-button full"
+                        onclick="unlockOwner()">
+                    Déverrouiller
+                </button>
+
+                <div id="unlockMessage"></div>
+
+            </div>
 
         </section>
 
-        <div class="app-version">
-            COIFF'BOOST V11 • Application locale
-        </div>
 
     </main>
 
 
-    <!-- ================= BOTTOM NAV ================= -->
+    <!-- ================= NAVIGATION ================= -->
 
     <nav class="bottom-nav">
 
-        <button data-nav="dashboard" onclick="navigate('dashboard')">
+        <button data-nav="dashboard"
+                onclick="navigate('dashboard')">
             <span>⌂</span>
             Accueil
         </button>
 
-        <button data-nav="planning" onclick="navigate('planning')">
-            <span>◷</span>
+        <button data-nav="planning"
+                onclick="navigate('planning')">
+            <span>📅</span>
             Planning
         </button>
 
-        <button data-nav="clients" onclick="navigate('clients')">
-            <span>♙</span>
+        <button data-nav="clients"
+                onclick="navigate('clients')">
+            <span>👩</span>
             Clientes
         </button>
 
-        <button data-nav="services" onclick="navigate('services')">
-            <span>✂</span>
-            Prestations
+        <button data-nav="calculator"
+                onclick="navigate('calculator')">
+            <span>🧮</span>
+            Prix
         </button>
 
-        <button data-nav="settings" onclick="navigate('settings')">
-            <span>⚙</span>
+        <button data-nav="settings"
+                onclick="navigate('settings')">
+            <span>⚙️</span>
             Plus
         </button>
 
     </nav>
 
-</div>
 
+    <!-- ================= MODALE CLIENTE ================= -->
 
-<!-- ================= MODAL CLIENT ================= -->
+    <div id="clientModal" class="modal">
 
-<div id="clientModal" class="modal">
+        <div class="modal-box">
 
-    <div class="modal-box">
+            <div class="modal-header">
+                <h2>Nouvelle cliente</h2>
 
-        <div class="modal-header">
-            <h2>Nouvelle cliente</h2>
-            <button class="icon-btn" onclick="closeModal('clientModal')">×</button>
+                <button onclick="closeModal('clientModal')">
+                    ×
+                </button>
+            </div>
+
+            <label>
+                Nom
+                <input id="clientName"
+                       type="text"
+                       placeholder="Prénom Nom">
+            </label>
+
+            <label>
+                Téléphone
+                <input id="clientPhone"
+                       type="tel"
+                       placeholder="06...">
+            </label>
+
+            <label>
+                Notes
+                <textarea id="clientNotes"></textarea>
+            </label>
+
+            <button class="primary-button full"
+                    onclick="saveClient()">
+                Ajouter
+            </button>
+
         </div>
-
-        <label>Nom</label>
-        <input id="clientName" class="input">
-
-        <label>Téléphone</label>
-        <input id="clientPhone" class="input" type="tel">
-
-        <label>Notes</label>
-        <textarea id="clientNotes" class="input"></textarea>
-
-        <button class="primary-btn full" onclick="saveClient()">
-            Ajouter
-        </button>
 
     </div>
 
-</div>
 
+    <!-- ================= MODALE RDV ================= -->
 
-<!-- ================= MODAL APPOINTMENT ================= -->
+    <div id="appointmentModal" class="modal">
 
-<div id="appointmentModal" class="modal">
+        <div class="modal-box">
 
-    <div class="modal-box">
+            <div class="modal-header">
+                <h2>Nouveau rendez-vous</h2>
 
-        <div class="modal-header">
-            <h2>Nouveau rendez-vous</h2>
-            <button class="icon-btn" onclick="closeModal('appointmentModal')">×</button>
+                <button onclick="closeModal('appointmentModal')">
+                    ×
+                </button>
+            </div>
+
+            <label>
+                Cliente
+                <input id="appointmentClient"
+                       type="text"
+                       placeholder="Nom de la cliente">
+            </label>
+
+            <label>
+                Date
+                <input id="appointmentDate"
+                       type="date">
+            </label>
+
+            <label>
+                Heure
+                <input id="appointmentTime"
+                       type="time">
+            </label>
+
+            <label>
+                Prestation
+                <input id="appointmentService"
+                       type="text"
+                       placeholder="Coupe, brushing...">
+            </label>
+
+            <label>
+                Prix
+                <input id="appointmentPrice"
+                       type="number"
+                       min="0"
+                       step="0.01">
+            </label>
+
+            <button class="primary-button full"
+                    onclick="saveAppointment()">
+                Ajouter
+            </button>
+
         </div>
-
-        <label>Cliente</label>
-        <input id="appointmentClient" class="input">
-
-        <label>Prestation</label>
-        <input id="appointmentService" class="input">
-
-        <label>Prix</label>
-        <input id="appointmentPrice" class="input" type="number" step="0.01">
-
-        <label>Date</label>
-        <input id="appointmentDate" class="input" type="date">
-
-        <label>Heure</label>
-        <input id="appointmentTime" class="input" type="time">
-
-        <button class="primary-btn full" onclick="saveAppointment()">
-            Enregistrer
-        </button>
 
     </div>
 
-</div>
 
+    <!-- ================= MODALE SERVICE ================= -->
 
-<!-- ================= MODAL SERVICE ================= -->
+    <div id="serviceModal" class="modal">
 
-<div id="serviceModal" class="modal">
+        <div class="modal-box">
 
-    <div class="modal-box">
+            <div class="modal-header">
+                <h2>Nouvelle prestation</h2>
 
-        <div class="modal-header">
-            <h2>Nouvelle prestation</h2>
-            <button class="icon-btn" onclick="closeModal('serviceModal')">×</button>
+                <button onclick="closeModal('serviceModal')">
+                    ×
+                </button>
+            </div>
+
+            <label>
+                Nom
+                <input id="serviceName"
+                       type="text"
+                       placeholder="Coupe femme">
+            </label>
+
+            <label>
+                Durée
+                <input id="serviceDuration"
+                       type="number"
+                       value="60">
+            </label>
+
+            <label>
+                Prix
+                <input id="servicePrice"
+                       type="number"
+                       step="0.01">
+            </label>
+
+            <label>
+                Coût produits
+                <input id="serviceCost"
+                       type="number"
+                       step="0.01">
+            </label>
+
+            <button class="primary-button full"
+                    onclick="saveService()">
+                Ajouter
+            </button>
+
         </div>
-
-        <label>Nom</label>
-        <input id="serviceName" class="input">
-
-        <label>Durée (minutes)</label>
-        <input id="serviceDuration" class="input" type="number">
-
-        <label>Prix</label>
-        <input id="servicePrice" class="input" type="number" step="0.01">
-
-        <label>Coût produits</label>
-        <input id="serviceCost" class="input" type="number" step="0.01">
-
-        <button class="primary-btn full" onclick="saveService()">
-            Ajouter
-        </button>
 
     </div>
 
-</div>
 
+    <!-- ================= MODALE PRODUIT ================= -->
 
-<!-- ================= MODAL PRODUCT ================= -->
+    <div id="productModal" class="modal">
 
-<div id="productModal" class="modal">
+        <div class="modal-box">
 
-    <div class="modal-box">
+            <div class="modal-header">
+                <h2>Nouveau produit</h2>
 
-        <div class="modal-header">
-            <h2>Nouveau produit</h2>
-            <button class="icon-btn" onclick="closeModal('productModal')">×</button>
+                <button onclick="closeModal('productModal')">
+                    ×
+                </button>
+            </div>
+
+            <label>
+                Produit
+                <input id="productName"
+                       type="text"
+                       placeholder="Shampooing">
+            </label>
+
+            <label>
+                Prix
+                <input id="productPrice"
+                       type="number"
+                       step="0.01">
+            </label>
+
+            <label>
+                Stock
+                <input id="productStock"
+                       type="number"
+                       value="1">
+            </label>
+
+            <button class="primary-button full"
+                    onclick="saveProduct()">
+                Ajouter
+            </button>
+
         </div>
-
-        <label>Nom</label>
-        <input id="productName" class="input">
-
-        <label>Prix</label>
-        <input id="productPrice" class="input" type="number" step="0.01">
-
-        <label>Stock</label>
-        <input id="productStock" class="input" type="number">
-
-        <button class="primary-btn full" onclick="saveProduct()">
-            Ajouter
-        </button>
 
     </div>
 
+
+    <!-- TOAST -->
+
+    <div id="toast"></div>
+
 </div>
 
 
-<div id="toast" class="toast"></div>
-
-
-<script src="./app.js"></script>
+<script src="app.js"></script>
 
 </body>
 </html>
