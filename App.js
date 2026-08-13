@@ -1,25 +1,22 @@
-/* =========================================================
-   COIFF'BOOST V10.1
-   APP.JS
-   Application locale
-   ========================================================= */
-
 "use strict";
 
 /* =========================================================
-   CONFIGURATION
+   COIFF'BOOST V10.2
+   Application locale pour coiffeuse
    ========================================================= */
 
 const APP_NAME = "COIFF'BOOST";
-const APP_VERSION = "10.1";
-
+const APP_VERSION = "10.2";
+const STORAGE_KEY = "coiffboost_data";
 const OWNER_CODE = "AUDREY";
 
-const STORAGE_KEY = "coiffboost_v101";
+/* =========================================================
+   ABONNEMENTS
+   ========================================================= */
 
 const PLANS = {
     FREE: {
-        name: "GRATUIT",
+        name: "Gratuit",
         price: 0,
         features: {
             clients: true,
@@ -33,7 +30,7 @@ const PLANS = {
     },
 
     PRO: {
-        name: "PRO",
+        name: "Pro",
         price: 9.99,
         features: {
             clients: true,
@@ -47,7 +44,7 @@ const PLANS = {
     },
 
     PREMIUM: {
-        name: "PREMIUM",
+        name: "Premium",
         price: 19.99,
         features: {
             clients: true,
@@ -61,12 +58,14 @@ const PLANS = {
     }
 };
 
-
 /* =========================================================
-   APPLICATION STATE
+   ETAT
    ========================================================= */
 
 let state = {
+    plan: "FREE",
+    ownerUnlocked: false,
+
     settings: {
         salon: "",
         owner: "",
@@ -74,166 +73,96 @@ let state = {
         address: ""
     },
 
-    plan: "FREE",
-
-    ownerUnlocked: false,
-
     clients: [],
-
     appointments: [],
-
     services: [],
-
     products: [],
-
     invoices: [],
 
-    calendarDate: new Date().toISOString().slice(0, 10)
+    calendarDate: getToday()
 };
-
 
 /* =========================================================
    INITIALISATION
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
-
     loadData();
-
     initialiseDefaults();
-
-    initialiseApplication();
-
+    setupEvents();
+    renderAll();
+    navigate("dashboard");
 });
 
-
-function initialiseApplication() {
-
-    setupEvents();
-
-    renderAll();
-
-    navigate("dashboard");
-
-}
-
-
 /* =========================================================
-   STORAGE
+   STOCKAGE
    ========================================================= */
 
 function saveData() {
-
     try {
-
         localStorage.setItem(
             STORAGE_KEY,
             JSON.stringify(state)
         );
-
     } catch (error) {
-
-        console.error(
-            "Erreur sauvegarde:",
-            error
-        );
-
-        showToast(
-            "Impossible de sauvegarder les données."
-        );
+        console.error("Erreur sauvegarde :", error);
+        showToast("Erreur lors de la sauvegarde.");
     }
 }
-
 
 function loadData() {
-
     try {
+        const saved = localStorage.getItem(STORAGE_KEY);
 
-        const saved =
-            localStorage.getItem(
-                STORAGE_KEY
-            );
+        if (!saved) return;
 
-        if (!saved) {
-            return;
-        }
+        const parsed = JSON.parse(saved);
 
-        const parsed =
-            JSON.parse(saved);
+        state = {
+            ...state,
+            ...parsed,
 
-        state = mergeState(
-            state,
-            parsed
-        );
+            settings: {
+                ...state.settings,
+                ...(parsed.settings || {})
+            },
+
+            clients: Array.isArray(parsed.clients)
+                ? parsed.clients
+                : [],
+
+            appointments: Array.isArray(parsed.appointments)
+                ? parsed.appointments
+                : [],
+
+            services: Array.isArray(parsed.services)
+                ? parsed.services
+                : [],
+
+            products: Array.isArray(parsed.products)
+                ? parsed.products
+                : [],
+
+            invoices: Array.isArray(parsed.invoices)
+                ? parsed.invoices
+                : []
+        };
 
     } catch (error) {
-
-        console.error(
-            "Erreur chargement:",
-            error
-        );
-
-        showToast(
-            "Les données locales sont invalides."
-        );
+        console.error("Erreur chargement :", error);
+        showToast("Les données sauvegardées sont invalides.");
     }
 }
 
-
-function mergeState(defaultState, savedState) {
-
-    return {
-
-        ...defaultState,
-
-        ...savedState,
-
-        settings: {
-            ...defaultState.settings,
-            ...(savedState.settings || {})
-        },
-
-        clients:
-            Array.isArray(savedState.clients)
-                ? savedState.clients
-                : [],
-
-        appointments:
-            Array.isArray(savedState.appointments)
-                ? savedState.appointments
-                : [],
-
-        services:
-            Array.isArray(savedState.services)
-                ? savedState.services
-                : [],
-
-        products:
-            Array.isArray(savedState.products)
-                ? savedState.products
-                : [],
-
-        invoices:
-            Array.isArray(savedState.invoices)
-                ? savedState.invoices
-                : []
-
-    };
-}
-
-
 /* =========================================================
-   DEFAULT DATA
+   DONNEES PAR DEFAUT
    ========================================================= */
 
 function initialiseDefaults() {
 
-    if (
-        state.services.length === 0
-    ) {
+    if (state.services.length === 0) {
 
         state.services = [
-
             {
                 id: uid(),
                 name: "Coupe femme",
@@ -256,16 +185,20 @@ function initialiseDefaults() {
                 duration: 30,
                 price: 22,
                 cost: 2
-            }
+            },
 
+            {
+                id: uid(),
+                name: "Coloration",
+                duration: 120,
+                price: 70,
+                cost: 15
+            }
         ];
 
         saveData();
-
     }
-
 }
-
 
 /* =========================================================
    NAVIGATION
@@ -273,127 +206,90 @@ function initialiseDefaults() {
 
 function navigate(page) {
 
-    const pages =
-        document.querySelectorAll(".page");
+    document.querySelectorAll(".page").forEach(element => {
+        element.classList.remove("active");
+    });
 
-    pages.forEach(
-        currentPage => {
-            currentPage.classList.remove(
-                "active"
-            );
-        }
-    );
-
-
-    const target =
-        document.getElementById(
-            `page-${page}`
-        );
+    const target = document.getElementById(`page-${page}`);
 
     if (!target) {
-
-        console.error(
-            `Page inconnue: ${page}`
-        );
-
+        console.error(`Page introuvable : page-${page}`);
         return;
     }
 
-
     target.classList.add("active");
 
-
-    const buttons =
-        document.querySelectorAll(
-            ".bottom-nav button"
-        );
-
-    buttons.forEach(button => {
-
+    document.querySelectorAll("[data-nav]").forEach(button => {
         button.classList.toggle(
             "active",
             button.dataset.nav === page
         );
-
     });
 
+    switch (page) {
 
-    if (page === "dashboard") {
-        renderDashboard();
+        case "dashboard":
+            renderDashboard();
+            break;
+
+        case "planning":
+            renderCalendar();
+            renderAppointments();
+            break;
+
+        case "clients":
+            renderClients();
+            break;
+
+        case "services":
+            renderServices();
+            break;
+
+        case "calculator":
+            resetCalculatorResult();
+            break;
+
+        case "invoice":
+            renderInvoiceHistory();
+            break;
+
+        case "products":
+            renderProducts();
+            break;
+
+        case "statistics":
+            renderStatistics();
+            break;
+
+        case "subscription":
+            updateSubscriptionPage();
+            break;
+
+        case "settings":
+            renderSettings();
+            break;
     }
-
-    if (page === "planning") {
-        renderCalendar();
-        renderAppointments();
-    }
-
-    if (page === "clients") {
-        renderClients();
-    }
-
-    if (page === "services") {
-        renderServices();
-    }
-
-    if (page === "calculator") {
-        resetCalculatorResult();
-    }
-
-    if (page === "invoice") {
-        renderInvoiceHistory();
-    }
-
-    if (page === "products") {
-        renderProducts();
-    }
-
-    if (page === "statistics") {
-        renderStatistics();
-    }
-
-    if (page === "subscription") {
-        updateSubscriptionPage();
-    }
-
-    if (page === "settings") {
-        renderSettings();
-    }
-
 }
 
-
 /* =========================================================
-   GLOBAL RENDER
+   RENDU GLOBAL
    ========================================================= */
 
 function renderAll() {
 
     renderDashboard();
-
     renderClients();
-
     renderServices();
-
     renderAppointments();
-
     renderCalendar();
-
     renderInvoiceHistory();
-
     renderProducts();
-
     renderStatistics();
-
     renderSettings();
-
     updateSubscriptionPage();
-
     updateSalonHeader();
-
     applyPlanRestrictions();
-
 }
-
 
 /* =========================================================
    DASHBOARD
@@ -401,12 +297,9 @@ function renderAll() {
 
 function renderDashboard() {
 
-    const revenue =
-        calculateRevenue();
-
     setText(
         "dashboardRevenue",
-        formatMoney(revenue)
+        formatMoney(calculateRevenue())
     );
 
     setText(
@@ -424,30 +317,23 @@ function renderDashboard() {
         state.invoices.length
     );
 
-
     const container =
-        document.getElementById(
-            "dashboardAppointments"
-        );
+        document.getElementById("dashboardAppointments");
 
-    if (!container) {
-        return;
-    }
+    if (!container) return;
 
+    const upcoming = [...state.appointments]
+        .filter(item => {
 
-    const upcoming =
-        [...state.appointments]
-            .filter(
-                appointment =>
-                    new Date(
-                        `${appointment.date}T${appointment.time || "00:00"}`
-                    ) >= new Date()
-            )
-            .sort(
-                sortAppointments
-            )
-            .slice(0, 5);
+            const date = new Date(
+                `${item.date}T${item.time || "00:00"}`
+            );
 
+            return date >= new Date();
+
+        })
+        .sort(sortAppointments)
+        .slice(0, 5);
 
     if (upcoming.length === 0) {
 
@@ -460,16 +346,9 @@ function renderDashboard() {
         return;
     }
 
-
     container.innerHTML =
-        upcoming
-            .map(
-                appointmentHTML
-            )
-            .join("");
-
+        upcoming.map(item => appointmentHTML(item)).join("");
 }
-
 
 /* =========================================================
    CLIENTS
@@ -483,92 +362,61 @@ function openClientModal() {
         "clientNotes"
     ]);
 
-    openModal(
-        "clientModal"
-    );
+    openModal("clientModal");
 }
-
 
 function saveClient() {
 
-    const name =
-        valueOf("clientName");
-
-    const phone =
-        valueOf("clientPhone");
-
-    const notes =
-        valueOf("clientNotes");
-
+    const name = valueOf("clientName");
+    const phone = valueOf("clientPhone");
+    const notes = valueOf("clientNotes");
 
     if (!name) {
-
-        showToast(
-            "Indiquez le nom de la cliente."
-        );
-
+        showToast("Indiquez le nom de la cliente.");
         return;
     }
 
-
     state.clients.push({
-
         id: uid(),
-
         name,
-
         phone,
-
         notes,
-
-        createdAt:
-            new Date().toISOString()
-
+        createdAt: new Date().toISOString()
     });
-
 
     saveData();
 
     closeModal("clientModal");
 
     renderClients();
-
     renderDashboard();
 
-    showToast(
-        "Cliente ajoutée."
-    );
-
+    showToast("Cliente ajoutée.");
 }
-
 
 function renderClients() {
 
     const container =
-        document.getElementById(
-            "clientsList"
-        );
+        document.getElementById("clientsList");
 
-    if (!container) {
-        return;
-    }
-
+    if (!container) return;
 
     const search =
-        valueOf("clientSearch")
-            .toLowerCase();
-
+        valueOf("clientSearch").toLowerCase();
 
     const clients =
-        state.clients.filter(
-            client =>
+        state.clients.filter(client => {
+
+            return (
                 client.name
                     .toLowerCase()
-                    .includes(search) ||
+                    .includes(search)
+                ||
                 (client.phone || "")
                     .includes(search)
-        );
+            );
 
+        });
 
     if (clients.length === 0) {
 
@@ -581,186 +429,120 @@ function renderClients() {
         return;
     }
 
-
     container.innerHTML =
-        clients
-            .map(client => {
+        clients.map(client => {
 
-                const revenue =
-                    state.invoices
-                        .filter(
-                            invoice =>
-                                invoice.client ===
-                                client.name
-                        )
-                        .reduce(
-                            (sum, invoice) =>
-                                sum +
-                                Number(
-                                    invoice.total || 0
-                                ),
-                            0
-                        );
+            const revenue =
+                state.invoices
+                    .filter(invoice =>
+                        invoice.client === client.name
+                    )
+                    .reduce(
+                        (total, invoice) =>
+                            total + Number(invoice.total || 0),
+                        0
+                    );
 
+            return `
+                <div class="list-item">
 
-                return `
-                    <div class="list-item">
+                    <div class="list-avatar">
+                        ${initials(client.name)}
+                    </div>
 
-                        <div class="list-avatar">
-                            ${initials(client.name)}
-                        </div>
+                    <div class="list-content">
 
-                        <div class="list-content">
+                        <strong>
+                            ${escapeHTML(client.name)}
+                        </strong>
 
-                            <strong>
-                                ${escapeHTML(client.name)}
-                            </strong>
+                        <small>
+                            ${escapeHTML(
+                                client.phone || "Aucun téléphone"
+                            )}
+                        </small>
 
-                            <small>
-                                ${escapeHTML(
-                                    client.phone ||
-                                    "Aucun téléphone"
-                                )}
-                            </small>
-
-                            <small>
-                                CA cliente :
-                                ${formatMoney(revenue)}
-                            </small>
-
-                        </div>
-
-                        <div class="list-actions">
-
-                            <button
-                                class="small-btn"
-                                onclick="editClient('${client.id}')">
-                                ✏️
-                            </button>
-
-                            <button
-                                class="small-btn"
-                                onclick="deleteClient('${client.id}')">
-                                🗑️
-                            </button>
-
-                        </div>
+                        <small>
+                            CA :
+                            ${formatMoney(revenue)}
+                        </small>
 
                     </div>
-                `;
 
-            })
-            .join("");
+                    <div class="list-actions">
 
+                        <button
+                            class="small-btn"
+                            onclick="editClient('${client.id}')">
+                            ✏️
+                        </button>
+
+                        <button
+                            class="small-btn"
+                            onclick="deleteClient('${client.id}')">
+                            🗑️
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+
+        }).join("");
 }
-
 
 function editClient(id) {
 
     const client =
-        state.clients.find(
-            item => item.id === id
-        );
+        state.clients.find(item => item.id === id);
 
-    if (!client) {
-        return;
-    }
+    if (!client) return;
 
+    const name =
+        prompt("Nom de la cliente", client.name);
 
-    const newName =
-        prompt(
-            "Nom de la cliente",
-            client.name
-        );
+    if (name === null || !name.trim()) return;
 
-    if (newName === null) {
-        return;
-    }
+    const phone =
+        prompt("Téléphone", client.phone || "");
 
-    if (!newName.trim()) {
-        return;
-    }
+    const notes =
+        prompt("Notes", client.notes || "");
 
-
-    const newPhone =
-        prompt(
-            "Téléphone",
-            client.phone || ""
-        );
-
-
-    const newNotes =
-        prompt(
-            "Notes",
-            client.notes || ""
-        );
-
-
-    client.name =
-        newName.trim();
-
-    client.phone =
-        newPhone || "";
-
-    client.notes =
-        newNotes || "";
-
+    client.name = name.trim();
+    client.phone = phone || "";
+    client.notes = notes || "";
 
     saveData();
 
     renderClients();
-
     renderDashboard();
 
-    showToast(
-        "Cliente modifiée."
-    );
-
+    showToast("Cliente modifiée.");
 }
-
 
 function deleteClient(id) {
 
     const client =
-        state.clients.find(
-            item => item.id === id
-        );
+        state.clients.find(item => item.id === id);
 
-    if (!client) {
-        return;
-    }
+    if (!client) return;
 
-
-    if (
-        !confirm(
-            `Supprimer ${client.name} ?`
-        )
-    ) {
-        return;
-    }
-
+    if (!confirm(`Supprimer ${client.name} ?`)) return;
 
     state.clients =
-        state.clients.filter(
-            item => item.id !== id
-        );
-
+        state.clients.filter(item => item.id !== id);
 
     saveData();
 
     renderClients();
-
     renderDashboard();
 
-    showToast(
-        "Cliente supprimée."
-    );
-
+    showToast("Cliente supprimée.");
 }
 
-
 /* =========================================================
-   APPOINTMENTS
+   RENDEZ-VOUS
    ========================================================= */
 
 function openAppointmentModal() {
@@ -771,30 +553,18 @@ function openAppointmentModal() {
         "appointmentPrice"
     ]);
 
-
-    const today =
-        new Date()
-            .toISOString()
-            .slice(0, 10);
-
-
     setValue(
         "appointmentDate",
-        today
+        getToday()
     );
-
 
     setValue(
         "appointmentTime",
         "10:00"
     );
 
-
-    openModal(
-        "appointmentModal"
-    );
+    openModal("appointmentModal");
 }
-
 
 function saveAppointment() {
 
@@ -811,82 +581,44 @@ function saveAppointment() {
         valueOf("appointmentService");
 
     const price =
-        Number(
-            valueOf("appointmentPrice") || 0
-        );
+        Number(valueOf("appointmentPrice") || 0);
 
-
-    if (
-        !client ||
-        !date ||
-        !time
-    ) {
-
-        showToast(
-            "Complétez la cliente, la date et l'heure."
-        );
-
+    if (!client || !date || !time) {
+        showToast("Complétez la cliente, la date et l'heure.");
         return;
     }
 
-
     state.appointments.push({
-
         id: uid(),
-
         client,
-
         date,
-
         time,
-
         service,
-
         price,
-
         status: "planned",
-
-        createdAt:
-            new Date().toISOString()
-
+        createdAt: new Date().toISOString()
     });
-
 
     saveData();
 
-    closeModal(
-        "appointmentModal"
-    );
+    closeModal("appointmentModal");
 
     renderAppointments();
-
     renderCalendar();
-
     renderDashboard();
 
-    showToast(
-        "Rendez-vous ajouté."
-    );
-
+    showToast("Rendez-vous ajouté.");
 }
-
 
 function renderAppointments() {
 
     const container =
-        document.getElementById(
-            "appointmentsList"
-        );
+        document.getElementById("appointmentsList");
 
-    if (!container) {
-        return;
-    }
-
+    if (!container) return;
 
     const appointments =
-        [...state.appointments]
-            .sort(sortAppointments);
-
+        [...state.appointments].sort(sortAppointments);
 
     if (appointments.length === 0) {
 
@@ -899,41 +631,29 @@ function renderAppointments() {
         return;
     }
 
-
     container.innerHTML =
         appointments
-            .map(
-                appointment =>
-                    appointmentHTML(
-                        appointment,
-                        true
-                    )
-            )
+            .map(item => appointmentHTML(item, true))
             .join("");
-
 }
-
 
 function appointmentHTML(
     appointment,
     detailed = false
 ) {
 
-    const statusClass =
-        appointment.status === "done"
-            ? "status-done"
-            : appointment.status === "cancelled"
-                ? "status-cancelled"
-                : "status-planned";
+    let statusText = "Prévue";
+    let statusClass = "status-planned";
 
+    if (appointment.status === "done") {
+        statusText = "Terminée";
+        statusClass = "status-done";
+    }
 
-    const statusText =
-        appointment.status === "done"
-            ? "Terminée"
-            : appointment.status === "cancelled"
-                ? "Annulée"
-                : "Prévue";
-
+    if (appointment.status === "cancelled") {
+        statusText = "Annulée";
+        statusClass = "status-cancelled";
+    }
 
     return `
         <div class="list-item">
@@ -945,25 +665,18 @@ function appointmentHTML(
             <div class="list-content">
 
                 <strong>
-                    ${escapeHTML(
-                        appointment.client
-                    )}
+                    ${escapeHTML(appointment.client)}
                 </strong>
 
                 <small>
-                    ${formatDate(
-                        appointment.date
-                    )}
+                    ${formatDate(appointment.date)}
                     à
-                    ${escapeHTML(
-                        appointment.time || ""
-                    )}
+                    ${escapeHTML(appointment.time || "")}
                 </small>
 
                 <small>
                     ${escapeHTML(
-                        appointment.service ||
-                        "Prestation"
+                        appointment.service || "Prestation"
                     )}
                 </small>
 
@@ -982,9 +695,7 @@ function appointmentHTML(
             <div class="list-actions">
 
                 <span class="list-price">
-                    ${formatMoney(
-                        appointment.price
-                    )}
+                    ${formatMoney(appointment.price)}
                 </span>
 
                 ${
@@ -1009,147 +720,90 @@ function appointmentHTML(
 
         </div>
     `;
-
 }
-
 
 function toggleAppointmentStatus(id) {
 
     const appointment =
-        state.appointments.find(
-            item => item.id === id
-        );
+        state.appointments.find(item => item.id === id);
 
-    if (!appointment) {
-        return;
-    }
+    if (!appointment) return;
 
-
-    if (
-        appointment.status === "planned"
-    ) {
-
-        appointment.status =
-            "done";
-
-    } else if (
-        appointment.status === "done"
-    ) {
-
-        appointment.status =
-            "cancelled";
-
+    if (appointment.status === "planned") {
+        appointment.status = "done";
+    } else if (appointment.status === "done") {
+        appointment.status = "cancelled";
     } else {
-
-        appointment.status =
-            "planned";
-
+        appointment.status = "planned";
     }
-
 
     saveData();
 
     renderAppointments();
-
     renderDashboard();
 
-    showToast(
-        "Statut du rendez-vous modifié."
-    );
-
+    showToast("Statut modifié.");
 }
-
 
 function deleteAppointment(id) {
 
-    if (
-        !confirm(
-            "Supprimer ce rendez-vous ?"
-        )
-    ) {
+    if (!confirm("Supprimer ce rendez-vous ?")) {
         return;
     }
-
 
     state.appointments =
         state.appointments.filter(
             item => item.id !== id
         );
 
-
     saveData();
 
     renderAppointments();
-
     renderCalendar();
-
     renderDashboard();
 
-    showToast(
-        "Rendez-vous supprimé."
-    );
-
+    showToast("Rendez-vous supprimé.");
 }
 
-
 /* =========================================================
-   CALENDAR
+   CALENDRIER
    ========================================================= */
 
 function changeCalendar(direction) {
 
     const current =
-        new Date(
-            state.calendarDate
-        );
-
+        new Date(state.calendarDate);
 
     current.setMonth(
-        current.getMonth() +
-        direction
+        current.getMonth() + direction
     );
 
-
     state.calendarDate =
-        current.toISOString()
-            .slice(0, 10);
-
+        `${current.getFullYear()}-${String(
+            current.getMonth() + 1
+        ).padStart(2, "0")}-01`;
 
     renderCalendar();
-
 }
-
 
 function renderCalendar() {
 
     const calendar =
-        document.getElementById(
-            "calendar"
-        );
+        document.getElementById("calendar");
 
     const title =
-        document.getElementById(
-            "calendarTitle"
-        );
+        document.getElementById("calendarTitle");
 
-
-    if (!calendar || !title) {
-        return;
-    }
-
+    if (!calendar || !title) return;
 
     const current =
-        new Date(
-            state.calendarDate
-        );
-
+        new Date(state.calendarDate);
 
     const year =
         current.getFullYear();
 
     const month =
         current.getMonth();
-
 
     title.textContent =
         current.toLocaleDateString(
@@ -1160,22 +814,11 @@ function renderCalendar() {
             }
         );
 
-
     const firstDay =
-        new Date(
-            year,
-            month,
-            1
-        );
-
+        new Date(year, month, 1);
 
     const lastDay =
-        new Date(
-            year,
-            month + 1,
-            0
-        );
-
+        new Date(year, month + 1, 0);
 
     let start =
         firstDay.getDay();
@@ -1185,60 +828,31 @@ function renderCalendar() {
             ? 6
             : start - 1;
 
+    let html = `
+        <div class="calendar-day-name">L</div>
+        <div class="calendar-day-name">M</div>
+        <div class="calendar-day-name">M</div>
+        <div class="calendar-day-name">J</div>
+        <div class="calendar-day-name">V</div>
+        <div class="calendar-day-name">S</div>
+        <div class="calendar-day-name">D</div>
+    `;
 
-    const days =
-        lastDay.getDate();
-
-
-    const names = [
-        "L",
-        "M",
-        "M",
-        "J",
-        "V",
-        "S",
-        "D"
-    ];
-
-
-    let html =
-        names
-            .map(
-                name =>
-                    `<div class="calendar-day-name">
-                        ${name}
-                    </div>`
-            )
-            .join("");
-
-
-    for (
-        let i = 0;
-        i < start;
-        i++
-    ) {
+    for (let i = 0; i < start; i++) {
 
         html += `
-            <div class="calendar-day empty">
-            </div>
+            <div class="calendar-day empty"></div>
         `;
-
     }
-
 
     for (
         let day = 1;
-        day <= days;
+        day <= lastDay.getDate();
         day++
     ) {
 
         const date =
-            `${year}-${String(
-                month + 1
-            ).padStart(2, "0")}-${String(
-                day
-            ).padStart(2, "0")}`;
-
+            `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
         const hasEvent =
             state.appointments.some(
@@ -1246,13 +860,8 @@ function renderCalendar() {
                     appointment.date === date
             );
 
-
         const today =
-            date ===
-            new Date()
-                .toISOString()
-                .slice(0, 10);
-
+            date === getToday();
 
         html += `
             <div
@@ -1265,49 +874,29 @@ function renderCalendar() {
 
             </div>
         `;
-
     }
 
-
-    calendar.innerHTML =
-        html;
-
+    calendar.innerHTML = html;
 }
-
 
 function selectCalendarDate(date) {
 
-    state.calendarDate =
-        date;
+    state.calendarDate = date;
 
     renderCalendar();
 
-    const matching =
-        state.appointments
-            .filter(
-                appointment =>
-                    appointment.date === date
-            );
+    const count =
+        state.appointments.filter(
+            appointment =>
+                appointment.date === date
+        ).length;
 
-
-    if (
-        matching.length > 0
-    ) {
-
-        showToast(
-            `${matching.length} rendez-vous le ${formatDate(date)}`
-        );
-
-    } else {
-
-        showToast(
-            `Aucun rendez-vous le ${formatDate(date)}`
-        );
-
-    }
-
+    showToast(
+        count
+            ? `${count} rendez-vous le ${formatDate(date)}`
+            : `Aucun rendez-vous le ${formatDate(date)}`
+    );
 }
-
 
 /* =========================================================
    SERVICES
@@ -1321,19 +910,10 @@ function openServiceModal() {
         "serviceCost"
     ]);
 
+    setValue("serviceDuration", 60);
 
-    setValue(
-        "serviceDuration",
-        60
-    );
-
-
-    openModal(
-        "serviceModal"
-    );
-
+    openModal("serviceModal");
 }
-
 
 function saveService() {
 
@@ -1341,76 +921,44 @@ function saveService() {
         valueOf("serviceName");
 
     const duration =
-        Number(
-            valueOf("serviceDuration") || 0
-        );
+        Number(valueOf("serviceDuration") || 0);
 
     const price =
-        Number(
-            valueOf("servicePrice") || 0
-        );
+        Number(valueOf("servicePrice") || 0);
 
     const cost =
-        Number(
-            valueOf("serviceCost") || 0
-        );
-
+        Number(valueOf("serviceCost") || 0);
 
     if (!name) {
-
-        showToast(
-            "Indiquez le nom de la prestation."
-        );
-
+        showToast("Indiquez le nom de la prestation.");
         return;
     }
 
-
     state.services.push({
-
         id: uid(),
-
         name,
-
         duration,
-
         price,
-
         cost
-
     });
-
 
     saveData();
 
-    closeModal(
-        "serviceModal"
-    );
+    closeModal("serviceModal");
 
     renderServices();
 
-    showToast(
-        "Prestation ajoutée."
-    );
-
+    showToast("Prestation ajoutée.");
 }
-
 
 function renderServices() {
 
     const container =
-        document.getElementById(
-            "servicesList"
-        );
+        document.getElementById("servicesList");
 
-    if (!container) {
-        return;
-    }
+    if (!container) return;
 
-
-    if (
-        state.services.length === 0
-    ) {
+    if (state.services.length === 0) {
 
         container.innerHTML = `
             <div class="list-empty">
@@ -1421,177 +969,116 @@ function renderServices() {
         return;
     }
 
-
     container.innerHTML =
-        state.services
-            .map(service => {
+        state.services.map(service => {
 
-                const margin =
-                    Number(service.price) -
-                    Number(service.cost);
+            const margin =
+                Number(service.price || 0) -
+                Number(service.cost || 0);
 
+            return `
+                <div class="list-item">
 
-                return `
-                    <div class="list-item">
+                    <div class="list-avatar">
+                        ✂️
+                    </div>
 
-                        <div class="list-avatar">
-                            ✂️
-                        </div>
+                    <div class="list-content">
 
-                        <div class="list-content">
+                        <strong>
+                            ${escapeHTML(service.name)}
+                        </strong>
 
-                            <strong>
-                                ${escapeHTML(
-                                    service.name
-                                )}
-                            </strong>
+                        <small>
+                            ${service.duration} min
+                        </small>
 
-                            <small>
-                                ${service.duration}
-                                min
-                                · coût :
-                                ${formatMoney(
-                                    service.cost
-                                )}
-                            </small>
-
-                            <small>
-                                Marge :
-                                ${formatMoney(
-                                    margin
-                                )}
-                            </small>
-
-                        </div>
-
-                        <div class="list-actions">
-
-                            <span class="list-price">
-                                ${formatMoney(
-                                    service.price
-                                )}
-                            </span>
-
-                            <button
-                                class="small-btn"
-                                onclick="editService('${service.id}')">
-                                ✏️
-                            </button>
-
-                            <button
-                                class="small-btn"
-                                onclick="deleteService('${service.id}')">
-                                🗑️
-                            </button>
-
-                        </div>
+                        <small>
+                            Marge :
+                            ${formatMoney(margin)}
+                        </small>
 
                     </div>
-                `;
 
-            })
-            .join("");
+                    <div class="list-actions">
 
+                        <span class="list-price">
+                            ${formatMoney(service.price)}
+                        </span>
+
+                        <button
+                            class="small-btn"
+                            onclick="editService('${service.id}')">
+                            ✏️
+                        </button>
+
+                        <button
+                            class="small-btn"
+                            onclick="deleteService('${service.id}')">
+                            🗑️
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+
+        }).join("");
 }
-
 
 function editService(id) {
 
     const service =
-        state.services.find(
-            item => item.id === id
-        );
+        state.services.find(item => item.id === id);
 
-    if (!service) {
-        return;
-    }
-
+    if (!service) return;
 
     const name =
-        prompt(
-            "Nom",
-            service.name
-        );
+        prompt("Nom", service.name);
 
-    if (name === null) {
-        return;
-    }
-
+    if (name === null) return;
 
     const price =
-        prompt(
-            "Prix",
-            service.price
-        );
+        prompt("Prix", service.price);
 
     const duration =
-        prompt(
-            "Durée en minutes",
-            service.duration
-        );
+        prompt("Durée en minutes", service.duration);
 
     const cost =
-        prompt(
-            "Coût produits",
-            service.cost
-        );
+        prompt("Coût produits", service.cost);
 
-
-    service.name =
-        name.trim();
-
-    service.price =
-        Number(price || 0);
-
-    service.duration =
-        Number(duration || 0);
-
-    service.cost =
-        Number(cost || 0);
-
+    service.name = name.trim();
+    service.price = Number(price || 0);
+    service.duration = Number(duration || 0);
+    service.cost = Number(cost || 0);
 
     saveData();
 
     renderServices();
 
-    showToast(
-        "Prestation modifiée."
-    );
-
+    showToast("Prestation modifiée.");
 }
-
 
 function deleteService(id) {
 
-    if (
-        !confirm(
-            "Supprimer cette prestation ?"
-        )
-    ) {
+    if (!confirm("Supprimer cette prestation ?")) {
         return;
     }
 
-
     state.services =
         state.services.filter(
-            service =>
-                service.id !== id
+            service => service.id !== id
         );
-
 
     saveData();
 
     renderServices();
 
-    showToast(
-        "Prestation supprimée."
-    );
-
+    showToast("Prestation supprimée.");
 }
 
-
 /* =========================================================
-   CALCULATOR
+   CALCULATEUR
    ========================================================= */
 
 function calculatePrice() {
@@ -1600,35 +1087,21 @@ function calculatePrice() {
         valueOf("calculatorName");
 
     const minutes =
-        Number(
-            valueOf("calculatorMinutes") || 0
-        );
+        Number(valueOf("calculatorMinutes") || 0);
 
     const hourly =
-        Number(
-            valueOf("calculatorHourly") || 0
-        );
+        Number(valueOf("calculatorHourly") || 0);
 
     const products =
-        Number(
-            valueOf("calculatorProducts") || 0
-        );
+        Number(valueOf("calculatorProducts") || 0);
 
     const charges =
-        Number(
-            valueOf("calculatorCharges") || 0
-        );
+        Number(valueOf("calculatorCharges") || 0);
 
     const margin =
-        Number(
-            valueOf("calculatorMargin") || 0
-        );
+        Number(valueOf("calculatorMargin") || 0);
 
-
-    if (
-        minutes <= 0 ||
-        hourly <= 0
-    ) {
+    if (minutes <= 0 || hourly <= 0) {
 
         showToast(
             "Indiquez une durée et un taux horaire."
@@ -1637,116 +1110,63 @@ function calculatePrice() {
         return;
     }
 
-
     const labor =
         minutes / 60 * hourly;
 
-
     const cost =
-        labor +
-        products +
-        charges;
-
-
-    const multiplier =
-        1 +
-        margin / 100;
-
+        labor + products + charges;
 
     const recommended =
-        cost *
-        multiplier;
-
-
-    const minimum =
-        cost;
-
+        cost * (1 + margin / 100);
 
     const result =
-        document.getElementById(
-            "calculatorResult"
-        );
+        document.getElementById("calculatorResult");
 
-
-    if (!result) {
-        return;
-    }
-
+    if (!result) return;
 
     result.innerHTML = `
-
         <small>
-            ${
-                name
-                    ? escapeHTML(name)
-                    : "Tarif conseillé"
-            }
+            ${escapeHTML(name || "Tarif conseillé")}
         </small>
 
         <strong>
-            ${formatMoney(
-                recommended
-            )}
+            ${formatMoney(recommended)}
         </strong>
 
         <p>
-            Coût estimé :
+            Coût :
             ${formatMoney(cost)}
-            · Prix minimum :
-            ${formatMoney(minimum)}
+            ·
+            Prix minimum :
+            ${formatMoney(cost)}
         </p>
-
     `;
-
 }
-
 
 function resetCalculatorResult() {
 
     const result =
-        document.getElementById(
-            "calculatorResult"
-        );
+        document.getElementById("calculatorResult");
 
-    if (!result) {
-        return;
-    }
-
+    if (!result) return;
 
     result.innerHTML = `
-
-        <small>
-            Tarif conseillé
-        </small>
-
-        <strong>
-            0 €
-        </strong>
-
-        <p>
-            Remplissez les informations.
-        </p>
-
+        <small>Tarif conseillé</small>
+        <strong>0 €</strong>
+        <p>Remplissez les informations.</p>
     `;
-
 }
 
-
 /* =========================================================
-   PRODUCTS
+   PRODUITS
    ========================================================= */
 
 function openProductModal() {
 
-    if (
-        !hasFeature("products")
-    ) {
-
+    if (!hasFeature("products")) {
         showProMessage();
-
         return;
     }
-
 
     clearFields([
         "productName",
@@ -1754,102 +1174,57 @@ function openProductModal() {
         "productStock"
     ]);
 
+    setValue("productStock", 1);
 
-    setValue(
-        "productStock",
-        1
-    );
-
-
-    openModal(
-        "productModal"
-    );
-
+    openModal("productModal");
 }
-
 
 function saveProduct() {
 
-    if (
-        !hasFeature("products")
-    ) {
-
+    if (!hasFeature("products")) {
         showProMessage();
-
         return;
     }
-
 
     const name =
         valueOf("productName");
 
     const price =
-        Number(
-            valueOf("productPrice") || 0
-        );
+        Number(valueOf("productPrice") || 0);
 
     const stock =
-        Number(
-            valueOf("productStock") || 0
-        );
-
+        Number(valueOf("productStock") || 0);
 
     if (!name) {
-
-        showToast(
-            "Indiquez le nom du produit."
-        );
-
+        showToast("Indiquez le nom du produit.");
         return;
     }
 
-
     state.products.push({
-
         id: uid(),
-
         name,
-
         price,
-
         stock,
-
-        createdAt:
-            new Date().toISOString()
-
+        createdAt: new Date().toISOString()
     });
-
 
     saveData();
 
-    closeModal(
-        "productModal"
-    );
+    closeModal("productModal");
 
     renderProducts();
 
-    showToast(
-        "Produit ajouté."
-    );
-
+    showToast("Produit ajouté.");
 }
-
 
 function renderProducts() {
 
     const container =
-        document.getElementById(
-            "productsList"
-        );
+        document.getElementById("productsList");
 
-    if (!container) {
-        return;
-    }
+    if (!container) return;
 
-
-    if (
-        !hasFeature("products")
-    ) {
+    if (!hasFeature("products")) {
 
         container.innerHTML = `
             <div class="locked-card">
@@ -1857,19 +1232,19 @@ function renderProducts() {
                 <div>🔒</div>
 
                 <strong>
-                    Gestion produits PRO
+                    Fonctionnalité PRO
                 </strong>
 
                 <p>
-                    Cette fonctionnalité est disponible
-                    avec l'abonnement Pro.
+                    La gestion des produits est disponible
+                    avec COIFF'BOOST PRO.
                 </p>
 
                 <button
                     class="primary-btn"
                     onclick="navigate('subscription')">
 
-                    Voir Pro
+                    Voir les abonnements
 
                 </button>
 
@@ -1879,10 +1254,7 @@ function renderProducts() {
         return;
     }
 
-
-    if (
-        state.products.length === 0
-    ) {
+    if (state.products.length === 0) {
 
         container.innerHTML = `
             <div class="list-empty">
@@ -1893,113 +1265,75 @@ function renderProducts() {
         return;
     }
 
-
     container.innerHTML =
-        state.products
-            .map(product => {
+        state.products.map(product => {
 
-                const stockClass =
-                    product.stock <= 0
-                        ? "product-empty"
-                        : product.stock <= 2
-                            ? "product-low"
-                            : "";
+            return `
+                <div class="list-item">
 
+                    <div class="list-avatar">
+                        🧴
+                    </div>
 
-                return `
-                    <div class="list-item">
+                    <div class="list-content">
 
-                        <div class="list-avatar">
-                            🧴
-                        </div>
+                        <strong>
+                            ${escapeHTML(product.name)}
+                        </strong>
 
-                        <div class="list-content">
+                        <small>
+                            Prix :
+                            ${formatMoney(product.price)}
+                        </small>
 
-                            <strong>
-                                ${escapeHTML(
-                                    product.name
-                                )}
-                            </strong>
-
-                            <small>
-                                Achat :
-                                ${formatMoney(
-                                    product.price
-                                )}
-                            </small>
-
-                            <small
-                                class="${stockClass}">
-
-                                Stock :
-                                ${product.stock}
-
-                            </small>
-
-                        </div>
-
-                        <div class="list-actions">
-
-                            <button
-                                class="small-btn"
-                                onclick="deleteProduct('${product.id}')">
-
-                                🗑️
-
-                            </button>
-
-                        </div>
+                        <small>
+                            Stock :
+                            ${product.stock}
+                        </small>
 
                     </div>
-                `;
 
-            })
-            .join("");
+                    <div class="list-actions">
 
+                        <button
+                            class="small-btn"
+                            onclick="deleteProduct('${product.id}')">
+                            🗑️
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+
+        }).join("");
 }
-
 
 function deleteProduct(id) {
 
-    if (
-        !hasFeature("products")
-    ) {
-
+    if (!hasFeature("products")) {
         showProMessage();
-
         return;
     }
 
-
-    if (
-        !confirm(
-            "Supprimer ce produit ?"
-        )
-    ) {
+    if (!confirm("Supprimer ce produit ?")) {
         return;
     }
-
 
     state.products =
         state.products.filter(
-            product =>
-                product.id !== id
+            product => product.id !== id
         );
-
 
     saveData();
 
     renderProducts();
 
-    showToast(
-        "Produit supprimé."
-    );
-
+    showToast("Produit supprimé.");
 }
 
-
 /* =========================================================
-   INVOICES
+   FACTURES
    ========================================================= */
 
 function generateInvoice() {
@@ -2011,25 +1345,15 @@ function generateInvoice() {
         valueOf("invoiceService");
 
     const quantity =
-        Number(
-            valueOf("invoiceQuantity") || 1
-        );
+        Number(valueOf("invoiceQuantity") || 1);
 
     const price =
-        Number(
-            valueOf("invoicePrice") || 0
-        );
+        Number(valueOf("invoicePrice") || 0);
 
     const discount =
-        Number(
-            valueOf("invoiceDiscount") || 0
-        );
+        Number(valueOf("invoiceDiscount") || 0);
 
-
-    if (
-        !client ||
-        !service
-    ) {
+    if (!client || !service) {
 
         showToast(
             "Indiquez la cliente et la prestation."
@@ -2038,34 +1362,20 @@ function generateInvoice() {
         return;
     }
 
-
-    const subtotal =
-        quantity * price;
-
-
     const total =
         Math.max(
             0,
-            subtotal - discount
+            quantity * price - discount
         );
-
 
     const number =
         generateInvoiceNumber();
 
-
-    setText(
-        "invoiceNumber",
-        number
-    );
+    setText("invoiceNumber", number);
 
     setText(
         "invoiceDate",
-        formatDate(
-            new Date()
-                .toISOString()
-                .slice(0, 10)
-        )
+        formatDate(getToday())
     );
 
     setText(
@@ -2093,13 +1403,8 @@ function generateInvoice() {
         formatMoney(total)
     );
 
-
-    showToast(
-        "Aperçu de facture généré."
-    );
-
+    showToast("Aperçu de facture généré.");
 }
-
 
 function saveInvoice() {
 
@@ -2110,33 +1415,22 @@ function saveInvoice() {
         valueOf("invoiceService");
 
     const quantity =
-        Number(
-            valueOf("invoiceQuantity") || 1
-        );
+        Number(valueOf("invoiceQuantity") || 1);
 
     const price =
-        Number(
-            valueOf("invoicePrice") || 0
-        );
+        Number(valueOf("invoicePrice") || 0);
 
     const discount =
-        Number(
-            valueOf("invoiceDiscount") || 0
-        );
+        Number(valueOf("invoiceDiscount") || 0);
 
-
-    if (
-        !client ||
-        !service
-    ) {
+    if (!client || !service) {
 
         showToast(
-            "Générez d'abord une facture complète."
+            "Complétez la facture avant de l'enregistrer."
         );
 
         return;
     }
-
 
     const total =
         Math.max(
@@ -2144,8 +1438,7 @@ function saveInvoice() {
             quantity * price - discount
         );
 
-
-    const invoice = {
+    state.invoices.push({
 
         id: uid(),
 
@@ -2153,60 +1446,33 @@ function saveInvoice() {
             generateInvoiceNumber(),
 
         client,
-
         service,
-
         quantity,
-
         price,
-
         discount,
-
         total,
 
-        date:
-            new Date()
-                .toISOString()
-                .slice(0, 10),
+        date: getToday(),
 
         paid: false
-
-    };
-
-
-    state.invoices.push(
-        invoice
-    );
-
+    });
 
     saveData();
 
     renderInvoiceHistory();
-
     renderDashboard();
 
-    showToast(
-        "Facture enregistrée."
-    );
-
+    showToast("Facture enregistrée.");
 }
-
 
 function renderInvoiceHistory() {
 
     const container =
-        document.getElementById(
-            "invoiceHistory"
-        );
+        document.getElementById("invoiceHistory");
 
-    if (!container) {
-        return;
-    }
+    if (!container) return;
 
-
-    if (
-        state.invoices.length === 0
-    ) {
+    if (state.invoices.length === 0) {
 
         container.innerHTML = `
             <div class="list-empty">
@@ -2216,7 +1482,6 @@ function renderInvoiceHistory() {
 
         return;
     }
-
 
     container.innerHTML =
         [...state.invoices]
@@ -2233,25 +1498,17 @@ function renderInvoiceHistory() {
                         <div class="list-content">
 
                             <strong>
-                                ${escapeHTML(
-                                    invoice.number
-                                )}
+                                ${escapeHTML(invoice.number)}
                             </strong>
 
                             <small>
-                                ${escapeHTML(
-                                    invoice.client
-                                )}
-                                ·
-                                ${escapeHTML(
-                                    invoice.service
-                                )}
+                                ${escapeHTML(invoice.client)}
                             </small>
 
                             <small>
-                                ${formatDate(
-                                    invoice.date
-                                )}
+                                ${escapeHTML(invoice.service)}
+                                ·
+                                ${formatDate(invoice.date)}
                             </small>
 
                         </div>
@@ -2259,20 +1516,14 @@ function renderInvoiceHistory() {
                         <div class="list-actions">
 
                             <span class="list-price">
-                                ${formatMoney(
-                                    invoice.total
-                                )}
+                                ${formatMoney(invoice.total)}
                             </span>
 
                             <button
                                 class="small-btn"
                                 onclick="toggleInvoicePaid('${invoice.id}')">
 
-                                ${
-                                    invoice.paid
-                                        ? "✓"
-                                        : "€"
-                                }
+                                ${invoice.paid ? "✓" : "€"}
 
                             </button>
 
@@ -2289,27 +1540,17 @@ function renderInvoiceHistory() {
                     </div>
                 `;
 
-            })
-            .join("");
-
+            }).join("");
 }
-
 
 function toggleInvoicePaid(id) {
 
     const invoice =
-        state.invoices.find(
-            item => item.id === id
-        );
+        state.invoices.find(item => item.id === id);
 
-    if (!invoice) {
-        return;
-    }
+    if (!invoice) return;
 
-
-    invoice.paid =
-        !invoice.paid;
-
+    invoice.paid = !invoice.paid;
 
     saveData();
 
@@ -2317,66 +1558,43 @@ function toggleInvoicePaid(id) {
 
     showToast(
         invoice.paid
-            ? "Facture marquée comme payée."
-            : "Facture marquée comme impayée."
+            ? "Facture payée."
+            : "Facture impayée."
     );
-
 }
-
 
 function deleteInvoice(id) {
 
-    if (
-        !confirm(
-            "Supprimer cette facture ?"
-        )
-    ) {
+    if (!confirm("Supprimer cette facture ?")) {
         return;
     }
 
-
     state.invoices =
         state.invoices.filter(
-            invoice =>
-                invoice.id !== id
+            invoice => invoice.id !== id
         );
-
 
     saveData();
 
     renderInvoiceHistory();
-
     renderDashboard();
 
-    showToast(
-        "Facture supprimée."
-    );
-
+    showToast("Facture supprimée.");
 }
-
 
 function printInvoice() {
 
-    if (
-        !hasFeature("pdf")
-    ) {
-
+    if (!hasFeature("pdf")) {
         showProMessage();
-
         return;
     }
 
-
     window.print();
-
 }
-
 
 function generateInvoiceNumber() {
 
-    const date =
-        new Date();
-
+    const date = new Date();
 
     return `CB-${date.getFullYear()}${String(
         date.getMonth() + 1
@@ -2385,67 +1603,40 @@ function generateInvoiceNumber() {
     ).padStart(2, "0")}-${String(
         state.invoices.length + 1
     ).padStart(4, "0")}`;
-
 }
 
-
 /* =========================================================
-   STATISTICS
+   STATISTIQUES
    ========================================================= */
 
 function renderStatistics() {
 
     const locked =
-        document.getElementById(
-            "statisticsLocked"
-        );
+        document.getElementById("statisticsLocked");
 
     const content =
-        document.getElementById(
-            "statisticsContent"
-        );
+        document.getElementById("statisticsContent");
 
+    if (!locked || !content) return;
 
-    if (!locked || !content) {
-        return;
-    }
+    if (!hasFeature("statistics")) {
 
-
-    if (
-        !hasFeature("statistics")
-    ) {
-
-        locked.classList.remove(
-            "hidden"
-        );
-
-        content.classList.add(
-            "hidden"
-        );
+        locked.classList.remove("hidden");
+        content.classList.add("hidden");
 
         return;
     }
 
-
-    locked.classList.add(
-        "hidden"
-    );
-
-    content.classList.remove(
-        "hidden"
-    );
-
+    locked.classList.add("hidden");
+    content.classList.remove("hidden");
 
     const revenue =
         calculateRevenue();
 
-
     const average =
         state.invoices.length
-            ? revenue /
-              state.invoices.length
+            ? revenue / state.invoices.length
             : 0;
-
 
     setText(
         "statsRevenue",
@@ -2467,111 +1658,59 @@ function renderStatistics() {
         state.services.length
     );
 
-
     const analysis =
-        document.getElementById(
-            "statsAnalysis"
-        );
+        document.getElementById("statsAnalysis");
 
-
-    if (!analysis) {
-        return;
-    }
-
-
-    const bestClient =
-        getBestClient();
-
-
-    const bestService =
-        getBestService();
-
+    if (!analysis) return;
 
     analysis.innerHTML = `
-
         <div class="analysis-row">
-
-            <span>
-                Meilleure cliente
-            </span>
-
+            <span>Meilleure cliente</span>
             <strong>
                 ${
-                    bestClient
-                        ? escapeHTML(
-                            bestClient.name
-                        )
+                    getBestClient()
+                        ? escapeHTML(getBestClient().name)
                         : "—"
                 }
             </strong>
-
         </div>
 
-
         <div class="analysis-row">
-
-            <span>
-                Prestation la plus vendue
-            </span>
-
+            <span>Prestation la plus vendue</span>
             <strong>
-                ${
-                    bestService ||
-                    "—"
-                }
+                ${escapeHTML(getBestService() || "—")}
             </strong>
-
         </div>
 
-
         <div class="analysis-row">
-
-            <span>
-                Factures payées
-            </span>
-
+            <span>Factures payées</span>
             <strong>
                 ${
                     state.invoices.filter(
-                        invoice =>
-                            invoice.paid
+                        invoice => invoice.paid
                     ).length
                 }
             </strong>
-
         </div>
 
-
         <div class="analysis-row">
-
-            <span>
-                Factures impayées
-            </span>
-
+            <span>Factures impayées</span>
             <strong>
                 ${
                     state.invoices.filter(
-                        invoice =>
-                            !invoice.paid
+                        invoice => !invoice.paid
                     ).length
                 }
             </strong>
-
         </div>
-
     `;
-
 }
-
 
 function getBestClient() {
 
-    if (
-        state.clients.length === 0
-    ) {
+    if (state.clients.length === 0) {
         return null;
     }
-
 
     return [...state.clients]
         .map(client => {
@@ -2580,21 +1719,13 @@ function getBestClient() {
                 state.invoices
                     .filter(
                         invoice =>
-                            invoice.client ===
-                            client.name
+                            invoice.client === client.name
                     )
                     .reduce(
-                        (
-                            sum,
-                            invoice
-                        ) =>
-                            sum +
-                            Number(
-                                invoice.total || 0
-                            ),
+                        (sum, invoice) =>
+                            sum + Number(invoice.total || 0),
                         0
                     );
-
 
             return {
                 ...client,
@@ -2603,223 +1734,135 @@ function getBestClient() {
 
         })
         .sort(
-            (
-                a,
-                b
-            ) =>
-                b.revenue -
-                a.revenue
+            (a, b) =>
+                b.revenue - a.revenue
         )[0];
-
 }
-
 
 function getBestService() {
 
     const counts = {};
 
+    state.invoices.forEach(invoice => {
 
-    state.invoices.forEach(
-        invoice => {
+        const service =
+            invoice.service || "Autre";
 
-            const name =
-                invoice.service ||
-                "Autre";
-
-
-            counts[name] =
-                (counts[name] || 0) +
-                Number(
-                    invoice.quantity || 1
-                );
-
-        }
-    );
-
+        counts[service] =
+            (counts[service] || 0) +
+            Number(invoice.quantity || 1);
+    });
 
     const entries =
-        Object.entries(
-            counts
-        );
+        Object.entries(counts);
 
-
-    if (
-        entries.length === 0
-    ) {
+    if (entries.length === 0) {
         return null;
     }
 
-
     entries.sort(
-        (
-            a,
-            b
-        ) =>
-            b[1] -
-            a[1]
+        (a, b) => b[1] - a[1]
     );
 
-
     return entries[0][0];
-
 }
 
-
 /* =========================================================
-   SUBSCRIPTION
+   ABONNEMENT
    ========================================================= */
 
 function selectPlan(plan) {
 
-    if (
-        !PLANS[plan]
-    ) {
-        return;
-    }
+    if (!PLANS[plan]) return;
 
+    if (plan === "FREE") {
 
-    if (
-        plan === "FREE"
-    ) {
+        state.plan = "FREE";
 
-        state.plan =
-            "FREE";
-
-        state.ownerUnlocked =
-            false;
-
-        saveData();
+        if (!state.ownerUnlocked) {
+            saveData();
+        }
 
         updateSubscriptionPage();
-
         applyPlanRestrictions();
 
-        showToast(
-            "Formule Gratuit activée."
-        );
+        showToast("Formule Gratuit activée.");
 
         return;
     }
-
-
-    /*
-       Dans cette version locale,
-       aucun paiement réel n'est effectué.
-    */
 
     const confirmation =
         confirm(
-            `Activer la formule ${PLANS[plan].name} en mode prototype local ?`
+            `Activer ${PLANS[plan].name} en mode local ?\n\nAucun paiement réel ne sera effectué.`
         );
 
+    if (!confirmation) return;
 
-    if (!confirmation) {
-        return;
-    }
-
-
-    state.plan =
-        plan;
-
+    state.plan = plan;
 
     saveData();
 
     updateSubscriptionPage();
-
     applyPlanRestrictions();
 
-    renderStatistics();
-
-    renderProducts();
-
     showToast(
-        `Formule ${PLANS[plan].name} activée localement.`
+        `${PLANS[plan].name} activé localement.`
     );
-
 }
-
 
 function updateSubscriptionPage() {
 
+    const plan =
+        PLANS[state.plan] || PLANS.FREE;
+
     setText(
         "currentPlan",
-        PLANS[state.plan]
-            ? PLANS[state.plan].name
-            : "GRATUIT"
+        plan.name
     );
-
 }
-
 
 function hasFeature(feature) {
 
-    if (
-        state.ownerUnlocked
-    ) {
+    if (state.ownerUnlocked) {
         return true;
     }
 
-
     const plan =
-        PLANS[state.plan] ||
-        PLANS.FREE;
-
+        PLANS[state.plan] || PLANS.FREE;
 
     return Boolean(
         plan.features[feature]
     );
-
 }
-
 
 function showProMessage() {
 
     showToast(
-        "⭐ Cette fonction nécessite COIFF'BOOST PRO."
+        "⭐ Fonction disponible avec COIFF'BOOST PRO."
     );
-
 }
-
 
 function applyPlanRestrictions() {
 
-    const proElements =
-        document.querySelectorAll(
-            ".pro-feature"
-        );
+    document.querySelectorAll(".pro-feature")
+        .forEach(element => {
 
-
-    proElements.forEach(
-        element => {
-
-            if (
+            const unlocked =
                 state.ownerUnlocked ||
-                hasFeature("products")
-            ) {
+                hasFeature("products");
 
-                element.style.opacity =
-                    "1";
-
-            } else {
-
-                element.style.opacity =
-                    ".75";
-
-            }
-
-        }
-    );
-
+            element.classList.toggle(
+                "locked",
+                !unlocked
+            );
+        });
 
     renderStatistics();
-
     renderProducts();
-
 }
 
-
 /* =========================================================
-   SETTINGS
+   PARAMETRES
    ========================================================= */
 
 function renderSettings() {
@@ -2844,13 +1887,8 @@ function renderSettings() {
         state.settings.address
     );
 
-
     updateSalonHeader();
-
-    updateSubscriptionPage();
-
 }
-
 
 function saveSettings() {
 
@@ -2866,41 +1904,19 @@ function saveSettings() {
     state.settings.address =
         valueOf("settingAddress");
 
-
     saveData();
 
     updateSalonHeader();
 
-    setText(
-        "invoiceSalon",
-        state.settings.salon ||
-        APP_NAME
-    );
-
-    setText(
-        "invoiceOwner",
-        state.settings.owner ||
-        "Gestion professionnelle"
-    );
-
-
-    showToast(
-        "Paramètres enregistrés."
-    );
-
+    showToast("Paramètres enregistrés.");
 }
-
 
 function updateSalonHeader() {
 
-    const salon =
-        state.settings.salon ||
-        "Gestion professionnelle";
-
-
     setText(
         "salonHeader",
-        salon
+        state.settings.salon ||
+        "Gestion professionnelle"
     );
 
     setText(
@@ -2914,12 +1930,10 @@ function updateSalonHeader() {
         state.settings.owner ||
         "Gestion professionnelle"
     );
-
 }
 
-
 /* =========================================================
-   OWNER ACCESS
+   CODE PROPRIETAIRE
    ========================================================= */
 
 function unlockOwner() {
@@ -2927,74 +1941,40 @@ function unlockOwner() {
     const input =
         valueOf("masterCode");
 
-
     const message =
-        document.getElementById(
-            "unlockMessage"
-        );
+        document.getElementById("unlockMessage");
 
+    if (input === OWNER_CODE) {
 
-    if (
-        input === OWNER_CODE
-    ) {
-
-        state.ownerUnlocked =
-            true;
-
-        state.plan =
-            "PREMIUM";
-
+        state.ownerUnlocked = true;
+        state.plan = "PREMIUM";
 
         saveData();
 
         applyPlanRestrictions();
-
         updateSubscriptionPage();
 
-
         if (message) {
-
             message.textContent =
-                "✓ Accès propriétaire activé.";
-
-            message.style.color =
-                "var(--green)";
-
+                "✓ Accès complet activé.";
         }
 
-
-        setValue(
-            "masterCode",
-            ""
-        );
-
+        setValue("masterCode", "");
 
         showToast(
-            "Accès complet débloqué."
+            "Accès complet COIFF'BOOST activé."
         );
-
 
         return;
     }
 
-
     if (message) {
-
         message.textContent =
             "Code incorrect.";
-
-        message.style.color =
-            "var(--red)";
-
     }
 
-
-    showToast(
-        "Code incorrect."
-    );
-
+    showToast("Code incorrect.");
 }
-
 
 /* =========================================================
    EXPORT
@@ -3002,66 +1982,41 @@ function unlockOwner() {
 
 function exportData() {
 
-    const data =
-        JSON.stringify(
-            state,
-            null,
-            2
-        );
-
-
     const blob =
         new Blob(
-            [data],
+            [
+                JSON.stringify(
+                    state,
+                    null,
+                    2
+                )
+            ],
             {
-                type:
-                    "application/json"
+                type: "application/json"
             }
         );
 
-
     const url =
-        URL.createObjectURL(
-            blob
-        );
-
+        URL.createObjectURL(blob);
 
     const link =
-        document.createElement(
-            "a"
-        );
+        document.createElement("a");
 
-
-    link.href =
-        url;
+    link.href = url;
 
     link.download =
-        `coiffboost-backup-${new Date()
-            .toISOString()
-            .slice(0, 10)}.json`;
+        `coiffboost-backup-${getToday()}.json`;
 
-
-    document.body.appendChild(
-        link
-    );
-
+    document.body.appendChild(link);
 
     link.click();
 
     link.remove();
 
+    URL.revokeObjectURL(url);
 
-    URL.revokeObjectURL(
-        url
-    );
-
-
-    showToast(
-        "Sauvegarde exportée."
-    );
-
+    showToast("Sauvegarde exportée.");
 }
-
 
 /* =========================================================
    RESET
@@ -3074,126 +2029,91 @@ function resetData() {
             "Tapez SUPPRIMER pour effacer toutes les données."
         );
 
-
-    if (
-        confirmation !==
-        "SUPPRIMER"
-    ) {
+    if (confirmation !== "SUPPRIMER") {
         return;
     }
 
-
-    localStorage.removeItem(
-        STORAGE_KEY
-    );
-
+    localStorage.removeItem(STORAGE_KEY);
 
     location.reload();
-
 }
 
-
 /* =========================================================
-   MODALS
+   MODALES
    ========================================================= */
 
 function openModal(id) {
 
     const modal =
-        document.getElementById(
-            id
-        );
+        document.getElementById(id);
 
     if (!modal) {
+        console.error(`Modal introuvable : ${id}`);
         return;
     }
 
-
-    modal.classList.add(
-        "active"
-    );
-
+    modal.classList.add("active");
 }
-
 
 function closeModal(id) {
 
     const modal =
-        document.getElementById(
-            id
-        );
+        document.getElementById(id);
 
-    if (!modal) {
-        return;
-    }
+    if (!modal) return;
 
-
-    modal.classList.remove(
-        "active"
-    );
-
+    modal.classList.remove("active");
 }
 
+/* =========================================================
+   EVENEMENTS
+   ========================================================= */
 
 function setupEvents() {
 
-    document
-        .querySelectorAll(".modal")
-        .forEach(
-            modal => {
+    document.querySelectorAll(".modal")
+        .forEach(modal => {
 
-                modal.addEventListener(
-                    "click",
-                    event => {
+            modal.addEventListener(
+                "click",
+                event => {
 
-                        if (
-                            event.target ===
-                            modal
-                        ) {
-
-                            modal.classList.remove(
-                                "active"
-                            );
-
-                        }
-
+                    if (event.target === modal) {
+                        modal.classList.remove("active");
                     }
-                );
+                }
+            );
 
-            }
-        );
-
+        });
 
     document.addEventListener(
         "keydown",
         event => {
 
-            if (
-                event.key ===
-                "Escape"
-            ) {
+            if (event.key === "Escape") {
 
                 document
-                    .querySelectorAll(
-                        ".modal.active"
-                    )
-                    .forEach(
-                        modal =>
-                            modal.classList.remove(
-                                "active"
-                            )
-                    );
-
+                    .querySelectorAll(".modal.active")
+                    .forEach(modal => {
+                        modal.classList.remove("active");
+                    });
             }
-
         }
     );
 
+    const clientSearch =
+        document.getElementById("clientSearch");
+
+    if (clientSearch) {
+        clientSearch.addEventListener(
+            "input",
+            renderClients
+        );
+    }
 }
 
-
 /* =========================================================
-   UTILITY FUNCTIONS
+   UTILITAIRES
    ========================================================= */
 
 function uid() {
@@ -3202,77 +2122,55 @@ function uid() {
         Date.now().toString(36) +
         Math.random()
             .toString(36)
-            .slice(2)
+            .substring(2)
     );
-
 }
 
+function getToday() {
+
+    return new Date()
+        .toISOString()
+        .slice(0, 10);
+}
 
 function valueOf(id) {
 
     const element =
-        document.getElementById(
-            id
-        );
-
+        document.getElementById(id);
 
     return element
-        ? element.value.trim()
+        ? String(element.value || "").trim()
         : "";
-
 }
-
 
 function setValue(id, value) {
 
     const element =
-        document.getElementById(
-            id
-        );
-
+        document.getElementById(id);
 
     if (element) {
-        element.value =
-            value ?? "";
+        element.value = value ?? "";
     }
-
 }
-
 
 function setText(id, text) {
 
     const element =
-        document.getElementById(
-            id
-        );
-
+        document.getElementById(id);
 
     if (element) {
-        element.textContent =
-            text ?? "";
+        element.textContent = text ?? "";
     }
-
 }
-
 
 function clearFields(ids) {
 
-    ids.forEach(
-        id =>
-            setValue(
-                id,
-                ""
-            )
-    );
-
+    ids.forEach(id => {
+        setValue(id, "");
+    });
 }
 
-
 function formatMoney(value) {
-
-    const number =
-        Number(value || 0);
-
 
     return new Intl.NumberFormat(
         "fr-FR",
@@ -3280,10 +2178,10 @@ function formatMoney(value) {
             style: "currency",
             currency: "EUR"
         }
-    ).format(number);
-
+    ).format(
+        Number(value || 0)
+    );
 }
-
 
 function formatDate(dateString) {
 
@@ -3291,21 +2189,14 @@ function formatDate(dateString) {
         return "—";
     }
 
-
     const date =
         new Date(
             `${dateString}T12:00:00`
         );
 
-
-    if (
-        Number.isNaN(
-            date.getTime()
-        )
-    ) {
+    if (Number.isNaN(date.getTime())) {
         return dateString;
     }
-
 
     return date.toLocaleDateString(
         "fr-FR",
@@ -3315,9 +2206,7 @@ function formatDate(dateString) {
             year: "numeric"
         }
     );
-
 }
-
 
 function sortAppointments(a, b) {
 
@@ -3331,50 +2220,31 @@ function sortAppointments(a, b) {
             `${b.date}T${b.time || "00:00"}`
         );
 
-
-    return (
-        dateA.getTime() -
-        dateB.getTime()
-    );
-
+    return dateA - dateB;
 }
-
 
 function countTodayAppointments() {
 
     const today =
-        new Date()
-            .toISOString()
-            .slice(0, 10);
-
+        getToday();
 
     return state.appointments
         .filter(
             appointment =>
-                appointment.date ===
-                today
+                appointment.date === today
         )
         .length;
-
 }
-
 
 function calculateRevenue() {
 
     return state.invoices.reduce(
-        (
-            total,
-            invoice
-        ) =>
+        (total, invoice) =>
             total +
-            Number(
-                invoice.total || 0
-            ),
+            Number(invoice.total || 0),
         0
     );
-
 }
-
 
 function initials(name) {
 
@@ -3382,50 +2252,26 @@ function initials(name) {
         return "?";
     }
 
-
     return name
         .trim()
         .split(/\s+/)
         .slice(0, 2)
         .map(
             word =>
-                word
-                    .charAt(0)
-                    .toUpperCase()
+                word.charAt(0).toUpperCase()
         )
         .join("");
-
 }
-
 
 function escapeHTML(value) {
 
-    return String(
-        value ?? ""
-    )
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
-
 
 /* =========================================================
    TOAST
@@ -3433,72 +2279,44 @@ function escapeHTML(value) {
 
 let toastTimer = null;
 
-
 function showToast(message) {
 
     const toast =
-        document.getElementById(
-            "toast"
-        );
-
+        document.getElementById("toast");
 
     if (!toast) {
+        console.log(message);
         return;
     }
 
+    toast.textContent = message;
 
-    toast.textContent =
-        message;
+    toast.classList.add("show");
 
-
-    toast.classList.add(
-        "show"
-    );
-
-
-    clearTimeout(
-        toastTimer
-    );
-
+    clearTimeout(toastTimer);
 
     toastTimer =
-        setTimeout(
-            () => {
+        setTimeout(() => {
 
-                toast.classList.remove(
-                    "show"
-                );
+            toast.classList.remove("show");
 
-            },
-            2600
-        );
-
+        }, 2600);
 }
-
 
 /* =========================================================
    DEBUG
    ========================================================= */
 
-window.COIFBOOST = {
-
+window.COIFFBOOST = {
     state,
-
-    saveData,
-
-    renderAll,
-
     navigate,
-
+    saveData,
+    renderAll,
     calculatePrice,
-
     generateInvoice,
-
     unlockOwner
-
 };
 
-
 console.log(
-    `${APP_NAME} V${APP_VERSION} chargé.`
+    `${APP_NAME} V${APP_VERSION} chargé correctement.`
 );
