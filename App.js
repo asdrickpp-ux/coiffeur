@@ -1,2322 +1,1299 @@
 "use strict";
 
-/* =========================================================
-   COIFF'BOOST V10.2
-   Application locale pour coiffeuse
-   ========================================================= */
+const APP_NAME="COIFF'BOOST";
+const VERSION="11.0";
+const STORAGE_KEY="coiffboost_v11";
+const OWNER_CODE="AUDREY";
 
-const APP_NAME = "COIFF'BOOST";
-const APP_VERSION = "10.2";
-const STORAGE_KEY = "coiffboost_data";
-const OWNER_CODE = "AUDREY";
-
-/* =========================================================
-   ABONNEMENTS
-   ========================================================= */
-
-const PLANS = {
-    FREE: {
-        name: "Gratuit",
-        price: 0,
-        features: {
-            clients: true,
-            appointments: true,
-            calculator: true,
-            invoices: true,
-            pdf: true,
-            statistics: false,
-            products: false
-        }
-    },
-
-    PRO: {
-        name: "Pro",
-        price: 9.99,
-        features: {
-            clients: true,
-            appointments: true,
-            calculator: true,
-            invoices: true,
-            pdf: true,
-            statistics: true,
-            products: true
-        }
-    },
-
-    PREMIUM: {
-        name: "Premium",
-        price: 19.99,
-        features: {
-            clients: true,
-            appointments: true,
-            calculator: true,
-            invoices: true,
-            pdf: true,
-            statistics: true,
-            products: true
-        }
-    }
+const PLANS={
+FREE:{
+name:"GRATUIT",
+price:0,
+features:{
+statistics:false,
+products:false
+}
+},
+PRO:{
+name:"PRO",
+price:9.99,
+features:{
+statistics:true,
+products:true
+}
+},
+PREMIUM:{
+name:"PREMIUM",
+price:19.99,
+features:{
+statistics:true,
+products:true
+}
+}
 };
 
-/* =========================================================
-   ETAT
-   ========================================================= */
-
-let state = {
-    plan: "FREE",
-    ownerUnlocked: false,
-
-    settings: {
-        salon: "",
-        owner: "",
-        phone: "",
-        address: ""
-    },
-
-    clients: [],
-    appointments: [],
-    services: [],
-    products: [],
-    invoices: [],
-
-    calendarDate: getToday()
+let state={
+settings:{
+salon:"",
+owner:"",
+phone:"",
+address:""
+},
+plan:"FREE",
+ownerUnlocked:false,
+clients:[],
+appointments:[],
+services:[],
+products:[],
+invoices:[],
+calendarDate:new Date().toISOString().slice(0,10)
 };
 
-/* =========================================================
-   INITIALISATION
-   ========================================================= */
-
-document.addEventListener("DOMContentLoaded", () => {
-    loadData();
-    initialiseDefaults();
-    setupEvents();
-    renderAll();
-    navigate("dashboard");
+document.addEventListener("DOMContentLoaded",()=>{
+loadData();
+initialiseDefaults();
+setupEvents();
+renderAll();
+navigate("dashboard");
 });
 
-/* =========================================================
-   STOCKAGE
-   ========================================================= */
-
-function saveData() {
-    try {
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(state)
-        );
-    } catch (error) {
-        console.error("Erreur sauvegarde :", error);
-        showToast("Erreur lors de la sauvegarde.");
-    }
-}
-
-function loadData() {
-    try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-
-        if (!saved) return;
-
-        const parsed = JSON.parse(saved);
-
-        state = {
-            ...state,
-            ...parsed,
-
-            settings: {
-                ...state.settings,
-                ...(parsed.settings || {})
-            },
-
-            clients: Array.isArray(parsed.clients)
-                ? parsed.clients
-                : [],
-
-            appointments: Array.isArray(parsed.appointments)
-                ? parsed.appointments
-                : [],
-
-            services: Array.isArray(parsed.services)
-                ? parsed.services
-                : [],
-
-            products: Array.isArray(parsed.products)
-                ? parsed.products
-                : [],
-
-            invoices: Array.isArray(parsed.invoices)
-                ? parsed.invoices
-                : []
-        };
-
-    } catch (error) {
-        console.error("Erreur chargement :", error);
-        showToast("Les données sauvegardées sont invalides.");
-    }
-}
-
-/* =========================================================
-   DONNEES PAR DEFAUT
-   ========================================================= */
-
-function initialiseDefaults() {
-
-    if (state.services.length === 0) {
-
-        state.services = [
-            {
-                id: uid(),
-                name: "Coupe femme",
-                duration: 60,
-                price: 35,
-                cost: 4
-            },
-
-            {
-                id: uid(),
-                name: "Brushing",
-                duration: 45,
-                price: 25,
-                cost: 2
-            },
-
-            {
-                id: uid(),
-                name: "Coupe homme",
-                duration: 30,
-                price: 22,
-                cost: 2
-            },
-
-            {
-                id: uid(),
-                name: "Coloration",
-                duration: 120,
-                price: 70,
-                cost: 15
-            }
-        ];
 
-        saveData();
-    }
-}
-
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
-
-function navigate(page) {
-
-    document.querySelectorAll(".page").forEach(element => {
-        element.classList.remove("active");
-    });
-
-    const target = document.getElementById(`page-${page}`);
-
-    if (!target) {
-        console.error(`Page introuvable : page-${page}`);
-        return;
-    }
-
-    target.classList.add("active");
-
-    document.querySelectorAll("[data-nav]").forEach(button => {
-        button.classList.toggle(
-            "active",
-            button.dataset.nav === page
-        );
-    });
-
-    switch (page) {
-
-        case "dashboard":
-            renderDashboard();
-            break;
-
-        case "planning":
-            renderCalendar();
-            renderAppointments();
-            break;
-
-        case "clients":
-            renderClients();
-            break;
-
-        case "services":
-            renderServices();
-            break;
-
-        case "calculator":
-            resetCalculatorResult();
-            break;
-
-        case "invoice":
-            renderInvoiceHistory();
-            break;
+function loadData(){
+try{
+const saved=localStorage.getItem(STORAGE_KEY);
+if(!saved)return;
+const data=JSON.parse(saved);
 
-        case "products":
-            renderProducts();
-            break;
-
-        case "statistics":
-            renderStatistics();
-            break;
-
-        case "subscription":
-            updateSubscriptionPage();
-            break;
-
-        case "settings":
-            renderSettings();
-            break;
-    }
+state={
+...state,
+...data,
+settings:{
+...state.settings,
+...(data.settings||{})
+},
+clients:Array.isArray(data.clients)?data.clients:[],
+appointments:Array.isArray(data.appointments)?data.appointments:[],
+services:Array.isArray(data.services)?data.services:[],
+products:Array.isArray(data.products)?data.products:[],
+invoices:Array.isArray(data.invoices)?data.invoices:[]
+};
+}catch(e){
+console.error(e);
 }
-
-/* =========================================================
-   RENDU GLOBAL
-   ========================================================= */
-
-function renderAll() {
-
-    renderDashboard();
-    renderClients();
-    renderServices();
-    renderAppointments();
-    renderCalendar();
-    renderInvoiceHistory();
-    renderProducts();
-    renderStatistics();
-    renderSettings();
-    updateSubscriptionPage();
-    updateSalonHeader();
-    applyPlanRestrictions();
 }
-
-/* =========================================================
-   DASHBOARD
-   ========================================================= */
-
-function renderDashboard() {
-
-    setText(
-        "dashboardRevenue",
-        formatMoney(calculateRevenue())
-    );
-
-    setText(
-        "dashboardToday",
-        countTodayAppointments()
-    );
-
-    setText(
-        "dashboardClients",
-        state.clients.length
-    );
-
-    setText(
-        "dashboardInvoices",
-        state.invoices.length
-    );
-
-    const container =
-        document.getElementById("dashboardAppointments");
-
-    if (!container) return;
-
-    const upcoming = [...state.appointments]
-        .filter(item => {
 
-            const date = new Date(
-                `${item.date}T${item.time || "00:00"}`
-            );
 
-            return date >= new Date();
+function saveData(){
+localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+}
 
-        })
-        .sort(sortAppointments)
-        .slice(0, 5);
 
-    if (upcoming.length === 0) {
+function initialiseDefaults(){
 
-        container.innerHTML = `
-            <div class="list-empty">
-                Aucun prochain rendez-vous.
-            </div>
-        `;
+if(state.services.length===0){
 
-        return;
-    }
+state.services=[
+{id:uid(),name:"Coupe femme",duration:60,price:35,cost:4},
+{id:uid(),name:"Brushing",duration:45,price:25,cost:2},
+{id:uid(),name:"Coupe homme",duration:30,price:22,cost:2}
+];
 
-    container.innerHTML =
-        upcoming.map(item => appointmentHTML(item)).join("");
+saveData();
 }
-
-/* =========================================================
-   CLIENTS
-   ========================================================= */
-
-function openClientModal() {
 
-    clearFields([
-        "clientName",
-        "clientPhone",
-        "clientNotes"
-    ]);
-
-    openModal("clientModal");
 }
-
-function saveClient() {
-
-    const name = valueOf("clientName");
-    const phone = valueOf("clientPhone");
-    const notes = valueOf("clientNotes");
-
-    if (!name) {
-        showToast("Indiquez le nom de la cliente.");
-        return;
-    }
 
-    state.clients.push({
-        id: uid(),
-        name,
-        phone,
-        notes,
-        createdAt: new Date().toISOString()
-    });
 
-    saveData();
-
-    closeModal("clientModal");
-
-    renderClients();
-    renderDashboard();
-
-    showToast("Cliente ajoutée.");
+function renderAll(){
+renderDashboard();
+renderClients();
+renderServices();
+renderAppointments();
+renderCalendar();
+renderInvoiceHistory();
+renderProducts();
+renderStatistics();
+renderSettings();
+updateSubscriptionPage();
+updateSalonHeader();
+updatePlanBadge();
 }
-
-function renderClients() {
-
-    const container =
-        document.getElementById("clientsList");
-
-    if (!container) return;
-
-    const search =
-        valueOf("clientSearch").toLowerCase();
-
-    const clients =
-        state.clients.filter(client => {
-
-            return (
-                client.name
-                    .toLowerCase()
-                    .includes(search)
-                ||
-                (client.phone || "")
-                    .includes(search)
-            );
-
-        });
-
-    if (clients.length === 0) {
-
-        container.innerHTML = `
-            <div class="list-empty">
-                Aucune cliente trouvée.
-            </div>
-        `;
-
-        return;
-    }
-
-    container.innerHTML =
-        clients.map(client => {
-
-            const revenue =
-                state.invoices
-                    .filter(invoice =>
-                        invoice.client === client.name
-                    )
-                    .reduce(
-                        (total, invoice) =>
-                            total + Number(invoice.total || 0),
-                        0
-                    );
-
-            return `
-                <div class="list-item">
-
-                    <div class="list-avatar">
-                        ${initials(client.name)}
-                    </div>
-
-                    <div class="list-content">
-
-                        <strong>
-                            ${escapeHTML(client.name)}
-                        </strong>
-
-                        <small>
-                            ${escapeHTML(
-                                client.phone || "Aucun téléphone"
-                            )}
-                        </small>
-
-                        <small>
-                            CA :
-                            ${formatMoney(revenue)}
-                        </small>
-
-                    </div>
-
-                    <div class="list-actions">
 
-                        <button
-                            class="small-btn"
-                            onclick="editClient('${client.id}')">
-                            ✏️
-                        </button>
 
-                        <button
-                            class="small-btn"
-                            onclick="deleteClient('${client.id}')">
-                            🗑️
-                        </button>
+function navigate(page){
 
-                    </div>
+document.querySelectorAll(".page").forEach(p=>{
+p.classList.remove("active");
+});
 
-                </div>
-            `;
+const target=document.getElementById("page-"+page);
 
-        }).join("");
+if(!target){
+console.error("Page inexistante:",page);
+return;
 }
 
-function editClient(id) {
+target.classList.add("active");
 
-    const client =
-        state.clients.find(item => item.id === id);
+document.querySelectorAll(".bottom-nav button").forEach(btn=>{
+btn.classList.toggle("active",btn.dataset.nav===page);
+});
 
-    if (!client) return;
-
-    const name =
-        prompt("Nom de la cliente", client.name);
-
-    if (name === null || !name.trim()) return;
-
-    const phone =
-        prompt("Téléphone", client.phone || "");
-
-    const notes =
-        prompt("Notes", client.notes || "");
-
-    client.name = name.trim();
-    client.phone = phone || "";
-    client.notes = notes || "";
-
-    saveData();
-
-    renderClients();
-    renderDashboard();
-
-    showToast("Cliente modifiée.");
+if(page==="dashboard")renderDashboard();
+if(page==="planning"){
+renderCalendar();
+renderAppointments();
 }
+if(page==="clients")renderClients();
+if(page==="services")renderServices();
+if(page==="calculator")resetCalculatorResult();
+if(page==="invoice")renderInvoiceHistory();
+if(page==="products")renderProducts();
+if(page==="statistics")renderStatistics();
+if(page==="subscription")updateSubscriptionPage();
+if(page==="settings")renderSettings();
 
-function deleteClient(id) {
+}
 
-    const client =
-        state.clients.find(item => item.id === id);
 
-    if (!client) return;
+function renderDashboard(){
 
-    if (!confirm(`Supprimer ${client.name} ?`)) return;
+setText("dashboardRevenue",money(calculateRevenue()));
+setText("dashboardToday",countTodayAppointments());
+setText("dashboardClients",state.clients.length);
+setText("dashboardInvoices",state.invoices.length);
 
-    state.clients =
-        state.clients.filter(item => item.id !== id);
+const box=document.getElementById("dashboardAppointments");
+if(!box)return;
 
-    saveData();
+const now=new Date();
 
-    renderClients();
-    renderDashboard();
+const appointments=[...state.appointments]
+.filter(a=>new Date(`${a.date}T${a.time||"00:00"}`)>=now)
+.sort(sortAppointments)
+.slice(0,5);
 
-    showToast("Cliente supprimée.");
+box.innerHTML=appointments.length
+?appointments.map(a=>appointmentHTML(a)).join("")
+:`<div class="list-empty">Aucun prochain rendez-vous.</div>`;
 }
-
-/* =========================================================
-   RENDEZ-VOUS
-   ========================================================= */
-
-function openAppointmentModal() {
 
-    clearFields([
-        "appointmentClient",
-        "appointmentService",
-        "appointmentPrice"
-    ]);
 
-    setValue(
-        "appointmentDate",
-        getToday()
-    );
+function openClientModal(){
 
-    setValue(
-        "appointmentTime",
-        "10:00"
-    );
-
-    openModal("appointmentModal");
+setValue("clientName","");
+setValue("clientPhone","");
+setValue("clientNotes","");
+openModal("clientModal");
 }
-
-function saveAppointment() {
-
-    const client =
-        valueOf("appointmentClient");
-
-    const date =
-        valueOf("appointmentDate");
 
-    const time =
-        valueOf("appointmentTime");
 
-    const service =
-        valueOf("appointmentService");
+function saveClient(){
 
-    const price =
-        Number(valueOf("appointmentPrice") || 0);
+const name=value("clientName");
 
-    if (!client || !date || !time) {
-        showToast("Complétez la cliente, la date et l'heure.");
-        return;
-    }
-
-    state.appointments.push({
-        id: uid(),
-        client,
-        date,
-        time,
-        service,
-        price,
-        status: "planned",
-        createdAt: new Date().toISOString()
-    });
-
-    saveData();
-
-    closeModal("appointmentModal");
-
-    renderAppointments();
-    renderCalendar();
-    renderDashboard();
-
-    showToast("Rendez-vous ajouté.");
+if(!name){
+toast("Indiquez le nom de la cliente.");
+return;
 }
 
-function renderAppointments() {
+state.clients.push({
+id:uid(),
+name,
+phone:value("clientPhone"),
+notes:value("clientNotes"),
+createdAt:new Date().toISOString()
+});
 
-    const container =
-        document.getElementById("appointmentsList");
+saveData();
+closeModal("clientModal");
+renderClients();
+renderDashboard();
+toast("Cliente ajoutée.");
+}
 
-    if (!container) return;
 
-    const appointments =
-        [...state.appointments].sort(sortAppointments);
+function renderClients(){
 
-    if (appointments.length === 0) {
+const box=document.getElementById("clientsList");
+if(!box)return;
 
-        container.innerHTML = `
-            <div class="list-empty">
-                Aucun rendez-vous.
-            </div>
-        `;
+const search=value("clientSearch").toLowerCase();
 
-        return;
-    }
+const clients=state.clients.filter(c=>
+c.name.toLowerCase().includes(search) ||
+(c.phone||"").includes(search)
+);
 
-    container.innerHTML =
-        appointments
-            .map(item => appointmentHTML(item, true))
-            .join("");
+if(!clients.length){
+box.innerHTML=`<div class="list-empty">Aucune cliente trouvée.</div>`;
+return;
 }
-
-function appointmentHTML(
-    appointment,
-    detailed = false
-) {
 
-    let statusText = "Prévue";
-    let statusClass = "status-planned";
+box.innerHTML=clients.map(c=>{
 
-    if (appointment.status === "done") {
-        statusText = "Terminée";
-        statusClass = "status-done";
-    }
+const revenue=state.invoices
+.filter(i=>i.client===c.name)
+.reduce((s,i)=>s+Number(i.total||0),0);
 
-    if (appointment.status === "cancelled") {
-        statusText = "Annulée";
-        statusClass = "status-cancelled";
-    }
+return `
+<div class="list-item">
+<div class="list-avatar">${initials(c.name)}</div>
 
-    return `
-        <div class="list-item">
+<div class="list-content">
+<strong>${esc(c.name)}</strong>
+<small>${esc(c.phone||"Aucun téléphone")}</small>
+<small>CA : ${money(revenue)}</small>
+</div>
 
-            <div class="list-avatar">
-                📅
-            </div>
-
-            <div class="list-content">
-
-                <strong>
-                    ${escapeHTML(appointment.client)}
-                </strong>
-
-                <small>
-                    ${formatDate(appointment.date)}
-                    à
-                    ${escapeHTML(appointment.time || "")}
-                </small>
-
-                <small>
-                    ${escapeHTML(
-                        appointment.service || "Prestation"
-                    )}
-                </small>
+<div class="list-actions">
+<button class="small-btn" onclick="editClient('${c.id}')">✏️</button>
+<button class="small-btn" onclick="deleteClient('${c.id}')">🗑️</button>
+</div>
+</div>`;
+}).join("");
+}
 
-                ${
-                    detailed
-                        ? `
-                            <span class="status ${statusClass}">
-                                ${statusText}
-                            </span>
-                        `
-                        : ""
-                }
 
-            </div>
+function editClient(id){
 
-            <div class="list-actions">
+const c=state.clients.find(x=>x.id===id);
+if(!c)return;
 
-                <span class="list-price">
-                    ${formatMoney(appointment.price)}
-                </span>
+const name=prompt("Nom",c.name);
+if(name===null)return;
 
-                ${
-                    detailed
-                        ? `
-                            <button
-                                class="small-btn"
-                                onclick="toggleAppointmentStatus('${appointment.id}')">
-                                ✓
-                            </button>
+const phone=prompt("Téléphone",c.phone||"");
+const notes=prompt("Notes",c.notes||"");
 
-                            <button
-                                class="small-btn"
-                                onclick="deleteAppointment('${appointment.id}')">
-                                🗑️
-                            </button>
-                        `
-                        : ""
-                }
+if(!name.trim())return;
 
-            </div>
+c.name=name.trim();
+c.phone=phone||"";
+c.notes=notes||"";
 
-        </div>
-    `;
+saveData();
+renderClients();
+toast("Cliente modifiée.");
 }
-
-function toggleAppointmentStatus(id) {
 
-    const appointment =
-        state.appointments.find(item => item.id === id);
 
-    if (!appointment) return;
+function deleteClient(id){
 
-    if (appointment.status === "planned") {
-        appointment.status = "done";
-    } else if (appointment.status === "done") {
-        appointment.status = "cancelled";
-    } else {
-        appointment.status = "planned";
-    }
+const c=state.clients.find(x=>x.id===id);
+if(!c)return;
 
-    saveData();
+if(!confirm(`Supprimer ${c.name} ?`))return;
 
-    renderAppointments();
-    renderDashboard();
+state.clients=state.clients.filter(x=>x.id!==id);
 
-    showToast("Statut modifié.");
+saveData();
+renderClients();
+renderDashboard();
+toast("Cliente supprimée.");
 }
 
-function deleteAppointment(id) {
 
-    if (!confirm("Supprimer ce rendez-vous ?")) {
-        return;
-    }
+function openAppointmentModal(){
 
-    state.appointments =
-        state.appointments.filter(
-            item => item.id !== id
-        );
+setValue("appointmentClient","");
+setValue("appointmentService","");
+setValue("appointmentPrice","");
 
-    saveData();
+setValue(
+"appointmentDate",
+new Date().toISOString().slice(0,10)
+);
 
-    renderAppointments();
-    renderCalendar();
-    renderDashboard();
+setValue("appointmentTime","10:00");
 
-    showToast("Rendez-vous supprimé.");
+openModal("appointmentModal");
 }
-
-/* =========================================================
-   CALENDRIER
-   ========================================================= */
-
-function changeCalendar(direction) {
 
-    const current =
-        new Date(state.calendarDate);
 
-    current.setMonth(
-        current.getMonth() + direction
-    );
+function saveAppointment(){
 
-    state.calendarDate =
-        `${current.getFullYear()}-${String(
-            current.getMonth() + 1
-        ).padStart(2, "0")}-01`;
+const client=value("appointmentClient");
+const date=value("appointmentDate");
+const time=value("appointmentTime");
 
-    renderCalendar();
+if(!client||!date||!time){
+toast("Complétez la cliente, la date et l'heure.");
+return;
 }
 
-function renderCalendar() {
+state.appointments.push({
+id:uid(),
+client,
+date,
+time,
+service:value("appointmentService"),
+price:Number(value("appointmentPrice")||0),
+status:"planned"
+});
 
-    const calendar =
-        document.getElementById("calendar");
-
-    const title =
-        document.getElementById("calendarTitle");
-
-    if (!calendar || !title) return;
-
-    const current =
-        new Date(state.calendarDate);
-
-    const year =
-        current.getFullYear();
-
-    const month =
-        current.getMonth();
-
-    title.textContent =
-        current.toLocaleDateString(
-            "fr-FR",
-            {
-                month: "long",
-                year: "numeric"
-            }
-        );
-
-    const firstDay =
-        new Date(year, month, 1);
+saveData();
+closeModal("appointmentModal");
+renderAppointments();
+renderCalendar();
+renderDashboard();
+toast("Rendez-vous ajouté.");
+}
 
-    const lastDay =
-        new Date(year, month + 1, 0);
 
-    let start =
-        firstDay.getDay();
+function renderAppointments(){
 
-    start =
-        start === 0
-            ? 6
-            : start - 1;
+const box=document.getElementById("appointmentsList");
+if(!box)return;
 
-    let html = `
-        <div class="calendar-day-name">L</div>
-        <div class="calendar-day-name">M</div>
-        <div class="calendar-day-name">M</div>
-        <div class="calendar-day-name">J</div>
-        <div class="calendar-day-name">V</div>
-        <div class="calendar-day-name">S</div>
-        <div class="calendar-day-name">D</div>
-    `;
+const data=[...state.appointments].sort(sortAppointments);
 
-    for (let i = 0; i < start; i++) {
+box.innerHTML=data.length
+?data.map(a=>appointmentHTML(a,true)).join("")
+:`<div class="list-empty">Aucun rendez-vous.</div>`;
+}
 
-        html += `
-            <div class="calendar-day empty"></div>
-        `;
-    }
 
-    for (
-        let day = 1;
-        day <= lastDay.getDate();
-        day++
-    ) {
+function appointmentHTML(a,detailed=false){
 
-        const date =
-            `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+let status="Prévue";
 
-        const hasEvent =
-            state.appointments.some(
-                appointment =>
-                    appointment.date === date
-            );
+if(a.status==="done")status="Terminée";
+if(a.status==="cancelled")status="Annulée";
 
-        const today =
-            date === getToday();
+return `
+<div class="list-item">
+<div class="list-avatar">📅</div>
 
-        html += `
-            <div
-                class="calendar-day
-                ${today ? "today" : ""}
-                ${hasEvent ? "has-event" : ""}"
-                onclick="selectCalendarDate('${date}')">
+<div class="list-content">
+<strong>${esc(a.client)}</strong>
+<small>${formatDate(a.date)} à ${esc(a.time||"")}</small>
+<small>${esc(a.service||"Prestation")}</small>
+${detailed?`<small>${status}</small>`:""}
+</div>
 
-                ${day}
+<div class="list-actions">
+<span class="list-price">${money(a.price)}</span>
 
-            </div>
-        `;
-    }
+${detailed?`
+<button class="small-btn" onclick="toggleAppointmentStatus('${a.id}')">✓</button>
+<button class="small-btn" onclick="deleteAppointment('${a.id}')">🗑️</button>
+`:""}
 
-    calendar.innerHTML = html;
+</div>
+</div>`;
 }
 
-function selectCalendarDate(date) {
 
-    state.calendarDate = date;
+function toggleAppointmentStatus(id){
 
-    renderCalendar();
+const a=state.appointments.find(x=>x.id===id);
+if(!a)return;
 
-    const count =
-        state.appointments.filter(
-            appointment =>
-                appointment.date === date
-        ).length;
+if(a.status==="planned")a.status="done";
+else if(a.status==="done")a.status="cancelled";
+else a.status="planned";
 
-    showToast(
-        count
-            ? `${count} rendez-vous le ${formatDate(date)}`
-            : `Aucun rendez-vous le ${formatDate(date)}`
-    );
+saveData();
+renderAppointments();
+renderDashboard();
+toast("Statut modifié.");
 }
 
-/* =========================================================
-   SERVICES
-   ========================================================= */
 
-function openServiceModal() {
+function deleteAppointment(id){
 
-    clearFields([
-        "serviceName",
-        "servicePrice",
-        "serviceCost"
-    ]);
+if(!confirm("Supprimer ce rendez-vous ?"))return;
 
-    setValue("serviceDuration", 60);
+state.appointments=state.appointments.filter(x=>x.id!==id);
 
-    openModal("serviceModal");
+saveData();
+renderAppointments();
+renderCalendar();
+renderDashboard();
+toast("Rendez-vous supprimé.");
 }
-
-function saveService() {
-
-    const name =
-        valueOf("serviceName");
 
-    const duration =
-        Number(valueOf("serviceDuration") || 0);
 
-    const price =
-        Number(valueOf("servicePrice") || 0);
+function changeCalendar(direction){
 
-    const cost =
-        Number(valueOf("serviceCost") || 0);
+const d=new Date(state.calendarDate);
 
-    if (!name) {
-        showToast("Indiquez le nom de la prestation.");
-        return;
-    }
+d.setMonth(d.getMonth()+direction);
 
-    state.services.push({
-        id: uid(),
-        name,
-        duration,
-        price,
-        cost
-    });
+state.calendarDate=d.toISOString().slice(0,10);
 
-    saveData();
-
-    closeModal("serviceModal");
-
-    renderServices();
-
-    showToast("Prestation ajoutée.");
+renderCalendar();
 }
 
-function renderServices() {
 
-    const container =
-        document.getElementById("servicesList");
+function renderCalendar(){
 
-    if (!container) return;
+const calendar=document.getElementById("calendar");
+const title=document.getElementById("calendarTitle");
 
-    if (state.services.length === 0) {
+if(!calendar||!title)return;
 
-        container.innerHTML = `
-            <div class="list-empty">
-                Aucune prestation.
-            </div>
-        `;
+const d=new Date(state.calendarDate);
+const year=d.getFullYear();
+const month=d.getMonth();
 
-        return;
-    }
+title.textContent=d.toLocaleDateString("fr-FR",{
+month:"long",
+year:"numeric"
+});
 
-    container.innerHTML =
-        state.services.map(service => {
+const first=new Date(year,month,1);
+const last=new Date(year,month+1,0);
 
-            const margin =
-                Number(service.price || 0) -
-                Number(service.cost || 0);
+let start=first.getDay();
+start=start===0?6:start-1;
 
-            return `
-                <div class="list-item">
+let html=["L","M","M","J","V","S","D"]
+.map(x=>`<div class="calendar-day-name">${x}</div>`).join("");
 
-                    <div class="list-avatar">
-                        ✂️
-                    </div>
+for(let i=0;i<start;i++){
+html+=`<div class="calendar-day empty"></div>`;
+}
 
-                    <div class="list-content">
+for(let day=1;day<=last.getDate();day++){
 
-                        <strong>
-                            ${escapeHTML(service.name)}
-                        </strong>
+const date=`${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
 
-                        <small>
-                            ${service.duration} min
-                        </small>
+const event=state.appointments.some(a=>a.date===date);
 
-                        <small>
-                            Marge :
-                            ${formatMoney(margin)}
-                        </small>
+const today=date===new Date().toISOString().slice(0,10);
 
-                    </div>
+html+=`
+<div class="calendar-day ${today?"today":""} ${event?"has-event":""}"
+onclick="selectCalendarDate('${date}')">
+${day}
+</div>`;
+}
 
-                    <div class="list-actions">
+calendar.innerHTML=html;
+}
 
-                        <span class="list-price">
-                            ${formatMoney(service.price)}
-                        </span>
 
-                        <button
-                            class="small-btn"
-                            onclick="editService('${service.id}')">
-                            ✏️
-                        </button>
+function selectCalendarDate(date){
 
-                        <button
-                            class="small-btn"
-                            onclick="deleteService('${service.id}')">
-                            🗑️
-                        </button>
+state.calendarDate=date;
 
-                    </div>
+renderCalendar();
 
-                </div>
-            `;
+const count=state.appointments.filter(a=>a.date===date).length;
 
-        }).join("");
+toast(
+count
+?`${count} rendez-vous le ${formatDate(date)}`
+:`Aucun rendez-vous le ${formatDate(date)}`
+);
 }
-
-function editService(id) {
 
-    const service =
-        state.services.find(item => item.id === id);
 
-    if (!service) return;
+function openServiceModal(){
 
-    const name =
-        prompt("Nom", service.name);
+setValue("serviceName","");
+setValue("serviceDuration",60);
+setValue("servicePrice","");
+setValue("serviceCost","");
 
-    if (name === null) return;
-
-    const price =
-        prompt("Prix", service.price);
-
-    const duration =
-        prompt("Durée en minutes", service.duration);
-
-    const cost =
-        prompt("Coût produits", service.cost);
+openModal("serviceModal");
+}
 
-    service.name = name.trim();
-    service.price = Number(price || 0);
-    service.duration = Number(duration || 0);
-    service.cost = Number(cost || 0);
 
-    saveData();
+function saveService(){
 
-    renderServices();
+const name=value("serviceName");
 
-    showToast("Prestation modifiée.");
+if(!name){
+toast("Indiquez le nom de la prestation.");
+return;
 }
 
-function deleteService(id) {
+state.services.push({
+id:uid(),
+name,
+duration:Number(value("serviceDuration")||0),
+price:Number(value("servicePrice")||0),
+cost:Number(value("serviceCost")||0)
+});
 
-    if (!confirm("Supprimer cette prestation ?")) {
-        return;
-    }
+saveData();
+closeModal("serviceModal");
+renderServices();
+toast("Prestation ajoutée.");
+}
 
-    state.services =
-        state.services.filter(
-            service => service.id !== id
-        );
 
-    saveData();
+function renderServices(){
 
-    renderServices();
+const box=document.getElementById("servicesList");
+if(!box)return;
 
-    showToast("Prestation supprimée.");
+if(!state.services.length){
+box.innerHTML=`<div class="list-empty">Aucune prestation.</div>`;
+return;
 }
-
-/* =========================================================
-   CALCULATEUR
-   ========================================================= */
 
-function calculatePrice() {
+box.innerHTML=state.services.map(s=>{
 
-    const name =
-        valueOf("calculatorName");
+const margin=Number(s.price)-Number(s.cost);
 
-    const minutes =
-        Number(valueOf("calculatorMinutes") || 0);
+return `
+<div class="list-item">
+<div class="list-avatar">✂️</div>
 
-    const hourly =
-        Number(valueOf("calculatorHourly") || 0);
+<div class="list-content">
+<strong>${esc(s.name)}</strong>
+<small>${s.duration} min · coût ${money(s.cost)}</small>
+<small>Marge ${money(margin)}</small>
+</div>
 
-    const products =
-        Number(valueOf("calculatorProducts") || 0);
-
-    const charges =
-        Number(valueOf("calculatorCharges") || 0);
+<div class="list-actions">
+<span class="list-price">${money(s.price)}</span>
+<button class="small-btn" onclick="editService('${s.id}')">✏️</button>
+<button class="small-btn" onclick="deleteService('${s.id}')">🗑️</button>
+</div>
+</div>`;
+}).join("");
+}
 
-    const margin =
-        Number(valueOf("calculatorMargin") || 0);
 
-    if (minutes <= 0 || hourly <= 0) {
+function editService(id){
 
-        showToast(
-            "Indiquez une durée et un taux horaire."
-        );
+const s=state.services.find(x=>x.id===id);
+if(!s)return;
 
-        return;
-    }
+const name=prompt("Nom",s.name);
+if(name===null)return;
 
-    const labor =
-        minutes / 60 * hourly;
+const price=prompt("Prix",s.price);
+const duration=prompt("Durée",s.duration);
+const cost=prompt("Coût produits",s.cost);
 
-    const cost =
-        labor + products + charges;
+s.name=name.trim();
+s.price=Number(price||0);
+s.duration=Number(duration||0);
+s.cost=Number(cost||0);
 
-    const recommended =
-        cost * (1 + margin / 100);
+saveData();
+renderServices();
+toast("Prestation modifiée.");
+}
 
-    const result =
-        document.getElementById("calculatorResult");
 
-    if (!result) return;
+function deleteService(id){
 
-    result.innerHTML = `
-        <small>
-            ${escapeHTML(name || "Tarif conseillé")}
-        </small>
+if(!confirm("Supprimer cette prestation ?"))return;
 
-        <strong>
-            ${formatMoney(recommended)}
-        </strong>
+state.services=state.services.filter(x=>x.id!==id);
 
-        <p>
-            Coût :
-            ${formatMoney(cost)}
-            ·
-            Prix minimum :
-            ${formatMoney(cost)}
-        </p>
-    `;
+saveData();
+renderServices();
+toast("Prestation supprimée.");
 }
 
-function resetCalculatorResult() {
 
-    const result =
-        document.getElementById("calculatorResult");
+function calculatePrice(){
 
-    if (!result) return;
+const name=value("calculatorName");
+const minutes=Number(value("calculatorMinutes")||0);
+const hourly=Number(value("calculatorHourly")||0);
+const products=Number(value("calculatorProducts")||0);
+const charges=Number(value("calculatorCharges")||0);
+const margin=Number(value("calculatorMargin")||0);
 
-    result.innerHTML = `
-        <small>Tarif conseillé</small>
-        <strong>0 €</strong>
-        <p>Remplissez les informations.</p>
-    `;
+if(minutes<=0||hourly<=0){
+toast("Indiquez une durée et un taux horaire.");
+return;
 }
-
-/* =========================================================
-   PRODUITS
-   ========================================================= */
-
-function openProductModal() {
-
-    if (!hasFeature("products")) {
-        showProMessage();
-        return;
-    }
 
-    clearFields([
-        "productName",
-        "productPrice",
-        "productStock"
-    ]);
+const labor=minutes/60*hourly;
+const cost=labor+products+charges;
+const recommended=cost*(1+margin/100);
 
-    setValue("productStock", 1);
-
-    openModal("productModal");
+document.getElementById("calculatorResult").innerHTML=`
+<small>${esc(name||"Tarif conseillé")}</small>
+<strong>${money(recommended)}</strong>
+<p>Coût estimé : ${money(cost)}</p>
+`;
 }
-
-function saveProduct() {
-
-    if (!hasFeature("products")) {
-        showProMessage();
-        return;
-    }
-
-    const name =
-        valueOf("productName");
-
-    const price =
-        Number(valueOf("productPrice") || 0);
-
-    const stock =
-        Number(valueOf("productStock") || 0);
-
-    if (!name) {
-        showToast("Indiquez le nom du produit.");
-        return;
-    }
 
-    state.products.push({
-        id: uid(),
-        name,
-        price,
-        stock,
-        createdAt: new Date().toISOString()
-    });
 
-    saveData();
+function resetCalculatorResult(){
 
-    closeModal("productModal");
+const box=document.getElementById("calculatorResult");
+if(!box)return;
 
-    renderProducts();
-
-    showToast("Produit ajouté.");
+box.innerHTML=`
+<small>Tarif conseillé</small>
+<strong>0,00 €</strong>
+<p>Remplissez les informations.</p>`;
 }
-
-function renderProducts() {
-
-    const container =
-        document.getElementById("productsList");
-
-    if (!container) return;
 
-    if (!hasFeature("products")) {
 
-        container.innerHTML = `
-            <div class="locked-card">
+function openProductModal(){
 
-                <div>🔒</div>
-
-                <strong>
-                    Fonctionnalité PRO
-                </strong>
+if(!hasFeature("products")){
+showProMessage();
+return;
+}
 
-                <p>
-                    La gestion des produits est disponible
-                    avec COIFF'BOOST PRO.
-                </p>
+setValue("productName","");
+setValue("productPrice","");
+setValue("productStock",1);
 
-                <button
-                    class="primary-btn"
-                    onclick="navigate('subscription')">
+openModal("productModal");
+}
 
-                    Voir les abonnements
 
-                </button>
+function saveProduct(){
 
-            </div>
-        `;
+if(!hasFeature("products")){
+showProMessage();
+return;
+}
 
-        return;
-    }
+const name=value("productName");
 
-    if (state.products.length === 0) {
+if(!name){
+toast("Indiquez le nom du produit.");
+return;
+}
 
-        container.innerHTML = `
-            <div class="list-empty">
-                Aucun produit enregistré.
-            </div>
-        `;
+state.products.push({
+id:uid(),
+name,
+price:Number(value("productPrice")||0),
+stock:Number(value("productStock")||0)
+});
 
-        return;
-    }
+saveData();
+closeModal("productModal");
+renderProducts();
+toast("Produit ajouté.");
+}
 
-    container.innerHTML =
-        state.products.map(product => {
 
-            return `
-                <div class="list-item">
+function renderProducts(){
 
-                    <div class="list-avatar">
-                        🧴
-                    </div>
+const box=document.getElementById("productsList");
+if(!box)return;
 
-                    <div class="list-content">
+if(!hasFeature("products")){
 
-                        <strong>
-                            ${escapeHTML(product.name)}
-                        </strong>
+box.innerHTML=`
+<div class="locked-card">
+<div class="lock-icon">🔒</div>
+<h2>Gestion produits PRO</h2>
+<p>Cette fonction est disponible avec PRO ou PREMIUM.</p>
+<button class="primary-btn" onclick="navigate('subscription')">Voir les offres</button>
+</div>`;
 
-                        <small>
-                            Prix :
-                            ${formatMoney(product.price)}
-                        </small>
+return;
+}
 
-                        <small>
-                            Stock :
-                            ${product.stock}
-                        </small>
+if(!state.products.length){
+box.innerHTML=`<div class="list-empty">Aucun produit.</div>`;
+return;
+}
 
-                    </div>
+box.innerHTML=state.products.map(p=>`
+<div class="list-item">
+<div class="list-avatar">🧴</div>
 
-                    <div class="list-actions">
+<div class="list-content">
+<strong>${esc(p.name)}</strong>
+<small>Prix : ${money(p.price)}</small>
+<small>Stock : ${p.stock}</small>
+</div>
 
-                        <button
-                            class="small-btn"
-                            onclick="deleteProduct('${product.id}')">
-                            🗑️
-                        </button>
+<div class="list-actions">
+<button class="small-btn" onclick="deleteProduct('${p.id}')">🗑️</button>
+</div>
+</div>
+`).join("");
+}
 
-                    </div>
 
-                </div>
-            `;
+function deleteProduct(id){
 
-        }).join("");
+if(!hasFeature("products")){
+showProMessage();
+return;
 }
 
-function deleteProduct(id) {
+if(!confirm("Supprimer ce produit ?"))return;
 
-    if (!hasFeature("products")) {
-        showProMessage();
-        return;
-    }
+state.products=state.products.filter(x=>x.id!==id);
 
-    if (!confirm("Supprimer ce produit ?")) {
-        return;
-    }
+saveData();
+renderProducts();
+toast("Produit supprimé.");
+}
 
-    state.products =
-        state.products.filter(
-            product => product.id !== id
-        );
 
-    saveData();
+function generateInvoice(){
 
-    renderProducts();
+const client=value("invoiceClient");
+const service=value("invoiceService");
+const quantity=Number(value("invoiceQuantity")||1);
+const price=Number(value("invoicePrice")||0);
+const discount=Number(value("invoiceDiscount")||0);
 
-    showToast("Produit supprimé.");
+if(!client||!service){
+toast("Indiquez la cliente et la prestation.");
+return;
 }
-
-/* =========================================================
-   FACTURES
-   ========================================================= */
 
-function generateInvoice() {
+const total=Math.max(0,quantity*price-discount);
 
-    const client =
-        valueOf("invoiceClient");
+setText("invoiceNumber",invoiceNumber());
+setText("invoiceDate",formatDate(new Date().toISOString().slice(0,10)));
+setText("invoiceClientDisplay",client);
+setText("invoiceServiceDisplay",service);
+setText("invoiceQuantityDisplay",quantity);
+setText("invoiceTotalDisplay",money(total));
+setText("invoiceFinalTotal",money(total));
 
-    const service =
-        valueOf("invoiceService");
-
-    const quantity =
-        Number(valueOf("invoiceQuantity") || 1);
-
-    const price =
-        Number(valueOf("invoicePrice") || 0);
+toast("Aperçu généré.");
+}
 
-    const discount =
-        Number(valueOf("invoiceDiscount") || 0);
 
-    if (!client || !service) {
+function saveInvoice(){
 
-        showToast(
-            "Indiquez la cliente et la prestation."
-        );
+const client=value("invoiceClient");
+const service=value("invoiceService");
+const quantity=Number(value("invoiceQuantity")||1);
+const price=Number(value("invoicePrice")||0);
+const discount=Number(value("invoiceDiscount")||0);
 
-        return;
-    }
+if(!client||!service){
+toast("Complétez la facture.");
+return;
+}
 
-    const total =
-        Math.max(
-            0,
-            quantity * price - discount
-        );
+const total=Math.max(0,quantity*price-discount);
 
-    const number =
-        generateInvoiceNumber();
+state.invoices.push({
+id:uid(),
+number:invoiceNumber(),
+client,
+service,
+quantity,
+price,
+discount,
+total,
+date:new Date().toISOString().slice(0,10),
+paid:false
+});
 
-    setText("invoiceNumber", number);
+saveData();
+renderInvoiceHistory();
+renderDashboard();
+toast("Facture enregistrée.");
+}
 
-    setText(
-        "invoiceDate",
-        formatDate(getToday())
-    );
 
-    setText(
-        "invoiceClientDisplay",
-        client
-    );
+function renderInvoiceHistory(){
 
-    setText(
-        "invoiceServiceDisplay",
-        service
-    );
+const box=document.getElementById("invoiceHistory");
+if(!box)return;
 
-    setText(
-        "invoiceQuantityDisplay",
-        quantity
-    );
+if(!state.invoices.length){
+box.innerHTML=`<div class="list-empty">Aucune facture enregistrée.</div>`;
+return;
+}
 
-    setText(
-        "invoiceTotalDisplay",
-        formatMoney(total)
-    );
+box.innerHTML=[...state.invoices].reverse().map(i=>`
+<div class="list-item">
+<div class="list-avatar">🧾</div>
 
-    setText(
-        "invoiceFinalTotal",
-        formatMoney(total)
-    );
+<div class="list-content">
+<strong>${esc(i.number)}</strong>
+<small>${esc(i.client)} · ${esc(i.service)}</small>
+<small>${formatDate(i.date)} · ${i.paid?"Payée":"Impayée"}</small>
+</div>
 
-    showToast("Aperçu de facture généré.");
+<div class="list-actions">
+<span class="list-price">${money(i.total)}</span>
+<button class="small-btn" onclick="toggleInvoicePaid('${i.id}')">
+${i.paid?"✓":"€"}
+</button>
+<button class="small-btn" onclick="deleteInvoice('${i.id}')">🗑️</button>
+</div>
+</div>
+`).join("");
 }
 
-function saveInvoice() {
 
-    const client =
-        valueOf("invoiceClient");
+function toggleInvoicePaid(id){
 
-    const service =
-        valueOf("invoiceService");
+const i=state.invoices.find(x=>x.id===id);
+if(!i)return;
 
-    const quantity =
-        Number(valueOf("invoiceQuantity") || 1);
+i.paid=!i.paid;
 
-    const price =
-        Number(valueOf("invoicePrice") || 0);
+saveData();
+renderInvoiceHistory();
+toast(i.paid?"Facture payée.":"Facture impayée.");
+}
 
-    const discount =
-        Number(valueOf("invoiceDiscount") || 0);
 
-    if (!client || !service) {
+function deleteInvoice(id){
 
-        showToast(
-            "Complétez la facture avant de l'enregistrer."
-        );
+if(!confirm("Supprimer cette facture ?"))return;
 
-        return;
-    }
+state.invoices=state.invoices.filter(x=>x.id!==id);
 
-    const total =
-        Math.max(
-            0,
-            quantity * price - discount
-        );
+saveData();
+renderInvoiceHistory();
+renderDashboard();
+toast("Facture supprimée.");
+}
 
-    state.invoices.push({
 
-        id: uid(),
+function printInvoice(){
 
-        number:
-            generateInvoiceNumber(),
+window.print();
+}
 
-        client,
-        service,
-        quantity,
-        price,
-        discount,
-        total,
 
-        date: getToday(),
+function renderStatistics(){
 
-        paid: false
-    });
+const locked=document.getElementById("statisticsLocked");
+const content=document.getElementById("statisticsContent");
 
-    saveData();
+if(!locked||!content)return;
 
-    renderInvoiceHistory();
-    renderDashboard();
+if(!hasFeature("statistics")){
 
-    showToast("Facture enregistrée.");
+locked.classList.remove("hidden");
+content.classList.add("hidden");
+return;
 }
 
-function renderInvoiceHistory() {
+locked.classList.add("hidden");
+content.classList.remove("hidden");
 
-    const container =
-        document.getElementById("invoiceHistory");
+const revenue=calculateRevenue();
 
-    if (!container) return;
+setText("statsRevenue",money(revenue));
+setText(
+"statsAverage",
+money(state.invoices.length?revenue/state.invoices.length:0)
+);
+setText("statsClients",state.clients.length);
+setText("statsServices",state.services.length);
 
-    if (state.invoices.length === 0) {
+const bestClient=getBestClient();
+const bestService=getBestService();
 
-        container.innerHTML = `
-            <div class="list-empty">
-                Aucune facture enregistrée.
-            </div>
-        `;
+document.getElementById("statsAnalysis").innerHTML=`
+<div class="analysis-row">
+<span>Meilleure cliente</span>
+<strong>${bestClient?esc(bestClient.name):"—"}</strong>
+</div>
 
-        return;
-    }
+<div class="analysis-row">
+<span>Prestation la plus vendue</span>
+<strong>${bestService?esc(bestService):"—"}</strong>
+</div>
 
-    container.innerHTML =
-        [...state.invoices]
-            .reverse()
-            .map(invoice => {
+<div class="analysis-row">
+<span>Factures payées</span>
+<strong>${state.invoices.filter(i=>i.paid).length}</strong>
+</div>
 
-                return `
-                    <div class="list-item">
+<div class="analysis-row">
+<span>Factures impayées</span>
+<strong>${state.invoices.filter(i=>!i.paid).length}</strong>
+</div>
+`;
+}
 
-                        <div class="list-avatar">
-                            🧾
-                        </div>
 
-                        <div class="list-content">
+function getBestClient(){
 
-                            <strong>
-                                ${escapeHTML(invoice.number)}
-                            </strong>
+if(!state.clients.length)return null;
 
-                            <small>
-                                ${escapeHTML(invoice.client)}
-                            </small>
+return state.clients.map(c=>({
+...c,
+revenue:state.invoices
+.filter(i=>i.client===c.name)
+.reduce((s,i)=>s+Number(i.total||0),0)
+}))
+.sort((a,b)=>b.revenue-a.revenue)[0];
+}
 
-                            <small>
-                                ${escapeHTML(invoice.service)}
-                                ·
-                                ${formatDate(invoice.date)}
-                            </small>
 
-                        </div>
+function getBestService(){
 
-                        <div class="list-actions">
+const counts={};
 
-                            <span class="list-price">
-                                ${formatMoney(invoice.total)}
-                            </span>
+state.invoices.forEach(i=>{
+counts[i.service]=(counts[i.service]||0)+Number(i.quantity||1);
+});
 
-                            <button
-                                class="small-btn"
-                                onclick="toggleInvoicePaid('${invoice.id}')">
+const list=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
 
-                                ${invoice.paid ? "✓" : "€"}
+return list.length?list[0][0]:null;
+}
 
-                            </button>
 
-                            <button
-                                class="small-btn"
-                                onclick="deleteInvoice('${invoice.id}')">
+function selectPlan(plan){
 
-                                🗑️
+if(!PLANS[plan])return;
 
-                            </button>
+if(plan==="FREE"){
 
-                        </div>
+state.plan="FREE";
+state.ownerUnlocked=false;
 
-                    </div>
-                `;
+saveData();
+updatePlanBadge();
+updateSubscriptionPage();
+renderProducts();
+renderStatistics();
 
-            }).join("");
+toast("Formule Gratuit activée.");
+return;
 }
-
-function toggleInvoicePaid(id) {
 
-    const invoice =
-        state.invoices.find(item => item.id === id);
+if(!confirm(
+`Activer ${PLANS[plan].name} en mode présentation locale ?`
+))return;
 
-    if (!invoice) return;
+state.plan=plan;
 
-    invoice.paid = !invoice.paid;
+saveData();
 
-    saveData();
+updatePlanBadge();
+updateSubscriptionPage();
+renderProducts();
+renderStatistics();
 
-    renderInvoiceHistory();
-
-    showToast(
-        invoice.paid
-            ? "Facture payée."
-            : "Facture impayée."
-    );
+toast(`Formule ${PLANS[plan].name} activée.`);
 }
-
-function deleteInvoice(id) {
 
-    if (!confirm("Supprimer cette facture ?")) {
-        return;
-    }
 
-    state.invoices =
-        state.invoices.filter(
-            invoice => invoice.id !== id
-        );
+function hasFeature(feature){
 
-    saveData();
+if(state.ownerUnlocked)return true;
 
-    renderInvoiceHistory();
-    renderDashboard();
-
-    showToast("Facture supprimée.");
+return Boolean(
+PLANS[state.plan]?.features?.[feature]
+);
 }
 
-function printInvoice() {
 
-    if (!hasFeature("pdf")) {
-        showProMessage();
-        return;
-    }
+function updateSubscriptionPage(){
 
-    window.print();
+setText(
+"currentPlan",
+PLANS[state.plan]?.name||"GRATUIT"
+);
 }
 
-function generateInvoiceNumber() {
 
-    const date = new Date();
+function updatePlanBadge(){
 
-    return `CB-${date.getFullYear()}${String(
-        date.getMonth() + 1
-    ).padStart(2, "0")}${String(
-        date.getDate()
-    ).padStart(2, "0")}-${String(
-        state.invoices.length + 1
-    ).padStart(4, "0")}`;
+setText(
+"planBadge",
+state.ownerUnlocked
+?"ACCÈS COMPLET"
+:PLANS[state.plan]?.name||"GRATUIT"
+);
 }
-
-/* =========================================================
-   STATISTIQUES
-   ========================================================= */
-
-function renderStatistics() {
-
-    const locked =
-        document.getElementById("statisticsLocked");
-
-    const content =
-        document.getElementById("statisticsContent");
-
-    if (!locked || !content) return;
-
-    if (!hasFeature("statistics")) {
-
-        locked.classList.remove("hidden");
-        content.classList.add("hidden");
 
-        return;
-    }
 
-    locked.classList.add("hidden");
-    content.classList.remove("hidden");
+function showProMessage(){
 
-    const revenue =
-        calculateRevenue();
-
-    const average =
-        state.invoices.length
-            ? revenue / state.invoices.length
-            : 0;
-
-    setText(
-        "statsRevenue",
-        formatMoney(revenue)
-    );
-
-    setText(
-        "statsAverage",
-        formatMoney(average)
-    );
-
-    setText(
-        "statsClients",
-        state.clients.length
-    );
-
-    setText(
-        "statsServices",
-        state.services.length
-    );
-
-    const analysis =
-        document.getElementById("statsAnalysis");
-
-    if (!analysis) return;
-
-    analysis.innerHTML = `
-        <div class="analysis-row">
-            <span>Meilleure cliente</span>
-            <strong>
-                ${
-                    getBestClient()
-                        ? escapeHTML(getBestClient().name)
-                        : "—"
-                }
-            </strong>
-        </div>
-
-        <div class="analysis-row">
-            <span>Prestation la plus vendue</span>
-            <strong>
-                ${escapeHTML(getBestService() || "—")}
-            </strong>
-        </div>
-
-        <div class="analysis-row">
-            <span>Factures payées</span>
-            <strong>
-                ${
-                    state.invoices.filter(
-                        invoice => invoice.paid
-                    ).length
-                }
-            </strong>
-        </div>
-
-        <div class="analysis-row">
-            <span>Factures impayées</span>
-            <strong>
-                ${
-                    state.invoices.filter(
-                        invoice => !invoice.paid
-                    ).length
-                }
-            </strong>
-        </div>
-    `;
+toast("★ Cette fonction nécessite PRO.");
 }
 
-function getBestClient() {
 
-    if (state.clients.length === 0) {
-        return null;
-    }
+function renderSettings(){
 
-    return [...state.clients]
-        .map(client => {
-
-            const revenue =
-                state.invoices
-                    .filter(
-                        invoice =>
-                            invoice.client === client.name
-                    )
-                    .reduce(
-                        (sum, invoice) =>
-                            sum + Number(invoice.total || 0),
-                        0
-                    );
-
-            return {
-                ...client,
-                revenue
-            };
-
-        })
-        .sort(
-            (a, b) =>
-                b.revenue - a.revenue
-        )[0];
+setValue("settingSalon",state.settings.salon);
+setValue("settingOwner",state.settings.owner);
+setValue("settingPhone",state.settings.phone);
+setValue("settingAddress",state.settings.address);
 }
-
-function getBestService() {
 
-    const counts = {};
 
-    state.invoices.forEach(invoice => {
+function saveSettings(){
 
-        const service =
-            invoice.service || "Autre";
+state.settings.salon=value("settingSalon");
+state.settings.owner=value("settingOwner");
+state.settings.phone=value("settingPhone");
+state.settings.address=value("settingAddress");
 
-        counts[service] =
-            (counts[service] || 0) +
-            Number(invoice.quantity || 1);
-    });
+saveData();
+updateSalonHeader();
 
-    const entries =
-        Object.entries(counts);
-
-    if (entries.length === 0) {
-        return null;
-    }
-
-    entries.sort(
-        (a, b) => b[1] - a[1]
-    );
-
-    return entries[0][0];
+toast("Paramètres enregistrés.");
 }
 
-/* =========================================================
-   ABONNEMENT
-   ========================================================= */
 
-function selectPlan(plan) {
+function updateSalonHeader(){
 
-    if (!PLANS[plan]) return;
+setText(
+"salonHeader",
+state.settings.salon||"Gestion professionnelle"
+);
 
-    if (plan === "FREE") {
+setText(
+"invoiceSalon",
+state.settings.salon||APP_NAME
+);
 
-        state.plan = "FREE";
+setText(
+"invoiceOwner",
+state.settings.owner||"Gestion professionnelle"
+);
+}
 
-        if (!state.ownerUnlocked) {
-            saveData();
-        }
 
-        updateSubscriptionPage();
-        applyPlanRestrictions();
+function unlockOwner(){
 
-        showToast("Formule Gratuit activée.");
+const code=value("masterCode");
+const message=document.getElementById("unlockMessage");
 
-        return;
-    }
+if(code===OWNER_CODE){
 
-    const confirmation =
-        confirm(
-            `Activer ${PLANS[plan].name} en mode local ?\n\nAucun paiement réel ne sera effectué.`
-        );
+state.ownerUnlocked=true;
+state.plan="PREMIUM";
 
-    if (!confirmation) return;
+saveData();
 
-    state.plan = plan;
+updatePlanBadge();
+updateSubscriptionPage();
+renderProducts();
+renderStatistics();
 
-    saveData();
+setValue("masterCode","");
 
-    updateSubscriptionPage();
-    applyPlanRestrictions();
+message.textContent="✓ Accès complet activé.";
+message.style.color="var(--green)";
 
-    showToast(
-        `${PLANS[plan].name} activé localement.`
-    );
+toast("Accès complet débloqué.");
+return;
 }
-
-function updateSubscriptionPage() {
 
-    const plan =
-        PLANS[state.plan] || PLANS.FREE;
+message.textContent="Code incorrect.";
+message.style.color="var(--red)";
 
-    setText(
-        "currentPlan",
-        plan.name
-    );
+toast("Code incorrect.");
 }
-
-function hasFeature(feature) {
-
-    if (state.ownerUnlocked) {
-        return true;
-    }
 
-    const plan =
-        PLANS[state.plan] || PLANS.FREE;
 
-    return Boolean(
-        plan.features[feature]
-    );
-}
-
-function showProMessage() {
+function exportData(){
 
-    showToast(
-        "⭐ Fonction disponible avec COIFF'BOOST PRO."
-    );
-}
+const blob=new Blob(
+[JSON.stringify(state,null,2)],
+{type:"application/json"}
+);
 
-function applyPlanRestrictions() {
+const url=URL.createObjectURL(blob);
+const a=document.createElement("a");
 
-    document.querySelectorAll(".pro-feature")
-        .forEach(element => {
+a.href=url;
+a.download=`coiffboost-${new Date().toISOString().slice(0,10)}.json`;
 
-            const unlocked =
-                state.ownerUnlocked ||
-                hasFeature("products");
+a.click();
 
-            element.classList.toggle(
-                "locked",
-                !unlocked
-            );
-        });
+URL.revokeObjectURL(url);
 
-    renderStatistics();
-    renderProducts();
+toast("Sauvegarde exportée.");
 }
-
-/* =========================================================
-   PARAMETRES
-   ========================================================= */
 
-function renderSettings() {
 
-    setValue(
-        "settingSalon",
-        state.settings.salon
-    );
+function resetData(){
 
-    setValue(
-        "settingOwner",
-        state.settings.owner
-    );
+if(prompt("Tapez SUPPRIMER pour confirmer.")!=="SUPPRIMER")return;
 
-    setValue(
-        "settingPhone",
-        state.settings.phone
-    );
-
-    setValue(
-        "settingAddress",
-        state.settings.address
-    );
-
-    updateSalonHeader();
+localStorage.removeItem(STORAGE_KEY);
+location.reload();
 }
-
-function saveSettings() {
-
-    state.settings.salon =
-        valueOf("settingSalon");
 
-    state.settings.owner =
-        valueOf("settingOwner");
 
-    state.settings.phone =
-        valueOf("settingPhone");
+function openModal(id){
 
-    state.settings.address =
-        valueOf("settingAddress");
+const modal=document.getElementById(id);
 
-    saveData();
-
-    updateSalonHeader();
-
-    showToast("Paramètres enregistrés.");
+if(modal)modal.classList.add("active");
 }
 
-function updateSalonHeader() {
 
-    setText(
-        "salonHeader",
-        state.settings.salon ||
-        "Gestion professionnelle"
-    );
+function closeModal(id){
 
-    setText(
-        "invoiceSalon",
-        state.settings.salon ||
-        APP_NAME
-    );
+const modal=document.getElementById(id);
 
-    setText(
-        "invoiceOwner",
-        state.settings.owner ||
-        "Gestion professionnelle"
-    );
+if(modal)modal.classList.remove("active");
 }
-
-/* =========================================================
-   CODE PROPRIETAIRE
-   ========================================================= */
-
-function unlockOwner() {
-
-    const input =
-        valueOf("masterCode");
-
-    const message =
-        document.getElementById("unlockMessage");
-
-    if (input === OWNER_CODE) {
 
-        state.ownerUnlocked = true;
-        state.plan = "PREMIUM";
 
-        saveData();
+function setupEvents(){
 
-        applyPlanRestrictions();
-        updateSubscriptionPage();
+document.querySelectorAll(".modal").forEach(modal=>{
 
-        if (message) {
-            message.textContent =
-                "✓ Accès complet activé.";
-        }
+modal.addEventListener("click",e=>{
 
-        setValue("masterCode", "");
-
-        showToast(
-            "Accès complet COIFF'BOOST activé."
-        );
-
-        return;
-    }
-
-    if (message) {
-        message.textContent =
-            "Code incorrect.";
-    }
-
-    showToast("Code incorrect.");
+if(e.target===modal){
+modal.classList.remove("active");
 }
-
-/* =========================================================
-   EXPORT
-   ========================================================= */
-
-function exportData() {
-
-    const blob =
-        new Blob(
-            [
-                JSON.stringify(
-                    state,
-                    null,
-                    2
-                )
-            ],
-            {
-                type: "application/json"
-            }
-        );
-
-    const url =
-        URL.createObjectURL(blob);
 
-    const link =
-        document.createElement("a");
+});
 
-    link.href = url;
+});
 
-    link.download =
-        `coiffboost-backup-${getToday()}.json`;
+document.addEventListener("keydown",e=>{
 
-    document.body.appendChild(link);
+if(e.key==="Escape"){
 
-    link.click();
+document.querySelectorAll(".modal.active")
+.forEach(m=>m.classList.remove("active"));
 
-    link.remove();
-
-    URL.revokeObjectURL(url);
-
-    showToast("Sauvegarde exportée.");
 }
-
-/* =========================================================
-   RESET
-   ========================================================= */
 
-function resetData() {
+});
 
-    const confirmation =
-        prompt(
-            "Tapez SUPPRIMER pour effacer toutes les données."
-        );
-
-    if (confirmation !== "SUPPRIMER") {
-        return;
-    }
-
-    localStorage.removeItem(STORAGE_KEY);
-
-    location.reload();
 }
-
-/* =========================================================
-   MODALES
-   ========================================================= */
 
-function openModal(id) {
 
-    const modal =
-        document.getElementById(id);
+function uid(){
 
-    if (!modal) {
-        console.error(`Modal introuvable : ${id}`);
-        return;
-    }
-
-    modal.classList.add("active");
+return Date.now().toString(36)+
+Math.random().toString(36).slice(2);
 }
 
-function closeModal(id) {
 
-    const modal =
-        document.getElementById(id);
+function value(id){
 
-    if (!modal) return;
+const el=document.getElementById(id);
 
-    modal.classList.remove("active");
+return el?el.value.trim():"";
 }
-
-/* =========================================================
-   EVENEMENTS
-   ========================================================= */
-
-function setupEvents() {
-
-    document.querySelectorAll(".modal")
-        .forEach(modal => {
-
-            modal.addEventListener(
-                "click",
-                event => {
-
-                    if (event.target === modal) {
-                        modal.classList.remove("active");
-                    }
-                }
-            );
-
-        });
-
-    document.addEventListener(
-        "keydown",
-        event => {
 
-            if (event.key === "Escape") {
 
-                document
-                    .querySelectorAll(".modal.active")
-                    .forEach(modal => {
-                        modal.classList.remove("active");
-                    });
-            }
-        }
-    );
+function setValue(id,v){
 
-    const clientSearch =
-        document.getElementById("clientSearch");
+const el=document.getElementById(id);
 
-    if (clientSearch) {
-        clientSearch.addEventListener(
-            "input",
-            renderClients
-        );
-    }
+if(el)el.value=v??"";
 }
 
-/* =========================================================
-   UTILITAIRES
-   ========================================================= */
 
-function uid() {
+function setText(id,v){
 
-    return (
-        Date.now().toString(36) +
-        Math.random()
-            .toString(36)
-            .substring(2)
-    );
-}
-
-function getToday() {
+const el=document.getElementById(id);
 
-    return new Date()
-        .toISOString()
-        .slice(0, 10);
+if(el)el.textContent=v??"";
 }
 
-function valueOf(id) {
 
-    const element =
-        document.getElementById(id);
+function money(v){
 
-    return element
-        ? String(element.value || "").trim()
-        : "";
+return new Intl.NumberFormat("fr-FR",{
+style:"currency",
+currency:"EUR"
+}).format(Number(v)||0);
 }
 
-function setValue(id, value) {
 
-    const element =
-        document.getElementById(id);
-
-    if (element) {
-        element.value = value ?? "";
-    }
-}
+function formatDate(v){
 
-function setText(id, text) {
+if(!v)return"—";
 
-    const element =
-        document.getElementById(id);
+const d=new Date(`${v}T12:00:00`);
 
-    if (element) {
-        element.textContent = text ?? "";
-    }
+return isNaN(d)?v:d.toLocaleDateString("fr-FR");
 }
 
-function clearFields(ids) {
 
-    ids.forEach(id => {
-        setValue(id, "");
-    });
-}
-
-function formatMoney(value) {
+function sortAppointments(a,b){
 
-    return new Intl.NumberFormat(
-        "fr-FR",
-        {
-            style: "currency",
-            currency: "EUR"
-        }
-    ).format(
-        Number(value || 0)
-    );
+return new Date(`${a.date}T${a.time||"00:00"}`)-
+new Date(`${b.date}T${b.time||"00:00"}`);
 }
 
-function formatDate(dateString) {
 
-    if (!dateString) {
-        return "—";
-    }
+function countTodayAppointments(){
 
-    const date =
-        new Date(
-            `${dateString}T12:00:00`
-        );
+const today=new Date().toISOString().slice(0,10);
 
-    if (Number.isNaN(date.getTime())) {
-        return dateString;
-    }
-
-    return date.toLocaleDateString(
-        "fr-FR",
-        {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric"
-        }
-    );
+return state.appointments.filter(a=>a.date===today).length;
 }
-
-function sortAppointments(a, b) {
 
-    const dateA =
-        new Date(
-            `${a.date}T${a.time || "00:00"}`
-        );
 
-    const dateB =
-        new Date(
-            `${b.date}T${b.time || "00:00"}`
-        );
+function calculateRevenue(){
 
-    return dateA - dateB;
+return state.invoices.reduce(
+(s,i)=>s+Number(i.total||0),0
+);
 }
 
-function countTodayAppointments() {
 
-    const today =
-        getToday();
+function initials(name){
 
-    return state.appointments
-        .filter(
-            appointment =>
-                appointment.date === today
-        )
-        .length;
+return name
+.trim()
+.split(/\s+/)
+.slice(0,2)
+.map(x=>x[0]?.toUpperCase()||"")
+.join("");
 }
 
-function calculateRevenue() {
 
-    return state.invoices.reduce(
-        (total, invoice) =>
-            total +
-            Number(invoice.total || 0),
-        0
-    );
-}
-
-function initials(name) {
-
-    if (!name) {
-        return "?";
-    }
-
-    return name
-        .trim()
-        .split(/\s+/)
-        .slice(0, 2)
-        .map(
-            word =>
-                word.charAt(0).toUpperCase()
-        )
-        .join("");
-}
-
-function escapeHTML(value) {
+function invoiceNumber(){
 
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+return `CB-${new Date().getFullYear()}${String(
+new Date().getMonth()+1
+).padStart(2,"0")}${String(
+new Date().getDate()
+).padStart(2,"0")}-${String(
+state.invoices.length+1
+).padStart(4,"0")}`;
 }
 
-/* =========================================================
-   TOAST
-   ========================================================= */
 
-let toastTimer = null;
+function esc(v){
 
-function showToast(message) {
-
-    const toast =
-        document.getElementById("toast");
+return String(v??"")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+}
 
-    if (!toast) {
-        console.log(message);
-        return;
-    }
 
-    toast.textContent = message;
+let toastTimer;
 
-    toast.classList.add("show");
+function toast(message){
 
-    clearTimeout(toastTimer);
+const el=document.getElementById("toast");
+if(!el)return;
 
-    toastTimer =
-        setTimeout(() => {
+el.textContent=message;
+el.classList.add("show");
 
-            toast.classList.remove("show");
+clearTimeout(toastTimer);
 
-        }, 2600);
+toastTimer=setTimeout(()=>{
+el.classList.remove("show");
+},2600);
 }
 
-/* =========================================================
-   DEBUG
-   ========================================================= */
 
-window.COIFFBOOST = {
-    state,
-    navigate,
-    saveData,
-    renderAll,
-    calculatePrice,
-    generateInvoice,
-    unlockOwner
+window.COIFFBOOST={
+state,
+navigate,
+saveData,
+calculatePrice,
+unlockOwner
 };
 
-console.log(
-    `${APP_NAME} V${APP_VERSION} chargé correctement.`
-);
+console.log(`${APP_NAME} V${VERSION} chargé.`);
