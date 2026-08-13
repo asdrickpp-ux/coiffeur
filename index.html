@@ -4,7 +4,247 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>COIFF'BOOST - Gestion Professionnelle</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --primary: #d946ef;
+      --primary-hover: #c026d3;
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--bg-card);
+      border-right: 1px solid var(--border);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .brand h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .brand p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      display: inline-block;
+      margin-top: 6px;
+      background: #f1f5f9;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-section {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-top: 16px;
+      margin-bottom: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: var(--text-main);
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      background: #fdf4ff;
+      color: var(--primary-hover);
+      font-weight: 600;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      max-width: 1200px;
+    }
+
+    .top-header h2 {
+      font-size: 1.75rem;
+    }
+
+    /* Cards & Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stat-title {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .margin-top {
+      margin-top: 16px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .empty-state {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Forms & Buttons */
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--text-main);
+    }
+
+    .btn-icon {
+      background: #f1f5f9;
+      padding: 8px 12px;
+    }
+
+    .input-search, .form-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .input-search:focus, .form-group input:focus {
+      border-color: var(--primary);
+    }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      align-items: end;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .form-actions {
+      grid-column: 1 / -1;
+    }
+
+    .calc-result {
+      margin-top: 20px;
+      padding: 16px;
+      background: #fdf4ff;
+      border: 1px solid #f5d0fe;
+      border-radius: var(--radius);
+      color: var(--primary-hover);
+      font-size: 1.1rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
   <div class="app-container">
@@ -145,6 +385,29 @@
     </main>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const btnCalculer = document.getElementById('btn-calculer');
+      const resultBox = document.getElementById('calc-result');
+      const resPrix = document.getElementById('res-prix');
+
+      if (btnCalculer) {
+        btnCalculer.addEventListener('click', () => {
+          const dureeMinutes = parseFloat(document.getElementById('calc-duree').value) || 0;
+          const tauxHoraire = parseFloat(document.getElementById('calc-taux').value) || 0;
+          const produits = parseFloat(document.getElementById('calc-produits').value) || 0;
+          const charges = parseFloat(document.getElementById('calc-charges').value) || 0;
+          const margePct = parseFloat(document.getElementById('calc-marge').value) || 0;
+
+          const coutMainOeuvre = (dureeMinutes / 60) * tauxHoraire;
+          const coutTotal = coutMainOeuvre + produits + charges;
+          const prixFinal = coutTotal * (1 + margePct / 100);
+
+          resPrix.textContent = prixFinal.toFixed(2).replace('.', ',');
+          resultBox.classList.remove('hidden');
+        });
+      }
+    });
+  </script>
 </body>
 </html>
