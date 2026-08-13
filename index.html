@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COIFF'BOOST - Gestion Professionnelle</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>COIFF'BOOST</h1>
+        <p>Gestion professionnelle</p>
+        <span class="badge">GRATUIT ⚙️</span>
+      </div>
+      <nav class="nav-menu">
+        <div class="nav-section">TABLEAU DE BORD</div>
+        <a href="#dashboard" class="nav-link active">Dashboard</a>
+        
+        <div class="nav-section">ORGANISATION</div>
+        <a href="#planning" class="nav-link">Planning</a>
+        <a href="#rendezvous" class="nav-link">Rendez-vous</a>
+        
+        <div class="nav-section">CLIENTÈLE</div>
+        <a href="#clientes" class="nav-link">Mes clientes</a>
+        
+        <div class="nav-section">CATALOGUE</div>
+        <a href="#prestations" class="nav-link">Prestations</a>
+        
+        <div class="nav-section">OUTIL PROFESSIONNEL</div>
+        <a href="#calculateur" class="nav-link">Calculateur de prix</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="top-header">
+        <h2>Bonjour 👋</h2>
+      </header>
+
+      <section id="dashboard" class="dashboard-section">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-title">Chiffre d'affaires</span>
+            <span class="stat-value">0,00 €</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-title">✂️ RDV aujourd'hui</span>
+            <span class="stat-value">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-title">Clientes</span>
+            <span class="stat-value">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-title">Factures</span>
+            <span class="stat-value">0</span>
+          </div>
+        </div>
+
+        <div class="card margin-top">
+          <div class="card-header">
+            <h3>Prochains rendez-vous</h3>
+            <button class="btn btn-secondary">Voir tout</button>
+          </div>
+          <div class="card-body">
+            <p class="empty-state">Aucun rendez-vous à venir.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="planning" class="card">
+        <div class="card-header">
+          <h3>Planning</h3>
+          <div class="btn-group">
+            <button class="btn btn-primary">+ RDV</button>
+            <button class="btn btn-icon">&lt;</button>
+            <button class="btn btn-icon">&gt;</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="empty-state">Le planning est vide.</p>
+        </div>
+      </section>
+
+      <section id="clientes" class="card">
+        <div class="card-header">
+          <h3>Mes clientes</h3>
+          <button class="btn btn-primary">+ Cliente</button>
+        </div>
+        <div class="card-body">
+          <input type="text" class="input-search" placeholder="Rechercher une cliente...">
+        </div>
+      </section>
+
+      <section id="prestations" class="card">
+        <div class="card-header">
+          <h3>Prestations</h3>
+          <button class="btn btn-primary">+ Ajouter</button>
+        </div>
+        <div class="card-body">
+          <p class="empty-state">Aucune prestation ajoutée.</p>
+        </div>
+      </section>
+
+      <section id="calculateur" class="card">
+        <div class="card-header">
+          <h3>Calculateur de prix</h3>
+        </div>
+        <div class="card-body">
+          <form id="calc-form" class="calc-grid">
+            <div class="form-group">
+              <label for="calc-nom">Nom de la prestation</label>
+              <input type="text" id="calc-nom" placeholder="Ex : Balayage">
+            </div>
+            <div class="form-group">
+              <label for="calc-duree">Durée (minutes)</label>
+              <input type="number" id="calc-duree" value="120">
+            </div>
+            <div class="form-group">
+              <label for="calc-taux">Taux horaire (€)</label>
+              <input type="number" id="calc-taux" value="35">
+            </div>
+            <div class="form-group">
+              <label for="calc-produits">Produits (€)</label>
+              <input type="number" id="calc-produits" value="12">
+            </div>
+            <div class="form-group">
+              <label for="calc-charges">Charges (€)</label>
+              <input type="number" id="calc-charges" value="5">
+            </div>
+            <div class="form-group">
+              <label for="calc-marge">Marge souhaitée (%)</label>
+              <input type="number" id="calc-marge" value="30">
+            </div>
+            <div class="form-group form-actions">
+              <button type="button" id="btn-calculer" class="btn btn-primary">Calculer le tarif</button>
+            </div>
+          </form>
+          <div id="calc-result" class="calc-result hidden">
+            <p>Tarif conseillé : <strong id="res-prix">0,00</strong> €</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
