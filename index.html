@@ -2,3162 +2,1937 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover">
+
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0d0e13">
+<meta name="theme-color" content="#0b0c10">
+
 <title>COIFF'BOOST</title>
 
-<style>
-:root{
---bg:#0d0e13;
---card:#171921;
---card2:#1e202a;
---text:#f7f7fa;
---muted:#9297a6;
---pink:#e9a8c7;
---pink2:#b96f99;
---green:#55d6a0;
---red:#ff6678;
---gold:#f2ca69;
---line:rgba(255,255,255,.08);
---radius:20px;
-}
-
-*{
-box-sizing:border-box;
--webkit-tap-highlight-color:transparent;
-}
-
-html,body{
-margin:0;
-padding:0;
-background:var(--bg);
-color:var(--text);
-font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
-}
-
-body{
-min-height:100vh;
-padding-bottom:95px;
-}
-
-button,input,select,textarea{
-font:inherit;
-}
-
-button{
-cursor:pointer;
-}
-
-.app{
-max-width:1100px;
-margin:auto;
-}
-
-/* HEADER */
-
-.header{
-position:sticky;
-top:0;
-z-index:100;
-padding:calc(12px + env(safe-area-inset-top)) 16px 12px;
-background:rgba(13,14,19,.9);
-backdrop-filter:blur(20px);
-border-bottom:1px solid var(--line);
-}
-
-.headerInner{
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-
-.brand{
-display:flex;
-align-items:center;
-gap:10px;
-}
-
-.brandIcon{
-width:43px;
-height:43px;
-border-radius:15px;
-display:grid;
-place-items:center;
-background:linear-gradient(135deg,var(--pink),var(--pink2));
-font-size:22px;
-box-shadow:0 8px 25px rgba(233,168,199,.22);
-}
-
-.brandName{
-font-weight:900;
-font-size:17px;
-letter-spacing:.4px;
-}
-
-.brandSub{
-color:var(--muted);
-font-size:11px;
-margin-top:2px;
-}
-
-.iconButton{
-width:42px;
-height:42px;
-border-radius:14px;
-border:1px solid var(--line);
-background:var(--card);
-color:var(--text);
-}
-
-/* CONTENT */
-
-.content{
-padding:22px 15px 35px;
-}
-
-.page{
-display:none;
-}
-
-.page.active{
-display:block;
-animation:fade .2s ease;
-}
-
-@keyframes fade{
-from{
-opacity:0;
-transform:translateY(5px);
-}
-to{
-opacity:1;
-transform:none;
-}
-}
-
-h1{
-font-size:29px;
-letter-spacing:-.8px;
-margin:0 0 5px;
-}
-
-.subtitle{
-margin:0 0 22px;
-color:var(--muted);
-}
-
-.section{
-margin-top:22px;
-}
-
-.sectionTitle{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:12px;
-}
-
-.sectionTitle h2{
-font-size:18px;
-margin:0;
-}
-
-/* CARDS */
-
-.grid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:11px;
-}
-
-.grid3{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:11px;
-}
-
-.card{
-background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.02));
-border:1px solid var(--line);
-border-radius:var(--radius);
-padding:17px;
-box-shadow:0 15px 40px rgba(0,0,0,.2);
-}
-
-.stat{
-min-height:118px;
-}
-
-.statIcon{
-font-size:24px;
-}
-
-.statValue{
-font-size:25px;
-font-weight:900;
-margin-top:10px;
-}
-
-.statLabel{
-color:var(--muted);
-font-size:12px;
-margin-top:3px;
-}
-
-/* BUTTONS */
-
-.btn{
-min-height:45px;
-padding:0 15px;
-border-radius:14px;
-border:1px solid var(--line);
-background:var(--card2);
-color:var(--text);
-font-weight:750;
-}
-
-.btnPrimary{
-background:linear-gradient(135deg,var(--pink),var(--pink2));
-color:#181017;
-border:none;
-}
-
-.btnDanger{
-background:rgba(255,102,120,.1);
-color:var(--red);
-}
-
-.btnFull{
-width:100%;
-}
-
-.actions{
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-}
-
-/* FORM */
-
-.form{
-display:grid;
-gap:12px;
-}
-
-.field{
-display:grid;
-gap:6px;
-}
-
-.field label{
-font-size:12px;
-font-weight:700;
-color:var(--muted);
-}
-
-.field input,
-.field textarea,
-.field select{
-width:100%;
-background:var(--card);
-border:1px solid var(--line);
-border-radius:14px;
-padding:13px;
-color:var(--text);
-outline:none;
-}
-
-.field input:focus,
-.field textarea:focus,
-.field select:focus{
-border-color:var(--pink);
-}
-
-.field textarea{
-min-height:90px;
-resize:vertical;
-}
-
-.two{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-}
-
-/* LIST */
-
-.list{
-display:grid;
-gap:9px;
-}
-
-.listItem{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:10px;
-background:var(--card);
-border:1px solid var(--line);
-border-radius:16px;
-padding:12px;
-}
-
-.left{
-display:flex;
-align-items:center;
-gap:10px;
-min-width:0;
-}
-
-.avatar{
-width:42px;
-height:42px;
-border-radius:14px;
-background:rgba(233,168,199,.12);
-color:var(--pink);
-display:grid;
-place-items:center;
-font-weight:900;
-flex-shrink:0;
-}
-
-.itemName{
-font-weight:750;
-}
-
-.itemMeta{
-font-size:11px;
-color:var(--muted);
-margin-top:3px;
-}
-
-/* BADGES */
-
-.badge{
-display:inline-flex;
-padding:6px 10px;
-border-radius:999px;
-font-size:10px;
-font-weight:900;
-}
-
-.badgeFree{
-background:rgba(255,255,255,.07);
-color:var(--muted);
-}
-
-.badgePro{
-background:rgba(233,168,199,.12);
-color:var(--pink);
-}
-
-.badgePremium{
-background:rgba(242,202,105,.12);
-color:var(--gold);
-}
-
-/* CALCULATOR */
-
-.totalBox{
-margin-top:15px;
-padding:20px;
-border-radius:19px;
-background:linear-gradient(135deg,rgba(233,168,199,.15),rgba(185,111,153,.05));
-border:1px solid rgba(233,168,199,.18);
-}
-
-.totalLabel{
-font-size:12px;
-color:var(--muted);
-}
-
-.totalValue{
-font-size:38px;
-font-weight:950;
-margin-top:3px;
-}
-
-.detail{
-font-size:12px;
-color:var(--muted);
-margin-top:5px;
-line-height:1.6;
-}
-
-/* INVOICE */
-
-.invoice{
-background:white;
-color:#151515;
-border-radius:20px;
-padding:24px;
-}
-
-.invoice h2{
-margin:0;
-}
-
-.invoice table{
-width:100%;
-border-collapse:collapse;
-margin-top:22px;
-}
-
-.invoice th,
-.invoice td{
-text-align:left;
-padding:9px 3px;
-border-bottom:1px solid #ddd;
-font-size:13px;
-}
-
-.invoice .right{
-text-align:right;
-}
-
-.invoiceTotal{
-font-size:23px;
-font-weight:900;
-text-align:right;
-margin-top:18px;
-}
-
-/* PRICING */
-
-.plan{
-height:100%;
-}
-
-.planPrice{
-font-size:31px;
-font-weight:950;
-margin:12px 0;
-}
-
-.planPrice span{
-font-size:12px;
-font-weight:500;
-color:var(--muted);
-}
-
-.feature{
-font-size:12px;
-padding:7px 0;
-}
-
-.feature.yes{
-color:#ddd;
-}
-
-.feature.yes:before{
-content:"✓";
-color:var(--green);
-font-weight:900;
-margin-right:7px;
-}
-
-.feature.no{
-color:#626875;
-}
-
-.feature.no:before{
-content:"×";
-color:#626875;
-font-weight:900;
-margin-right:7px;
-}
-
-/* LOCK */
-
-.locked{
-position:relative;
-overflow:hidden;
-min-height:160px;
-}
-
-.lock{
-position:absolute;
-inset:0;
-z-index:3;
-background:rgba(13,14,19,.88);
-backdrop-filter:blur(8px);
-display:flex;
-align-items:center;
-justify-content:center;
-flex-direction:column;
-text-align:center;
-padding:18px;
-}
-
-.lock strong{
-font-size:15px;
-}
-
-.lock small{
-color:var(--muted);
-margin:5px 0 11px;
-}
-
-/* EMPTY */
-
-.empty{
-text-align:center;
-padding:28px 12px;
-color:var(--muted);
-}
-
-.emptyIcon{
-font-size:33px;
-margin-bottom:8px;
-}
-
-/* NAV */
-
-.bottomNav{
-position:fixed;
-z-index:200;
-left:0;
-right:0;
-bottom:0;
-background:rgba(13,14,19,.94);
-backdrop-filter:blur(22px);
-border-top:1px solid var(--line);
-padding:7px 7px calc(7px + env(safe-area-inset-bottom));
-}
-
-.navInner{
-max-width:700px;
-margin:auto;
-display:grid;
-grid-template-columns:repeat(5,1fr);
-}
-
-.navBtn{
-border:0;
-background:none;
-color:#707583;
-font-size:10px;
-font-weight:800;
-padding:7px 2px;
-}
-
-.navBtn span{
-display:block;
-font-size:21px;
-margin-bottom:3px;
-}
-
-.navBtn.active{
-color:var(--pink);
-}
-
-/* MODAL */
-
-.modal{
-display:none;
-position:fixed;
-inset:0;
-z-index:500;
-background:rgba(0,0,0,.65);
-backdrop-filter:blur(5px);
-align-items:flex-end;
-justify-content:center;
-}
-
-.modal.show{
-display:flex;
-}
-
-.modalBox{
-width:min(600px,100%);
-max-height:90vh;
-overflow:auto;
-background:var(--card);
-border:1px solid var(--line);
-border-radius:27px 27px 0 0;
-padding:21px;
-}
-
-.modalHeader{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:18px;
-}
-
-.modalHeader h2{
-margin:0;
-}
-
-/* TOAST */
-
-.toast{
-position:fixed;
-z-index:999;
-left:50%;
-bottom:105px;
-transform:translate(-50%,20px);
-opacity:0;
-pointer-events:none;
-background:#282c36;
-border:1px solid var(--line);
-border-radius:14px;
-padding:11px 15px;
-font-size:12px;
-transition:.25s;
-white-space:nowrap;
-}
-
-.toast.show{
-opacity:1;
-transform:translate(-50%,0);
-}
-
-/* PRINT */
-
-@media print{
-
-body{
-background:white;
-padding:0;
-}
-
-.header,
-.bottomNav,
-.noPrint{
-display:none!important;
-}
-
-#invoicePage{
-display:block!important;
-}
-
-.invoice{
-border-radius:0;
-box-shadow:none;
-}
-
-}
-
-@media(min-width:700px){
-
-.content{
-padding:30px;
-}
-
-.grid{
-grid-template-columns:repeat(4,1fr);
-}
-
-.modal{
-align-items:center;
-}
-
-.modalBox{
-border-radius:27px;
-}
-
-}
-
-@media(max-width:390px){
-
-.two{
-grid-template-columns:1fr;
-}
-
-h1{
-font-size:26px;
-}
-
-}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="app">
+<div id="app">
 
-<header class="header">
-<div class="headerInner">
+<header class="topbar">
 
-<div class="brand">
+    <div class="brand">
+        <div class="brand-logo">✂️</div>
 
-<div class="brandIcon">✂️</div>
+        <div>
+            <strong>COIFF'BOOST</strong>
+            <small id="salonHeader">Gestion professionnelle</small>
+        </div>
+    </div>
 
-<div>
-<div class="brandName">COIFF'BOOST</div>
-<div class="brandSub">Gestion professionnelle</div>
-</div>
+    <button
+        class="icon-btn"
+        onclick="navigate('settings')">
+        ⚙️
+    </button>
 
-</div>
-
-<button class="iconButton" onclick="openPage('settings')">
-⚙️
-</button>
-
-</div>
 </header>
 
 
-<main class="content">
-
-<!-- ACCUEIL -->
-
-<section id="dashboard" class="page active">
-
-<h1>Bonjour 👋</h1>
-
-<p class="subtitle">
-Votre espace de gestion coiffure.
-</p>
+<main>
 
 
-<div class="grid">
+<!-- =========================
+     DASHBOARD
+========================= -->
 
-<div class="card stat">
-<div class="statIcon">💶</div>
-<div class="statValue" id="dashRevenue">0 €</div>
-<div class="statLabel">Chiffre d'affaires</div>
-</div>
+<section
+    id="page-dashboard"
+    class="page active">
 
-<div class="card stat">
-<div class="statIcon">👩</div>
-<div class="statValue" id="dashClients">0</div>
-<div class="statLabel">Clientes</div>
-</div>
+    <div class="page-header">
 
-<div class="card stat">
-<div class="statIcon">📅</div>
-<div class="statValue" id="dashAppointments">0</div>
-<div class="statLabel">Rendez-vous</div>
-</div>
+        <div>
+            <span class="eyebrow">
+                TABLEAU DE BORD
+            </span>
 
-<div class="card stat">
-<div class="statIcon">🧾</div>
-<div class="statValue" id="dashInvoices">0</div>
-<div class="statLabel">Factures</div>
-</div>
+            <h1>Bonjour 👋</h1>
 
-</div>
+            <p>
+                Voici l'activité de votre salon.
+            </p>
+        </div>
+
+    </div>
 
 
-<div class="section">
+    <div class="stats-grid">
 
-<div class="sectionTitle">
-<h2>Actions rapides</h2>
-</div>
+        <article class="stat-card">
 
-<div class="grid">
+            <span class="stat-icon">💶</span>
 
-<button class="card" onclick="openPage('calculator')">
-<div style="font-size:28px">💰</div>
-<strong>Calculateur</strong>
-<div class="itemMeta">Calculer un tarif</div>
-</button>
+            <div>
+                <small>CA</small>
 
-<button class="card" onclick="openPage('invoice')">
-<div style="font-size:28px">🧾</div>
-<strong>Facture</strong>
-<div class="itemMeta">Créer une facture</div>
-</button>
+                <strong id="dashboardRevenue">
+                    0 €
+                </strong>
+            </div>
 
-<button class="card" onclick="openClientModal()">
-<div style="font-size:28px">👩</div>
-<strong>Cliente</strong>
-<div class="itemMeta">Ajouter une cliente</div>
-</button>
-
-<button class="card" onclick="openAppointmentModal()">
-<div style="font-size:28px">📅</div>
-<strong>Rendez-vous</strong>
-<div class="itemMeta">Ajouter au planning</div>
-</button>
-
-</div>
-
-</div>
+        </article>
 
 
-<div class="section">
+        <article class="stat-card">
 
-<div class="sectionTitle">
-<h2>Résumé</h2>
-</div>
+            <span class="stat-icon">📅</span>
 
-<div class="card">
+            <div>
+                <small>RDV aujourd'hui</small>
 
-<div class="list">
+                <strong id="dashboardToday">
+                    0
+                </strong>
+            </div>
 
-<div class="listItem">
-<div>
-<strong>Panier moyen</strong>
-<div class="itemMeta">Factures enregistrées</div>
-</div>
-<strong id="averagePrice">0 €</strong>
-</div>
+        </article>
 
-<div class="listItem">
-<div>
-<strong>Coût produits</strong>
-<div class="itemMeta">Produits enregistrés</div>
-</div>
-<strong id="productCost">0 €</strong>
-</div>
 
-</div>
+        <article class="stat-card">
 
-</div>
+            <span class="stat-icon">👩</span>
 
-</div>
+            <div>
+                <small>Clientes</small>
+
+                <strong id="dashboardClients">
+                    0
+                </strong>
+            </div>
+
+        </article>
+
+
+        <article class="stat-card">
+
+            <span class="stat-icon">🧾</span>
+
+            <div>
+                <small>Factures</small>
+
+                <strong id="dashboardInvoices">
+                    0
+                </strong>
+            </div>
+
+        </article>
+
+    </div>
+
+
+    <div class="section-title">
+
+        <h2>Actions rapides</h2>
+
+    </div>
+
+
+    <div class="quick-grid">
+
+        <button
+            class="quick-card"
+            onclick="navigate('calculator')">
+
+            <span>💰</span>
+
+            <strong>Calculateur</strong>
+
+            <small>
+                Calculer un tarif
+            </small>
+
+        </button>
+
+
+        <button
+            class="quick-card"
+            onclick="openClientModal()">
+
+            <span>👩</span>
+
+            <strong>Nouvelle cliente</strong>
+
+            <small>
+                Ajouter au carnet
+            </small>
+
+        </button>
+
+
+        <button
+            class="quick-card"
+            onclick="openAppointmentModal()">
+
+            <span>📅</span>
+
+            <strong>Nouveau RDV</strong>
+
+            <small>
+                Ajouter au planning
+            </small>
+
+        </button>
+
+
+        <button
+            class="quick-card"
+            onclick="navigate('invoice')">
+
+            <span>🧾</span>
+
+            <strong>Facture</strong>
+
+            <small>
+                Créer une facture
+            </small>
+
+        </button>
+
+    </div>
+
+
+    <div class="section-title">
+
+        <h2>Prochains rendez-vous</h2>
+
+        <button
+            class="text-button"
+            onclick="navigate('planning')">
+            Voir tout
+        </button>
+
+    </div>
+
+
+    <div
+        id="dashboardAppointments"
+        class="list">
+    </div>
+
 
 </section>
 
 
-<!-- CALCULATEUR -->
 
-<section id="calculator" class="page">
+<!-- =========================
+     PLANNING
+========================= -->
 
-<h1>Calculateur</h1>
+<section
+    id="page-planning"
+    class="page">
 
-<p class="subtitle">
-Calculez un tarif rentable pour chaque prestation.
-</p>
+    <div class="page-header">
 
+        <div>
 
-<div class="card">
+            <span class="eyebrow">
+                AGENDA
+            </span>
 
-<div class="form">
+            <h1>Planning</h1>
 
-<div class="field">
-<label>Nom de la prestation</label>
-<input id="calcName" placeholder="Ex : Balayage">
-</div>
+            <p>
+                Organisez vos rendez-vous.
+            </p>
 
-
-<div class="two">
-
-<div class="field">
-<label>Temps en minutes</label>
-<input id="calcTime" type="number" value="120">
-</div>
-
-<div class="field">
-<label>Taux horaire (€)</label>
-<input id="calcHourly" type="number" value="35">
-</div>
-
-</div>
+        </div>
 
 
-<div class="two">
+        <button
+            class="primary-btn"
+            onclick="openAppointmentModal()">
 
-<div class="field">
-<label>Produits (€)</label>
-<input id="calcProducts" type="number" value="8">
-</div>
+            + Nouveau
 
-<div class="field">
-<label>Charges (€)</label>
-<input id="calcCharges" type="number" value="5">
-</div>
+        </button>
 
-</div>
+    </div>
 
 
-<div class="field">
-<label>Marge souhaitée (%)</label>
-<input id="calcMargin" type="number" value="20">
-</div>
+    <div class="calendar-toolbar">
+
+        <button
+            class="icon-btn"
+            onclick="changeCalendar(-1)">
+            ‹
+        </button>
 
 
-<button class="btn btnPrimary btnFull" onclick="calculatePrice()">
-Calculer le tarif
-</button>
-
-</div>
+        <strong id="calendarTitle">
+            —
+        </strong>
 
 
-<div class="totalBox">
+        <button
+            class="icon-btn"
+            onclick="changeCalendar(1)">
+            ›
+        </button>
 
-<div class="totalLabel">
-Tarif conseillé
-</div>
-
-<div class="totalValue" id="calculatedPrice">
-0 €
-</div>
-
-<div class="detail" id="calculationDetails">
-Remplissez les informations ci-dessus.
-</div>
-
-</div>
-
-</div>
+    </div>
 
 
-<div class="section">
+    <div
+        id="calendar"
+        class="calendar">
+    </div>
 
-<div class="sectionTitle">
-<h2>Prestations enregistrées</h2>
-</div>
 
-<div id="servicesList" class="list"></div>
+    <div class="section-title">
 
-</div>
+        <h2>Rendez-vous</h2>
+
+    </div>
+
+
+    <div
+        id="appointmentsList"
+        class="list">
+    </div>
 
 </section>
 
 
-<!-- CLIENTES -->
 
-<section id="clients" class="page">
+<!-- =========================
+     CLIENTES
+========================= -->
 
-<h1>Clientes</h1>
+<section
+    id="page-clients"
+    class="page">
 
-<p class="subtitle">
-Carnet client local et privé.
-</p>
+    <div class="page-header">
 
-<button class="btn btnPrimary btnFull" onclick="openClientModal()">
-+ Ajouter une cliente
-</button>
+        <div>
+
+            <span class="eyebrow">
+                CARNET CLIENT
+            </span>
+
+            <h1>Clientes</h1>
+
+            <p>
+                Retrouvez toutes vos clientes.
+            </p>
+
+        </div>
 
 
-<div class="section">
+        <button
+            class="primary-btn"
+            onclick="openClientModal()">
 
-<div id="clientsList" class="list"></div>
+            + Ajouter
 
-</div>
+        </button>
+
+    </div>
+
+
+    <div class="search-box">
+
+        <span>🔎</span>
+
+        <input
+            id="clientSearch"
+            type="search"
+            placeholder="Rechercher une cliente..."
+            oninput="renderClients()">
+
+    </div>
+
+
+    <div
+        id="clientsList"
+        class="list">
+    </div>
 
 </section>
 
 
-<!-- PLANNING -->
 
-<section id="planning" class="page">
+<!-- =========================
+     PRESTATIONS
+========================= -->
 
-<h1>Planning</h1>
+<section
+    id="page-services"
+    class="page">
 
-<p class="subtitle">
-Gérez vos rendez-vous.
-</p>
+    <div class="page-header">
 
-<button class="btn btnPrimary btnFull" onclick="openAppointmentModal()">
-+ Nouveau rendez-vous
-</button>
+        <div>
+
+            <span class="eyebrow">
+                CATALOGUE
+            </span>
+
+            <h1>Prestations</h1>
+
+            <p>
+                Gérez vos services et votre rentabilité.
+            </p>
+
+        </div>
 
 
-<div class="section">
+        <button
+            class="primary-btn"
+            onclick="openServiceModal()">
 
-<div id="appointmentsList" class="list"></div>
+            + Ajouter
 
-</div>
+        </button>
+
+    </div>
+
+
+    <div
+        id="servicesList"
+        class="list">
+    </div>
 
 </section>
 
 
-<!-- FACTURES -->
 
-<section id="invoice" class="page">
+<!-- =========================
+     CALCULATEUR
+========================= -->
 
-<h1>Facturation</h1>
+<section
+    id="page-calculator"
+    class="page">
 
-<p class="subtitle">
-Créez une facture professionnelle.
-</p>
+    <div class="page-header">
 
+        <div>
 
-<div class="card noPrint">
+            <span class="eyebrow">
+                RENTABILITÉ
+            </span>
 
-<div class="form">
+            <h1>Calculateur</h1>
 
-<div class="two">
+            <p>
+                Trouvez le tarif réellement rentable.
+            </p>
 
-<div class="field">
-<label>Cliente</label>
-<input id="invoiceClient" placeholder="Nom Prénom">
-</div>
+        </div>
 
-<div class="field">
-<label>Date</label>
-<input id="invoiceDate" type="date">
-</div>
+    </div>
 
-</div>
 
+    <div class="calculator-card">
 
-<div class="field">
-<label>Prestation</label>
-<input id="invoiceService" placeholder="Ex : Coupe + brushing">
-</div>
 
+        <div class="field">
 
-<div class="two">
+            <label>
+                Nom de la prestation
+            </label>
 
-<div class="field">
-<label>Quantité</label>
-<input id="invoiceQty" type="number" value="1">
-</div>
+            <input
+                id="calculatorName"
+                placeholder="Ex : Balayage">
 
-<div class="field">
-<label>Prix unitaire (€)</label>
-<input id="invoicePrice" type="number" step="0.01">
-</div>
+        </div>
 
-</div>
 
+        <div class="two-columns">
 
-<button class="btn btnPrimary btnFull" onclick="generateInvoice()">
-Générer la facture
-</button>
+            <div class="field">
 
-</div>
+                <label>
+                    Durée
+                </label>
 
-</div>
+                <input
+                    id="calculatorMinutes"
+                    type="number"
+                    value="120">
 
+                <small>
+                    minutes
+                </small>
 
-<div class="section">
+            </div>
 
-<div id="invoicePage" class="invoice">
 
-<div style="display:flex;justify-content:space-between;gap:20px">
+            <div class="field">
 
-<div>
+                <label>
+                    Taux horaire
+                </label>
 
-<h2 id="invoiceSalon">
-COIFF'BOOST
-</h2>
+                <input
+                    id="calculatorHourly"
+                    type="number"
+                    value="35"
+                    step="0.01">
 
-<div id="invoiceOwner" style="color:#777;margin-top:4px">
-Gestion professionnelle
-</div>
+                <small>
+                    €/heure
+                </small>
 
-</div>
+            </div>
 
-<div style="text-align:right">
+        </div>
 
-<strong id="invoiceNumber">
-FACTURE
-</strong>
 
-<br>
+        <div class="two-columns">
 
-<span id="invoiceDisplayDate">
-—
-</span>
+            <div class="field">
 
-</div>
+                <label>
+                    Produits
+                </label>
 
-</div>
+                <input
+                    id="calculatorProducts"
+                    type="number"
+                    value="0"
+                    step="0.01">
 
+                <small>
+                    €
 
-<hr style="border:0;border-top:1px solid #ddd;margin:20px 0">
+                </small>
 
+            </div>
 
-<strong>Cliente</strong>
 
-<div id="invoiceDisplayClient">
-—
-</div>
+            <div class="field">
 
+                <label>
+                    Charges
+                </label>
 
-<table>
+                <input
+                    id="calculatorCharges"
+                    type="number"
+                    value="0"
+                    step="0.01">
 
-<thead>
+                <small>
+                    €
 
-<tr>
+                </small>
 
-<th>Prestation</th>
+            </div>
 
-<th>Qté</th>
+        </div>
 
-<th class="right">Total</th>
 
-</tr>
+        <div class="field">
 
-</thead>
+            <label>
+                Marge souhaitée
+            </label>
 
+            <input
+                id="calculatorMargin"
+                type="number"
+                value="20">
 
-<tbody id="invoiceLines">
+            <small>
+                %
+            </small>
 
-<tr>
+        </div>
 
-<td>—</td>
 
-<td>—</td>
+        <button
+            class="primary-btn full"
+            onclick="calculatePrice()">
 
-<td class="right">0 €</td>
+            Calculer mon tarif
 
-</tr>
+        </button>
 
-</tbody>
 
-</table>
+        <div
+            id="calculatorResult"
+            class="calculator-result">
 
+            <small>
+                Tarif conseillé
+            </small>
 
-<div class="invoiceTotal" id="invoiceTotal">
-Total : 0 €
-</div>
+            <strong>
+                0 €
+            </strong>
 
-</div>
+            <p>
+                Remplissez les informations.
+            </p>
 
+        </div>
 
-<div class="actions noPrint" style="margin-top:12px">
 
-<button class="btn btnPrimary" onclick="printInvoice()">
-🖨️ Imprimer / PDF
-</button>
+    </div>
 
-<button class="btn" onclick="saveInvoice()">
-💾 Enregistrer
-</button>
-
-</div>
-
-</div>
 
 </section>
 
 
-<!-- PRODUITS -->
 
-<section id="products" class="page">
+<!-- =========================
+     FACTURES
+========================= -->
 
-<h1>Produits</h1>
+<section
+    id="page-invoice"
+    class="page">
 
-<p class="subtitle">
-Suivez vos produits et leurs coûts.
-</p>
+    <div class="page-header">
+
+        <div>
+
+            <span class="eyebrow">
+                FACTURATION
+            </span>
+
+            <h1>Factures</h1>
+
+            <p>
+                Créez et retrouvez vos factures.
+            </p>
+
+        </div>
+
+    </div>
 
 
-<button class="btn btnPrimary btnFull" onclick="openProductModal()">
-+ Ajouter un produit
-</button>
+    <div class="invoice-editor">
+
+        <div class="field">
+
+            <label>
+                Cliente
+            </label>
+
+            <input
+                id="invoiceClient"
+                placeholder="Nom de la cliente">
+
+        </div>
 
 
-<div class="section">
+        <div class="field">
 
-<div id="productsList" class="list"></div>
+            <label>
+                Prestation
+            </label>
 
-</div>
+            <input
+                id="invoiceService"
+                placeholder="Ex : Coupe + brushing">
+
+        </div>
+
+
+        <div class="two-columns">
+
+            <div class="field">
+
+                <label>
+                    Quantité
+                </label>
+
+                <input
+                    id="invoiceQuantity"
+                    type="number"
+                    value="1">
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Prix unitaire
+                </label>
+
+                <input
+                    id="invoicePrice"
+                    type="number"
+                    step="0.01">
+
+            </div>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Remise
+            </label>
+
+            <input
+                id="invoiceDiscount"
+                type="number"
+                value="0">
+
+            <small>
+                €
+            </small>
+
+        </div>
+
+
+        <button
+            class="primary-btn full"
+            onclick="generateInvoice()">
+
+            Générer la facture
+
+        </button>
+
+    </div>
+
+
+    <div
+        id="invoicePreview"
+        class="invoice-preview">
+
+        <div class="invoice-header">
+
+            <div>
+
+                <strong id="invoiceSalon">
+                    COIFF'BOOST
+                </strong>
+
+                <small id="invoiceOwner">
+                    Gestion professionnelle
+                </small>
+
+            </div>
+
+
+            <div class="invoice-number">
+
+                <strong id="invoiceNumber">
+                    FACTURE
+                </strong>
+
+                <small id="invoiceDate">
+                    —
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <hr>
+
+
+        <div class="invoice-client">
+
+            <small>
+                CLIENTE
+            </small>
+
+            <strong id="invoiceClientDisplay">
+                —
+            </strong>
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Prestation
+                    </th>
+
+                    <th>
+                        Qté
+                    </th>
+
+                    <th>
+                        Total
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                <tr>
+
+                    <td id="invoiceServiceDisplay">
+                        —
+                    </td>
+
+                    <td id="invoiceQuantityDisplay">
+                        1
+                    </td>
+
+                    <td id="invoiceTotalDisplay">
+                        0 €
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+
+        <div class="invoice-total">
+
+            <span>
+                Total
+            </span>
+
+            <strong id="invoiceFinalTotal">
+                0 €
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="invoice-actions">
+
+        <button
+            class="secondary-btn"
+            onclick="printInvoice()">
+
+            🖨️ PDF / Imprimer
+
+        </button>
+
+
+        <button
+            class="primary-btn"
+            onclick="saveInvoice()">
+
+            💾 Enregistrer
+
+        </button>
+
+    </div>
+
+
+    <div class="section-title">
+
+        <h2>Historique</h2>
+
+    </div>
+
+
+    <div
+        id="invoiceHistory"
+        class="list">
+    </div>
 
 </section>
 
 
-<!-- STATISTIQUES -->
 
-<section id="statistics" class="page">
+<!-- =========================
+     PRODUITS
+========================= -->
 
-<h1>Statistiques</h1>
+<section
+    id="page-products"
+    class="page">
 
-<p class="subtitle">
-Analysez votre activité.</p>
+    <div class="page-header">
 
+        <div>
 
-<div id="statsLocked" class="card locked">
+            <span class="eyebrow">
+                STOCK
+            </span>
 
-<div style="padding:10px">
+            <h1>Produits</h1>
 
-<div class="grid">
+            <p>
+                Gérez vos consommables.
+            </p>
 
-<div class="card stat">
-<div class="statIcon">💶</div>
-<div class="statValue" id="statsRevenue">0 €</div>
-<div class="statLabel">CA</div>
-</div>
-
-<div class="card stat">
-<div class="statIcon">🧾</div>
-<div class="statValue" id="statsInvoices">0</div>
-<div class="statLabel">Factures</div>
-</div>
-
-<div class="card stat">
-<div class="statIcon">👩</div>
-<div class="statValue" id="statsClients">0</div>
-<div class="statLabel">Clientes</div>
-</div>
-
-<div class="card stat">
-<div class="statIcon">📦</div>
-<div class="statValue" id="statsProducts">0</div>
-<div class="statLabel">Produits</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
+        </div>
 
 
-<div class="section">
+        <button
+            class="primary-btn pro-feature"
+            onclick="openProductModal()">
 
-<div class="card">
+            ⭐ + Ajouter
 
-<h3>Analyse</h3>
+        </button>
 
-<div id="statsAnalysis" style="color:var(--muted);line-height:1.7">
-Aucune donnée.
-</div>
+    </div>
 
-</div>
 
-</div>
+    <div
+        id="productsArea"
+        class="pro-container">
+
+        <div
+            id="productsList"
+            class="list">
+        </div>
+
+    </div>
 
 </section>
 
 
-<!-- ABONNEMENT -->
 
-<section id="subscription" class="page">
+<!-- =========================
+     STATISTIQUES
+========================= -->
 
-<h1>Abonnement</h1>
+<section
+    id="page-statistics"
+    class="page">
 
-<p class="subtitle">
-Les fonctionnalités sont clairement indiquées.
-</p>
+    <div class="page-header">
 
+        <div>
 
-<div class="grid3">
+            <span class="eyebrow">
+                ANALYSE
+            </span>
 
-<div class="card plan">
+            <h1>Statistiques ⭐</h1>
 
-<span class="badge badgeFree">
-GRATUIT
-</span>
+            <p>
+                Analysez votre activité.
+            </p>
 
-<div class="planPrice">
-0 € <span>/ mois</span>
-</div>
+        </div>
 
-<div class="feature yes">
-Calculateur de prix
-</div>
-
-<div class="feature yes">
-Clientes
-</div>
-
-<div class="feature yes">
-Planning
-</div>
-
-<div class="feature yes">
-Factures
-</div>
-
-<div class="feature yes">
-PDF / impression
-</div>
-
-<div class="feature yes">
-Sauvegarde locale
-</div>
-
-<div class="feature no">
-Statistiques avancées
-</div>
-
-<div class="feature no">
-Gestion produits
-</div>
-
-<button class="btn btnFull" onclick="choosePlan('FREE')">
-Utiliser Gratuit
-</button>
-
-</div>
+    </div>
 
 
-<div class="card plan">
+    <div
+        id="statisticsLocked"
+        class="locked-card">
 
-<span class="badge badgePro">
-⭐ PRO
-</span>
+        <div>
+            🔒
+        </div>
 
-<div class="planPrice">
-9,99 € <span>/ mois</span>
-</div>
+        <strong>
+            Fonction Pro
+        </strong>
 
-<div class="feature yes">
-Tout le Gratuit
-</div>
+        <p>
+            Les statistiques avancées sont disponibles
+            dans COIFF'BOOST PRO.
+        </p>
 
-<div class="feature yes">
-Statistiques avancées
-</div>
+        <button
+            class="primary-btn"
+            onclick="navigate('subscription')">
 
-<div class="feature yes">
-Gestion produits
-</div>
+            Voir Pro
 
-<div class="feature yes">
-Analyse de rentabilité
-</div>
+        </button>
 
-<div class="feature yes">
-Historique avancé
-</div>
-
-<div class="feature no">
-Fonctions Premium futures
-</div>
-
-<button class="btn btnPrimary btnFull" onclick="choosePlan('PRO')">
-Choisir Pro
-</button>
-
-</div>
+    </div>
 
 
-<div class="card plan">
+    <div
+        id="statisticsContent"
+        class="hidden">
 
-<span class="badge badgePremium">
-👑 PREMIUM
-</span>
+        <div class="stats-grid">
 
-<div class="planPrice">
-19,99 € <span>/ mois</span>
-</div>
+            <article class="stat-card">
 
-<div class="feature yes">
-Tout le Pro
-</div>
+                <span>💶</span>
 
-<div class="feature yes">
-Fonctions Premium futures
-</div>
+                <div>
 
-<div class="feature yes">
-Nouvelles fonctions en priorité
-</div>
+                    <small>
+                        Chiffre d'affaires
+                    </small>
 
-<div class="feature yes">
-Outils professionnels étendus
-</div>
+                    <strong id="statsRevenue">
+                        0 €
+                    </strong>
 
-<button class="btn btnPrimary btnFull" onclick="choosePlan('PREMIUM')">
-Choisir Premium
-</button>
+                </div>
 
-</div>
-
-</div>
+            </article>
 
 
-<div class="section">
+            <article class="stat-card">
 
-<div class="card">
+                <span>📈</span>
 
-<strong>ℹ️ Paiements</strong>
+                <div>
 
-<p style="color:var(--muted);line-height:1.6;font-size:13px">
-Cette version locale contient la présentation des abonnements.
-Aucun paiement réel n'est effectué.
-Pour commercialiser l'application, un système de paiement sécurisé devra être ajouté côté serveur.
-</p>
+                    <small>
+                        Panier moyen
+                    </small>
 
-</div>
+                    <strong id="statsAverage">
+                        0 €
+                    </strong>
 
-</div>
+                </div>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <span>👩</span>
+
+                <div>
+
+                    <small>
+                        Clientes
+                    </small>
+
+                    <strong id="statsClients">
+                        0
+                    </strong>
+
+                </div>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <span>✂️</span>
+
+                <div>
+
+                    <small>
+                        Prestations
+                    </small>
+
+                    <strong id="statsServices">
+                        0
+                    </strong>
+
+                </div>
+
+            </article>
+
+        </div>
+
+
+        <div class="analysis-card">
+
+            <h2>
+                Analyse
+            </h2>
+
+            <div id="statsAnalysis">
+                Aucune donnée.
+            </div>
+
+        </div>
+
+    </div>
 
 </section>
 
 
-<!-- PARAMETRES -->
 
-<section id="settings" class="page">
+<!-- =========================
+     ABONNEMENT
+========================= -->
 
-<h1>Paramètres</h1>
+<section
+    id="page-subscription"
+    class="page">
 
-<p class="subtitle">
-Configurez votre espace professionnel.
-</p>
+    <div class="page-header">
 
+        <div>
 
-<div class="card">
+            <span class="eyebrow">
+                COIFF'BOOST
+            </span>
 
-<div class="form">
+            <h1>Abonnement</h1>
 
-<div class="field">
-<label>Nom du salon</label>
-<input id="settingSalon" placeholder="Mon salon">
-</div>
+            <p>
+                Choisissez votre formule.
+            </p>
 
-<div class="field">
-<label>Nom de la coiffeuse</label>
-<input id="settingOwner" placeholder="Prénom Nom">
-</div>
+        </div>
 
-<div class="field">
-<label>Téléphone</label>
-<input id="settingPhone" type="tel">
-</div>
-
-<div class="field">
-<label>Adresse</label>
-<textarea id="settingAddress"></textarea>
-</div>
-
-<button class="btn btnPrimary btnFull" onclick="saveSettings()">
-Enregistrer
-</button>
-
-</div>
-
-</div>
+    </div>
 
 
-<div class="section">
-
-<div class="card">
-
-<div class="sectionTitle">
-
-<h2>Formule actuelle</h2>
-
-<span id="currentPlan" class="badge badgeFree">
-GRATUIT
-</span>
-
-</div>
-
-<button class="btn btnFull" onclick="openPage('subscription')">
-Voir les formules
-</button>
-
-</div>
-
-</div>
+    <div class="plans">
 
 
-<div class="section">
+        <article class="plan">
 
-<div class="card">
+            <span class="plan-badge">
+                GRATUIT
+            </span>
 
-<h2>🔐 Accès complet</h2>
+            <h2>
+                Essentiel
+            </h2>
 
-<p style="color:var(--muted);font-size:13px;line-height:1.6">
-Zone propriétaire permettant de débloquer toutes les fonctions de cette version locale.
-</p>
-
-
-<div class="form">
-
-<div class="field">
-
-<label>Code d'accès</label>
-
-<input id="masterCode" type="password" placeholder="Code">
-
-</div>
-
-<button class="btn btnPrimary btnFull" onclick="unlock()">
-Débloquer tout
-</button>
-
-<div id="unlockStatus" style="font-size:12px"></div>
-
-</div>
-
-</div>
-
-</div>
+            <strong class="plan-price">
+                0 €
+                <small>/ mois</small>
+            </strong>
 
 
-<div class="section">
+            <ul>
 
-<div class="card">
+                <li>✓ Clientes</li>
 
-<h2>💾 Données</h2>
+                <li>✓ Agenda</li>
 
-<p style="color:var(--muted);font-size:13px">
-Les données restent dans le stockage local de cet appareil.
-</p>
+                <li>✓ Calculateur</li>
 
-<div class="actions">
+                <li>✓ Factures</li>
 
-<button class="btn" onclick="exportData()">
-Exporter
-</button>
+                <li>✓ PDF</li>
 
-<button class="btn btnDanger" onclick="resetData()">
-Tout supprimer
-</button>
+                <li>✓ Sauvegarde locale</li>
 
-</div>
+                <li class="disabled">
+                    ✕ Statistiques avancées
+                </li>
 
-</div>
+                <li class="disabled">
+                    ✕ Gestion produits
+                </li>
 
-</div>
+            </ul>
+
+
+            <button
+                class="secondary-btn full"
+                onclick="selectPlan('FREE')">
+
+                Formule actuelle
+
+            </button>
+
+        </article>
+
+
+
+        <article class="plan featured">
+
+            <span class="plan-badge pink">
+                ⭐ PRO
+            </span>
+
+            <h2>
+                Professionnel
+            </h2>
+
+            <strong class="plan-price">
+                9,99 €
+                <small>/ mois</small>
+            </strong>
+
+
+            <ul>
+
+                <li>✓ Tout Gratuit</li>
+
+                <li>✓ Statistiques avancées</li>
+
+                <li>✓ Gestion produits</li>
+
+                <li>✓ Rentabilité</li>
+
+                <li>✓ Historique avancé</li>
+
+                <li>✓ Analyse activité</li>
+
+            </ul>
+
+
+            <button
+                class="primary-btn full"
+                onclick="selectPlan('PRO')">
+
+                Choisir Pro
+
+            </button>
+
+        </article>
+
+
+
+        <article class="plan">
+
+            <span class="plan-badge gold">
+                👑 PREMIUM
+            </span>
+
+            <h2>
+                Studio
+            </h2>
+
+            <strong class="plan-price">
+                19,99 €
+                <small>/ mois</small>
+            </strong>
+
+
+            <ul>
+
+                <li>✓ Tout Pro</li>
+
+                <li>✓ Fonctions Premium futures</li>
+
+                <li>✓ Nouveautés prioritaires</li>
+
+                <li>✓ Outils avancés</li>
+
+            </ul>
+
+
+            <button
+                class="primary-btn full"
+                onclick="selectPlan('PREMIUM')">
+
+                Choisir Premium
+
+            </button>
+
+        </article>
+
+    </div>
+
+
+    <div class="info-card">
+
+        ℹ️
+
+        <div>
+
+            <strong>
+                Version actuelle
+            </strong>
+
+            <p>
+                Les abonnements sont présentés ici à titre
+                de prototype. Aucun paiement réel n'est effectué
+                dans cette version locale.
+            </p>
+
+        </div>
+
+    </div>
 
 </section>
+
+
+
+<!-- =========================
+     PARAMETRES
+========================= -->
+
+<section
+    id="page-settings"
+    class="page">
+
+    <div class="page-header">
+
+        <div>
+
+            <span class="eyebrow">
+                CONFIGURATION
+            </span>
+
+            <h1>Paramètres</h1>
+
+            <p>
+                Configurez votre espace.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="settings-card">
+
+
+        <h2>
+            Informations du salon
+        </h2>
+
+
+        <div class="field">
+
+            <label>
+                Nom du salon
+            </label>
+
+            <input
+                id="settingSalon"
+                placeholder="Ex : Audrey Hair">
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Coiffeuse
+            </label>
+
+            <input
+                id="settingOwner"
+                placeholder="Prénom Nom">
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Téléphone
+            </label>
+
+            <input
+                id="settingPhone"
+                type="tel">
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Adresse
+            </label>
+
+            <textarea
+                id="settingAddress">
+            </textarea>
+
+        </div>
+
+
+        <button
+            class="primary-btn full"
+            onclick="saveSettings()">
+
+            Enregistrer
+
+        </button>
+
+    </div>
+
+
+    <div class="settings-card">
+
+        <h2>
+            Abonnement
+        </h2>
+
+
+        <div class="current-plan">
+
+            <span>
+                Formule actuelle
+            </span>
+
+            <strong id="currentPlan">
+                GRATUIT
+            </strong>
+
+        </div>
+
+
+        <button
+            class="secondary-btn full"
+            onclick="navigate('subscription')">
+
+            Voir les formules
+
+        </button>
+
+    </div>
+
+
+    <div class="settings-card">
+
+        <h2>
+            🔐 Accès propriétaire
+        </h2>
+
+        <p>
+            Débloque toutes les fonctions de cette version locale.
+        </p>
+
+
+        <div class="field">
+
+            <label>
+                Code propriétaire
+            </label>
+
+            <input
+                id="masterCode"
+                type="password"
+                placeholder="Code">
+
+        </div>
+
+
+        <button
+            class="primary-btn full"
+            onclick="unlockOwner()">
+
+            Débloquer l'accès complet
+
+        </button>
+
+
+        <small
+            id="unlockMessage">
+        </small>
+
+    </div>
+
+
+    <div class="settings-card">
+
+        <h2>
+            💾 Données
+        </h2>
+
+        <p>
+            Vos données sont stockées localement sur cet appareil.
+        </p>
+
+
+        <div class="two-columns">
+
+            <button
+                class="secondary-btn"
+                onclick="exportData()">
+
+                Exporter
+
+            </button>
+
+
+            <button
+                class="danger-btn"
+                onclick="resetData()">
+
+                Supprimer
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="app-version">
+
+        COIFF'BOOST V10.1<br>
+
+        <span>
+            Application locale
+        </span>
+
+    </div>
+
+</section>
+
 
 </main>
 
 
-<!-- NAVIGATION -->
 
-<nav class="bottomNav">
+<!-- =========================
+     BOTTOM NAV
+========================= -->
 
-<div class="navInner">
+<nav class="bottom-nav">
 
-<button class="navBtn active" data-page="dashboard" onclick="openPage('dashboard')">
-<span>⌂</span>
-Accueil
-</button>
+    <button
+        data-nav="dashboard"
+        class="active"
+        onclick="navigate('dashboard')">
 
-<button class="navBtn" data-page="calculator" onclick="openPage('calculator')">
-<span>€</span>
-Prix
-</button>
+        <span>⌂</span>
+        Accueil
 
-<button class="navBtn" data-page="clients" onclick="openPage('clients')">
-<span>👩</span>
-Clientes
-</button>
+    </button>
 
-<button class="navBtn" data-page="planning" onclick="openPage('planning')">
-<span>📅</span>
-Planning
-</button>
 
-<button class="navBtn" data-page="settings" onclick="openPage('settings')">
-<span>⚙️</span>
-Plus
-</button>
+    <button
+        data-nav="planning"
+        onclick="navigate('planning')">
 
-</div>
+        <span>📅</span>
+        Agenda
+
+    </button>
+
+
+    <button
+        data-nav="clients"
+        onclick="navigate('clients')">
+
+        <span>👩</span>
+        Clientes
+
+    </button>
+
+
+    <button
+        data-nav="calculator"
+        onclick="navigate('calculator')">
+
+        <span>€</span>
+        Prix
+
+    </button>
+
+
+    <button
+        data-nav="settings"
+        onclick="navigate('settings')">
+
+        <span>•••</span>
+        Plus
+
+    </button>
 
 </nav>
 
 
-<!-- MODAL CLIENT -->
 
-<div id="clientModal" class="modal">
+<!-- =========================
+     MODAL CLIENT
+========================= -->
 
-<div class="modalBox">
+<div
+    id="clientModal"
+    class="modal">
 
-<div class="modalHeader">
+    <div class="modal-box">
 
-<h2>Nouvelle cliente</h2>
+        <div class="modal-header">
 
-<button class="iconButton" onclick="closeModal('clientModal')">
-×
-</button>
+            <h2>
+                Nouvelle cliente
+            </h2>
 
-</div>
+            <button
+                class="icon-btn"
+                onclick="closeModal('clientModal')">
 
+                ×
 
-<div class="form">
+            </button>
 
-<div class="field">
-<label>Nom</label>
-<input id="clientName">
-</div>
-
-<div class="field">
-<label>Téléphone</label>
-<input id="clientPhone" type="tel">
-</div>
-
-<div class="field">
-<label>Notes</label>
-<textarea id="clientNotes"></textarea>
-</div>
-
-<button class="btn btnPrimary btnFull" onclick="saveClient()">
-Ajouter
-</button>
-
-</div>
-
-</div>
-
-</div>
+        </div>
 
 
-<!-- MODAL RDV -->
+        <div class="field">
 
-<div id="appointmentModal" class="modal">
+            <label>
+                Nom complet
+            </label>
 
-<div class="modalBox">
+            <input
+                id="clientName"
+                placeholder="Prénom Nom">
 
-<div class="modalHeader">
-
-<h2>Nouveau rendez-vous</h2>
-
-<button class="iconButton" onclick="closeModal('appointmentModal')">
-×
-</button>
-
-</div>
+        </div>
 
 
-<div class="form">
+        <div class="field">
 
-<div class="field">
-<label>Cliente</label>
-<input id="appointmentClient">
-</div>
+            <label>
+                Téléphone
+            </label>
 
-<div class="two">
+            <input
+                id="clientPhone"
+                type="tel">
 
-<div class="field">
-<label>Date</label>
-<input id="appointmentDate" type="date">
-</div>
+        </div>
 
-<div class="field">
-<label>Heure</label>
-<input id="appointmentTime" type="time">
-</div>
 
-</div>
+        <div class="field">
 
-<div class="field">
-<label>Prestation</label>
-<input id="appointmentService">
-</div>
+            <label>
+                Notes
+            </label>
 
-<button class="btn btnPrimary btnFull" onclick="saveAppointment()">
-Ajouter
-</button>
+            <textarea
+                id="clientNotes"
+                placeholder="Couleur préférée, habitudes...">
+            </textarea>
 
-</div>
+        </div>
 
-</div>
+
+        <button
+            class="primary-btn full"
+            onclick="saveClient()">
+
+            Ajouter la cliente
+
+        </button>
+
+    </div>
 
 </div>
 
 
-<!-- MODAL PRODUIT -->
 
-<div id="productModal" class="modal">
+<!-- =========================
+     MODAL RDV
+========================= -->
 
-<div class="modalBox">
+<div
+    id="appointmentModal"
+    class="modal">
 
-<div class="modalHeader">
+    <div class="modal-box">
 
-<h2>Nouveau produit</h2>
+        <div class="modal-header">
 
-<button class="iconButton" onclick="closeModal('productModal')">
-×
-</button>
+            <h2>
+                Nouveau rendez-vous
+            </h2>
+
+            <button
+                class="icon-btn"
+                onclick="closeModal('appointmentModal')">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Cliente
+            </label>
+
+            <input
+                id="appointmentClient"
+                placeholder="Nom de la cliente">
+
+        </div>
+
+
+        <div class="two-columns">
+
+            <div class="field">
+
+                <label>
+                    Date
+                </label>
+
+                <input
+                    id="appointmentDate"
+                    type="date">
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Heure
+                </label>
+
+                <input
+                    id="appointmentTime"
+                    type="time">
+
+            </div>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Prestation
+            </label>
+
+            <input
+                id="appointmentService"
+                placeholder="Ex : Coupe">
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Prix
+            </label>
+
+            <input
+                id="appointmentPrice"
+                type="number"
+                step="0.01">
+
+        </div>
+
+
+        <button
+            class="primary-btn full"
+            onclick="saveAppointment()">
+
+            Ajouter le rendez-vous
+
+        </button>
+
+    </div>
 
 </div>
 
 
-<div class="form">
 
-<div class="field">
-<label>Nom du produit</label>
-<input id="productName">
-</div>
+<!-- =========================
+     MODAL SERVICE
+========================= -->
 
-<div class="two">
+<div
+    id="serviceModal"
+    class="modal">
 
-<div class="field">
-<label>Prix (€)</label>
-<input id="productPrice" type="number" step=".01">
-</div>
+    <div class="modal-box">
 
-<div class="field">
-<label>Quantité</label>
-<input id="productQuantity" type="number" value="1">
-</div>
+        <div class="modal-header">
 
-</div>
+            <h2>
+                Nouvelle prestation
+            </h2>
 
-<button class="btn btnPrimary btnFull" onclick="saveProduct()">
-Ajouter
-</button>
+            <button
+                class="icon-btn"
+                onclick="closeModal('serviceModal')">
 
-</div>
+                ×
 
-</div>
+            </button>
 
-</div>
+        </div>
 
 
-<div id="toast" class="toast"></div>
+        <div class="field">
 
-</div>
+            <label>
+                Nom
+            </label>
 
+            <input
+                id="serviceName"
+                placeholder="Ex : Coupe femme">
 
-<script>
+        </div>
 
-/* ==========================================
-COIFF'BOOST
-APPLICATION LOCALE
-========================================== */
 
-const STORAGE_KEY="COIFFBOOST_V10";
+        <div class="two-columns">
 
-const MASTER_CODE="AUDREY";
+            <div class="field">
 
+                <label>
+                    Durée
+                </label>
 
-let state={
-settings:{
-salon:"",
-owner:"",
-phone:"",
-address:""
-},
-plan:"FREE",
-fullAccess:false,
-clients:[],
-appointments:[],
-products:[],
-services:[],
-invoices:[],
-revenue:0
-};
+                <input
+                    id="serviceDuration"
+                    type="number"
+                    value="60">
 
+                <small>
+                    minutes
+                </small>
 
-let currentInvoice=null;
+            </div>
 
 
-/* =========================
-STORAGE
-========================= */
+            <div class="field">
 
-function load(){
+                <label>
+                    Prix
+                </label>
 
-try{
+                <input
+                    id="servicePrice"
+                    type="number"
+                    step="0.01">
 
-const data=localStorage.getItem(STORAGE_KEY);
+            </div>
 
-if(data){
+        </div>
 
-const saved=JSON.parse(data);
 
-state={
-...state,
-...saved,
-settings:{
-...state.settings,
-...(saved.settings||{})
-}
-};
+        <div class="field">
 
-}
+            <label>
+                Coût produits
+            </label>
 
-}catch(e){
+            <input
+                id="serviceCost"
+                type="number"
+                step="0.01"
+                value="0">
 
-console.log(e);
+        </div>
 
-}
 
-}
+        <button
+            class="primary-btn full"
+            onclick="saveService()">
 
+            Ajouter
 
-function save(){
+        </button>
 
-localStorage.setItem(
-STORAGE_KEY,
-JSON.stringify(state)
-);
-
-}
-
-
-/* =========================
-NAVIGATION
-========================= */
-
-function openPage(page){
-
-document.querySelectorAll(".page").forEach(
-p=>p.classList.remove("active")
-);
-
-const target=document.getElementById(page);
-
-if(!target)return;
-
-target.classList.add("active");
-
-
-document.querySelectorAll(".navBtn").forEach(
-b=>b.classList.remove("active")
-);
-
-const nav=document.querySelector(
-`.navBtn[data-page="${page}"]`
-);
-
-if(nav)nav.classList.add("active");
-
-
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
-
-renderAll();
-
-}
-
-
-/* =========================
-TOAST
-========================= */
-
-let toastTimeout;
-
-function toast(message){
-
-const el=document.getElementById("toast");
-
-el.textContent=message;
-
-el.classList.add("show");
-
-clearTimeout(toastTimeout);
-
-toastTimeout=setTimeout(
-()=>el.classList.remove("show"),
-2200
-);
-
-}
-
-
-/* =========================
-MODALS
-========================= */
-
-function openModal(id){
-
-document.getElementById(id)
-.classList.add("show");
-
-}
-
-
-function closeModal(id){
-
-document.getElementById(id)
-.classList.remove("show");
-
-}
-
-
-/* =========================
-CLIENTS
-========================= */
-
-function openClientModal(){
-
-document.getElementById("clientName").value="";
-document.getElementById("clientPhone").value="";
-document.getElementById("clientNotes").value="";
-
-openModal("clientModal");
-
-}
-
-
-function saveClient(){
-
-const name=document
-.getElementById("clientName")
-.value
-.trim();
-
-if(!name){
-
-toast("Le nom est obligatoire.");
-
-return;
-
-}
-
-
-state.clients.push({
-
-id:Date.now(),
-
-name:name,
-
-phone:document
-.getElementById("clientPhone")
-.value
-.trim(),
-
-notes:document
-.getElementById("clientNotes")
-.value
-.trim(),
-
-created:new Date().toISOString()
-
-});
-
-
-save();
-
-closeModal("clientModal");
-
-renderAll();
-
-toast("Cliente ajoutée.");
-
-}
-
-
-function deleteClient(id){
-
-state.clients=state.clients.filter(
-c=>c.id!==id
-);
-
-save();
-
-renderAll();
-
-toast("Cliente supprimée.");
-
-}
-
-
-function renderClients(){
-
-const box=document.getElementById("clientsList");
-
-if(!box)return;
-
-
-if(!state.clients.length){
-
-box.innerHTML=`
-<div class="card empty">
-<div class="emptyIcon">👩</div>
-Aucune cliente enregistrée.
-</div>
-`;
-
-return;
-
-}
-
-
-box.innerHTML=state.clients.map(c=>`
-
-<div class="listItem">
-
-<div class="left">
-
-<div class="avatar">
-${escapeHTML(c.name.charAt(0).toUpperCase())}
-</div>
-
-<div>
-
-<div class="itemName">
-${escapeHTML(c.name)}
-</div>
-
-<div class="itemMeta">
-${escapeHTML(c.phone||"Aucun téléphone")}
-</div>
+    </div>
 
 </div>
 
-</div>
-
-<button class="btn btnDanger"
-onclick="deleteClient(${c.id})">
-×
-</button>
-
-</div>
-
-`).join("");
-
-}
 
 
-/* =========================
-PLANNING
-========================= */
+<!-- =========================
+     MODAL PRODUIT
+========================= -->
 
-function openAppointmentModal(){
+<div
+    id="productModal"
+    class="modal">
 
-document.getElementById("appointmentClient").value="";
-document.getElementById("appointmentTime").value="";
-document.getElementById("appointmentService").value="";
+    <div class="modal-box">
 
-document.getElementById("appointmentDate").value=
-new Date().toISOString().slice(0,10);
+        <div class="modal-header">
 
-openModal("appointmentModal");
+            <h2>
+                Nouveau produit
+            </h2>
 
-}
+            <button
+                class="icon-btn"
+                onclick="closeModal('productModal')">
 
+                ×
 
-function saveAppointment(){
+            </button>
 
-const client=document
-.getElementById("appointmentClient")
-.value.trim();
-
-const date=document
-.getElementById("appointmentDate")
-.value;
-
-const time=document
-.getElementById("appointmentTime")
-.value;
-
-const service=document
-.getElementById("appointmentService")
-.value.trim();
+        </div>
 
 
-if(!client||!date||!time){
+        <div class="field">
 
-toast("Cliente, date et heure sont obligatoires.");
+            <label>
+                Produit
+            </label>
 
-return;
+            <input
+                id="productName"
+                placeholder="Ex : Shampooing">
 
-}
-
-
-state.appointments.push({
-
-id:Date.now(),
-
-client,
-
-date,
-
-time,
-
-service
-
-});
+        </div>
 
 
-state.appointments.sort(
-(a,b)=>
-(`${a.date} ${a.time}`)
-.localeCompare(
-`${b.date} ${b.time}`
-)
-);
+        <div class="two-columns">
+
+            <div class="field">
+
+                <label>
+                    Prix d'achat
+                </label>
+
+                <input
+                    id="productPrice"
+                    type="number"
+                    step="0.01">
+
+            </div>
 
 
-save();
+            <div class="field">
 
-closeModal("appointmentModal");
+                <label>
+                    Stock
+                </label>
 
-renderAll();
+                <input
+                    id="productStock"
+                    type="number"
+                    value="1">
 
-toast("Rendez-vous ajouté.");
+            </div>
 
-}
-
-
-function deleteAppointment(id){
-
-state.appointments=
-state.appointments.filter(
-a=>a.id!==id
-);
-
-save();
-
-renderAll();
-
-}
+        </div>
 
 
-function renderAppointments(){
+        <button
+            class="primary-btn full"
+            onclick="saveProduct()">
 
-const box=document.getElementById(
-"appointmentsList"
-);
+            Ajouter
 
-if(!box)return;
+        </button>
 
-
-if(!state.appointments.length){
-
-box.innerHTML=`
-<div class="card empty">
-<div class="emptyIcon">📅</div>
-Aucun rendez-vous.
-</div>
-`;
-
-return;
-
-}
-
-
-box.innerHTML=state.appointments.map(a=>`
-
-<div class="listItem">
-
-<div class="left">
-
-<div class="avatar">📅</div>
-
-<div>
-
-<div class="itemName">
-${escapeHTML(a.client)}
-</div>
-
-<div class="itemMeta">
-${formatDate(a.date)} à ${escapeHTML(a.time)}
-${a.service?" • "+escapeHTML(a.service):""}
-</div>
+    </div>
 
 </div>
 
+
+
+<!-- TOAST -->
+
+<div
+    id="toast"
+    class="toast">
 </div>
 
-<button class="btn btnDanger"
-onclick="deleteAppointment(${a.id})">
-×
-</button>
-
-</div>
-
-`).join("");
-
-}
-
-
-/* =========================
-PRODUITS
-========================= */
-
-function openProductModal(){
-
-document.getElementById("productName").value="";
-document.getElementById("productPrice").value="";
-document.getElementById("productQuantity").value=1;
-
-openModal("productModal");
-
-}
-
-
-function saveProduct(){
-
-if(!hasAccess("PRO"))return;
-
-
-const name=document
-.getElementById("productName")
-.value.trim();
-
-const price=Number(
-document.getElementById("productPrice").value
-);
-
-const quantity=Number(
-document.getElementById("productQuantity").value
-);
-
-
-if(!name||price<0||quantity<=0){
-
-toast("Informations invalides.");
-
-return;
-
-}
-
-
-state.products.push({
-
-id:Date.now(),
-
-name,
-
-price,
-
-quantity
-
-});
-
-
-save();
-
-closeModal("productModal");
-
-renderAll();
-
-toast("Produit ajouté.");
-
-}
-
-
-function deleteProduct(id){
-
-if(!hasAccess("PRO"))return;
-
-state.products=
-state.products.filter(
-p=>p.id!==id
-);
-
-save();
-
-renderAll();
-
-}
-
-
-function renderProducts(){
-
-const box=document.getElementById(
-"productsList"
-);
-
-if(!box)return;
-
-
-if(!state.products.length){
-
-box.innerHTML=`
-<div class="card empty">
-<div class="emptyIcon">📦</div>
-Aucun produit.
-</div>
-`;
-
-return;
-
-}
-
-
-box.innerHTML=state.products.map(p=>`
-
-<div class="listItem">
-
-<div class="left">
-
-<div class="avatar">📦</div>
-
-<div>
-
-<div class="itemName">
-${escapeHTML(p.name)}
-</div>
-
-<div class="itemMeta">
-${money(p.price)} • quantité ${p.quantity}
-</div>
 
 </div>
 
-</div>
 
-<button class="btn btnDanger"
-onclick="deleteProduct(${p.id})">
-×
-</button>
-
-</div>
-
-`).join("");
-
-}
-
-
-/* =========================
-CALCULATEUR
-========================= */
-
-function calculatePrice(){
-
-const name=document
-.getElementById("calcName")
-.value.trim()||"Prestation";
-
-
-const minutes=Number(
-document.getElementById("calcTime").value
-)||0;
-
-const hourly=Number(
-document.getElementById("calcHourly").value
-)||0;
-
-const products=Number(
-document.getElementById("calcProducts").value
-)||0;
-
-const charges=Number(
-document.getElementById("calcCharges").value
-)||0;
-
-const margin=Number(
-document.getElementById("calcMargin").value
-)||0;
-
-
-const labor=(minutes/60)*hourly;
-
-const base=labor+products+charges;
-
-const finalPrice=base*(1+margin/100);
-
-
-document.getElementById(
-"calculatedPrice"
-).textContent=money(finalPrice);
-
-
-document.getElementById(
-"calculationDetails"
-).textContent=
-`Main-d'œuvre ${money(labor)} • `+
-`produits ${money(products)} • `charges ${money(charges)} • `+
-`marge ${margin}%`;
-
-
-const existing=state.services.find(
-s=>s.name===name
-);
-
-
-if(existing){
-
-existing.price=
-Number(finalPrice.toFixed(2));
-
-}else{
-
-state.services.push({
-
-id:Date.now(),
-
-name,
-
-price:Number(finalPrice.toFixed(2)),
-
-minutes,
-
-products,
-
-charges,
-
-margin
-
-});
-
-}
-
-
-save();
-
-renderServices();
-
-toast("Tarif calculé.");
-
-}
-
-
-function renderServices(){
-
-const box=document.getElementById(
-"servicesList"
-);
-
-if(!box)return;
-
-
-if(!state.services.length){
-
-box.innerHTML=`
-<div class="card empty">
-<div class="emptyIcon">💰</div>
-Aucune prestation enregistrée.
-</div>
-`;
-
-return;
-
-}
-
-
-box.innerHTML=state.services.map(s=>`
-
-<div class="listItem">
-
-<div class="left">
-
-<div class="avatar">€</div>
-
-<div>
-
-<div class="itemName">
-${escapeHTML(s.name)}
-</div>
-
-<div class="itemMeta">
-${s.minutes} minutes
-</div>
-
-</div>
-
-</div>
-
-<strong>
-${money(s.price)}
-</strong>
-
-</div>
-
-`).join("");
-
-}
-
-
-/* =========================
-FACTURE
-========================= */
-
-function generateInvoice(){
-
-const client=document
-.getElementById("invoiceClient")
-.value.trim()||"Cliente";
-
-
-const service=document
-.getElementById("invoiceService")
-.value.trim()||"Prestation";
-
-
-const qty=Number(
-document.getElementById("invoiceQty").value
-)||1;
-
-
-const price=Number(
-document.getElementById("invoicePrice").value
-)||0;
-
-
-const date=document
-.getElementById("invoiceDate")
-.value||new Date().toISOString().slice(0,10);
-
-
-const total=qty*price;
-
-
-const number=
-"CB-"+Date.now().toString().slice(-7);
-
-
-currentInvoice={
-client,
-service,
-qty,
-price,
-total,
-date,
-number
-};
-
-
-document.getElementById(
-"invoiceSalon"
-).textContent=
-state.settings.salon||"COIFF'BOOST";
-
-
-document.getElementById(
-"invoiceOwner"
-).textContent=
-state.settings.owner||
-"Gestion professionnelle";
-
-
-document.getElementById(
-"invoiceDisplayClient"
-).textContent=client;
-
-
-document.getElementById(
-"invoiceDisplayDate"
-).textContent=formatDate(date);
-
-
-document.getElementById(
-"invoiceNumber"
-).textContent=
-"FACTURE "+number;
-
-
-document.getElementById(
-"invoiceLines"
-).innerHTML=`
-
-<tr>
-
-<td>${escapeHTML(service)}</td>
-
-<td>${qty}</td>
-
-<td class="right">${money(total)}</td>
-
-</tr>
-
-`;
-
-
-document.getElementById(
-"invoiceTotal"
-).textContent=
-"Total : "+money(total);
-
-
-toast("Facture générée.");
-
-}
-
-
-function saveInvoice(){
-
-if(!currentInvoice){
-
-toast("Générez d'abord une facture.");
-
-return;
-
-}
-
-
-state.invoices.push({
-...currentInvoice,
-created:new Date().toISOString()
-});
-
-
-state.revenue+=currentInvoice.total;
-
-save();
-
-renderAll();
-
-toast("Facture enregistrée.");
-
-}
-
-
-function printInvoice(){
-
-if(!currentInvoice){
-
-toast("Générez d'abord une facture.");
-
-return;
-
-}
-
-window.print();
-
-}
-
-
-/* =========================
-PARAMETRES
-========================= */
-
-function loadSettings(){
-
-document.getElementById(
-"settingSalon"
-).value=state.settings.salon||"";
-
-document.getElementById(
-"settingOwner"
-).value=state.settings.owner||"";
-
-document.getElementById(
-"settingPhone"
-).value=state.settings.phone||"";
-
-document.getElementById(
-"settingAddress"
-).value=state.settings.address||"";
-
-}
-
-
-function saveSettings(){
-
-state.settings={
-salon:document.getElementById("settingSalon").value.trim(),
-owner:document.getElementById("settingOwner").value.trim(),
-phone:document.getElementById("settingPhone").value.trim(),
-address:document.getElementById("settingAddress").value.trim()
-};
-
-save();
-
-renderAll();
-
-toast("Paramètres enregistrés.");
-
-}
-
-
-/* =========================
-ABONNEMENT
-========================= */
-
-function hasAccess(required){
-
-if(state.fullAccess)return true;
-
-if(required==="PRO"){
-
-if(state.plan==="PRO"||
-state.plan==="PREMIUM")return true;
-
-}
-
-if(required==="PREMIUM"){
-
-if(state.plan==="PREMIUM")return true;
-
-}
-
-toast(
-"⭐ Cette fonction nécessite la formule "+
-required+"."
-);
-
-openPage("subscription");
-
-return false;
-
-}
-
-
-function choosePlan(plan){
-
-if(plan==="FREE"){
-
-state.plan="FREE";
-
-save();
-
-renderAll();
-
-toast("Formule Gratuit activée.");
-
-return;
-
-}
-
-
-if(state.fullAccess){
-
-state.plan=plan;
-
-save();
-
-renderAll();
-
-toast("Formule "+plan+" activée.");
-
-return;
-
-}
-
-
-toast(
-"Le paiement réel n'est pas connecté dans cette version locale."
-);
-
-}
-
-
-/* =========================
-ACCES COMPLET
-========================= */
-
-function unlock(){
-
-const code=document
-.getElementById("masterCode")
-.value
-.trim();
-
-
-if(code===MASTER_CODE){
-
-state.fullAccess=true;
-state.plan="PREMIUM";
-
-save();
-
-
-document.getElementById(
-"masterCode"
-).value="";
-
-
-document.getElementById(
-"unlockStatus"
-).textContent=
-"✓ Accès complet activé.";
-
-document.getElementById(
-"unlockStatus"
-).style.color=
-"var(--green)";
-
-
-toast("👑 Accès complet activé.");
-
-renderAll();
-
-}else{
-
-document.getElementById(
-"unlockStatus"
-).textContent=
-"Code incorrect.";
-
-document.getElementById(
-"unlockStatus"
-).style.color=
-"var(--red)";
-
-toast("Code incorrect.");
-
-}
-
-}
-
-
-/* =========================
-STATISTIQUES
-========================= */
-
-function renderStats(){
-
-const locked=document.getElementById(
-"statsLocked"
-);
-
-if(!locked)return;
-
-
-if(!hasAccessSilent("PRO")){
-
-locked.classList.add("locked");
-
-locked.innerHTML=`
-
-<div style="opacity:.4">
-
-<div class="grid">
-
-<div class="card stat">
-<div class="statIcon">💶</div>
-<div class="statValue">—</div>
-<div class="statLabel">CA</div>
-</div>
-
-<div class="card stat">
-<div class="statIcon">🧾</div>
-<div class="statValue">—</div>
-<div class="statLabel">Factures</div>
-</div>
-
-</div>
-
-</div>
-
-<div class="lock">
-
-<div style="font-size:28px">🔒</div>
-
-<strong>Fonction Pro</strong>
-
-<small>
-Les statistiques avancées sont disponibles avec PRO.
-</small>
-
-<button class="btn btnPrimary"
-onclick="openPage('subscription')">
-Voir PRO
-</button>
-
-</div>
-
-`;
-
-return;
-
-}
-
-
-locked.classList.remove("locked");
-
-locked.innerHTML=`
-
-<div class="grid">
-
-<div class="card stat">
-<div class="statIcon">💶</div>
-<div class="statValue">${money(state.revenue)}</div>
-<div class="statLabel">CA</div>
-</div>
-
-<div class="card stat">
-<div class="statIcon">🧾</div>
-<div class="statValue">${state.invoices.length}</div>
-<div class="statLabel">Factures</div>
-</div>
-
-<div class="card stat">
-<div class="statIcon">👩</div>
-<div class="statValue">${state.clients.length}</div>
-<div class="statLabel">Clientes</div>
-</div>
-
-<div class="card stat">
-<div class="statIcon">📦</div>
-<div class="statValue">${state.products.length}</div>
-<div class="statLabel">Produits</div>
-</div>
-
-</div>
-
-`;
-
-
-const analysis=document.getElementById(
-"statsAnalysis"
-);
-
-
-if(!state.invoices.length){
-
-analysis.textContent=
-"Ajoutez des factures pour obtenir une analyse.";
-
-return;
-
-}
-
-
-const average=
-state.revenue/state.invoices.length;
-
-
-analysis.innerHTML=`
-
-Chiffre d'affaires :
-<strong>${money(state.revenue)}</strong>
-
-<br><br>
-
-Panier moyen :
-<strong>${money(average)}</strong>
-
-<br><br>
-
-Clientes :
-<strong>${state.clients.length}</strong>
-
-<br><br>
-
-Rendez-vous :
-<strong>${state.appointments.length}</strong>
-
-`;
-
-}
-
-
-function hasAccessSilent(required){
-
-if(state.fullAccess)return true;
-
-if(required==="PRO"){
-
-return state.plan==="PRO"||
-state.plan==="PREMIUM";
-
-}
-
-if(required==="PREMIUM"){
-
-return state.plan==="PREMIUM";
-
-}
-
-return true;
-
-}
-
-
-/* =========================
-DASHBOARD
-========================= */
-
-function renderDashboard(){
-
-document.getElementById(
-"dashRevenue"
-).textContent=money(state.revenue);
-
-
-document.getElementById(
-"dashClients"
-).textContent=state.clients.length;
-
-
-document.getElementById(
-"dashAppointments"
-).textContent=
-state.appointments.length;
-
-
-document.getElementById(
-"dashInvoices"
-).textContent=
-state.invoices.length;
-
-
-const average=
-state.invoices.length
-?state.revenue/state.invoices.length
-:0;
-
-
-document.getElementById(
-"averagePrice"
-).textContent=money(average);
-
-
-const productCost=
-state.products.reduce(
-(sum,p)=>sum+(p.price*p.quantity),
-0
-);
-
-
-document.getElementById(
-"productCost"
-).textContent=
-money(productCost);
-
-}
-
-
-/* =========================
-PLAN
-========================= */
-
-function renderPlan(){
-
-const el=document.getElementById(
-"currentPlan"
-);
-
-if(!el)return;
-
-
-if(state.fullAccess){
-
-el.textContent="👑 ACCÈS COMPLET";
-
-el.className=
-"badge badgePremium";
-
-return;
-
-}
-
-
-el.textContent=
-state.plan==="PRO"
-?"⭐ PRO"
-:state.plan==="PREMIUM"
-?"👑 PREMIUM"
-:"GRATUIT";
-
-
-el.className=
-"badge "+
-(
-state.plan==="PRO"
-?"badgePro"
-:state.plan==="PREMIUM"
-?"badgePremium"
-:"badgeFree"
-);
-
-}
-
-
-/* =========================
-UTILS
-========================= */
-
-function money(value){
-
-return Number(value||0).toLocaleString(
-"fr-FR",
-{
-style:"currency",
-currency:"EUR"
-}
-);
-
-}
-
-
-function formatDate(value){
-
-if(!value)return"—";
-
-const d=new Date(value+"T00:00:00");
-
-if(Number.isNaN(d.getTime()))
-return value;
-
-return d.toLocaleDateString(
-"fr-FR",
-{
-day:"2-digit",
-month:"2-digit",
-year:"numeric"
-}
-);
-
-}
-
-
-function escapeHTML(value){
-
-return String(value??"")
-.replaceAll("&","&amp;")
-.replaceAll("<","&lt;")
-.replaceAll(">","&gt;")
-.replaceAll('"',"&quot;")
-.replaceAll("'","&#039;");
-
-}
-
-
-/* =========================
-EXPORT
-========================= */
-
-function exportData(){
-
-const json=JSON.stringify(
-state,
-null,
-2
-);
-
-const blob=new Blob(
-[json],
-{
-type:"application/json"
-}
-);
-
-const url=URL.createObjectURL(blob);
-
-const a=document.createElement("a");
-
-a.href=url;
-
-a.download=
-"coiffboost-sauvegarde.json";
-
-a.click();
-
-URL.revokeObjectURL(url);
-
-toast("Sauvegarde exportée.");
-
-}
-
-
-/* =========================
-RESET
-========================= */
-
-function resetData(){
-
-if(!confirm(
-"Supprimer toutes les données COIFF'BOOST ?"
-))return;
-
-localStorage.removeItem(
-STORAGE_KEY
-);
-
-location.reload();
-
-}
-
-
-/* =========================
-RENDER
-========================= */
-
-function renderAll(){
-
-renderDashboard();
-
-renderClients();
-
-renderAppointments();
-
-renderProducts();
-
-renderServices();
-
-renderStats();
-
-renderPlan();
-
-loadSettings();
-
-}
-
-
-/* =========================
-START
-========================= */
-
-document.getElementById(
-"invoiceDate"
-).value=
-new Date().toISOString().slice(0,10);
-
-
-load();
-
-renderAll();
-
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>
